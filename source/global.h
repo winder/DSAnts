@@ -14,4 +14,11 @@
 
 // Draw distance.
 #define UNDERGROUND_GRID_DRAW 8
+
+// there is a built in vector: "GLvector" but it uses ints...
+// I'm not that good yet.
+typedef struct {
+	float x, y, z;
+} VectorF;
+
 #endif

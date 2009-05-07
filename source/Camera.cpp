@@ -1,5 +1,17 @@
 #include "Camera.h"
 
+Camera::Camera()
+{
+	//rotation = {0,0,0};
+	//translation = {0,0,0};
+	translation.x = 0;
+	translation.y = 0;
+	translation.z = 0;
+	rotation.x = 0;
+	rotation.y = 0;
+	rotation.z = 0;
+}
+
 void Camera::init()
 {
 	// Setup the Main screen for 3D 
@@ -29,3 +41,16 @@ void Camera::Ortho()
 {
 	glOrtho(-4,4,-3,3,0.1,10);	
 }
+
+void Camera::move()
+{
+	glTranslatef( translation.x, translation.y, translation.z );
+}
+
+void Camera::rotate()
+{
+	glRotateX(rotation.x);
+	glRotateY(rotation.y);
+	glRotateZ(rotation.z);
+}
+

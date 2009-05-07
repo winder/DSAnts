@@ -47,11 +47,11 @@ int main()
 		int held = keysHeld();
 		int pressed = keysDown();
 		
-//		if( held & KEY_LEFT) rotY++;
-//		if( held & KEY_RIGHT) rotY--;
+		if( held & KEY_LEFT) cam.translateXinc(0.1);
+		if( held & KEY_RIGHT) cam.translateXinc(-0.1);
+		if( held & KEY_UP) cam.translateYinc(0.1);
+		if( held & KEY_DOWN) cam.translateYinc(-0.1);
 //		if( pressed & KEY_UP || pressed & KEY_DOWN ) udButton = 0;
-//		if( held & KEY_UP) udButton ++;
-//		if( held & KEY_DOWN) udButton --;
 //		if( held & KEY_UP) udButton += 0.1;
 //		if( held & KEY_DOWN) udButton -= 0.1;
 //		if( held & KEY_L) translate += .1;
@@ -70,6 +70,11 @@ int main()
 			oldx = touchXY.px;
 			oldy = touchXY.py;
 		}
+		// I had to swap ry and rx, not exactly sure why ....
+		cam.rotateXinc(ry * 0.11);
+		cam.rotateYinc(rx * 0.11);
+		rx = 0;
+		ry = 0;
 
 		//change ortho vs perspective
 		glMatrixMode(GL_PROJECTION);
@@ -90,9 +95,12 @@ int main()
 		glLoadIdentity();
 
 		//handle camera
-//		glRotateY(rotY);
-//		glRotateX(rotX);
-//		glTranslatef(0,0,translate);
+		//glRotateY(rotY);
+		//glRotateX(rotX);
+		//glTranslatef(0,0,translate);
+		cam.rotate();
+		cam.move();
+
 		sd.draw(ug, 0, 0, 0);
 
 		deltaPointer = ry;
