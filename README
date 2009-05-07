@@ -1,0 +1,51 @@
+Concept:
+
+Sim-Ants / DigDug style game created in a large disk, mario-galaxy style world.
+
+Both red and black ants will share the same disk underground world
+
+Initially the game will focus more on the under-ground aspect and building an impenetrable ant-cave and focus less on the above ground aspects.
+
+
+Development process:
+
+1. Create the 2D / circular underground world.
+	- circular / 2d
+	- destrutable, player
+
+2. Create occupants
+	- Player
+	- Queen
+	- Egg / Hatch system
+	- Food / Eating system
+	- Workers / Breeders / Soldiers
+
+3. Create surface world
+	- Terrain themes (outdoors, patio, kitchen, etc)
+	- Obstacles (Rocks, pits, shoe)
+	- Food
+	- Enemies (Pincer pit, spider, food)
+
+4. A.I. / Enemy base.
+	- Food gathering
+	- Play style (aggressive, defensive)
+	- Base design
+
+
+
+Underground world data structure.
+
+The world is a flat donut, with an unpassable "rock" core at the bottom.
+The donut is broken down into SLICES.
+A slice is a logical entity which can be loaded in parts.
+Slices are stitched together to adjacent slices
+Each slice is loaded in entirety in such a way that only 2 slices need to be loaded at once for display purposes.
+Each slice is a 2D array.  It does not taper out towards the bottom, as the bottom is "rock" it can be spoofed.
+
+Each slice is broken down into squares which can be:
+	-dirt (clearable)
+	-cleared (walkable, objects may be placed, can be buried)
+	-unpassable (i.e. rock)
+
+
+

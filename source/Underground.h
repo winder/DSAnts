@@ -8,11 +8,15 @@
 class Underground
 {
 	public:
-		Underground(){}
+		Underground(){ underground = new DirtDisk(); }
+		virtual ~Underground(){ delete underground; }
+
+		DirtDisk* getDisk()
+			{	return underground; }
 
 	private:
 		std::vector<Ant> inhabitants;
-		DirtDisk underground;
+		DirtDisk *underground;
 
 };
 

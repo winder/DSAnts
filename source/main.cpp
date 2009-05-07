@@ -36,8 +36,6 @@ int main() {
 	//camera
 //	float rotX = 0, rotY = 0;
 
-	float udButton = 0;
-	float translate = -5;
 
 	//keep track of vertex ram usage
 	int polygon_count;
