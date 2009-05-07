@@ -47,10 +47,13 @@ int main()
 		int held = keysHeld();
 		int pressed = keysDown();
 		
+		// D-Pad to translate.
 		if( held & KEY_LEFT) cam.translateXinc(0.1);
 		if( held & KEY_RIGHT) cam.translateXinc(-0.1);
 		if( held & KEY_UP) cam.translateYinc(0.1);
 		if( held & KEY_DOWN) cam.translateYinc(-0.1);
+		if( held & KEY_R) cam.translateZinc(0.1);
+		if( held & KEY_L) cam.translateZinc(-0.1);
 //		if( pressed & KEY_UP || pressed & KEY_DOWN ) udButton = 0;
 //		if( held & KEY_UP) udButton += 0.1;
 //		if( held & KEY_DOWN) udButton -= 0.1;
@@ -71,8 +74,8 @@ int main()
 			oldy = touchXY.py;
 		}
 		// I had to swap ry and rx, not exactly sure why ....
-		cam.rotateXinc(ry * 0.11);
-		cam.rotateYinc(rx * 0.11);
+		cam.rotateXinc(ry * 0.31);
+		cam.rotateYinc(rx * 0.31);
 		rx = 0;
 		ry = 0;
 

@@ -19,7 +19,7 @@ void StaticDraw::draw(Underground *ug, short slice, short width, short height)
 	do {
 		for (x = -6; x < UNDERGROUND_GRID_DRAW; x++)
 		{
-			Box(x, y, -7,  0.1, 0.1, 1);
+			Box(x, y, -7,  0.4, 0.4, 1);
 			if (t)
 				t = t->getRight();
 		}
