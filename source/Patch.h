@@ -7,10 +7,10 @@ class Patch
 {
 	public:
 		Patch(short s, short w, short d){ slice=s; width=w; depth=d; }
-		Patch* setRight(Patch* p){ right = p; }
-		Patch* setLeft(Patch* p){ left = p; }
-		Patch* setTop(Patch* p){ top = p; }
-		Patch* setBottom(Patch* p){ bottom = p; }
+		void setRight(Patch* p){ right = p; }
+		void setLeft(Patch* p){ left = p; }
+		void setTop(Patch* p){ top = p; }
+		void setBottom(Patch* p){ bottom = p; }
 		Patch* getRight(){ return right; }
 		Patch* getLeft(){ return left; }
 		Patch* getTop(){ return top; }

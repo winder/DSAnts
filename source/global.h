@@ -12,4 +12,6 @@
 #define PATCH_FOOD 4
 #define PATCH_EGG 5
 
+// Draw distance.
+#define UNDERGROUND_GRID_DRAW 8
 #endif

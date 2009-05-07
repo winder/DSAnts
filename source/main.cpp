@@ -2,40 +2,28 @@
 #include <nds.h>
 
 #include <stdio.h>
+#include "Underground.h"
+#include "StaticDraw.h"
+#include "Camera.h"
 
 
-//---------------------------------------------------------------------------------
-int main() {	
-//---------------------------------------------------------------------------------
+int main()
+{	
 
 	touchPosition touchXY;
-
-	//put 3D on bottom
-	lcdMainOnBottom();
+	//put 3D on top/bottom
+	//lcdMainOnBottom();
+	lcdMainOnTop();
 
 	//setup the sub screen for basic printing
 	consoleDemoInit();
 
-	// Setup the Main screen for 3D 
-	videoSetMode(MODE_0_3D);
+	// Camera class..
+	Camera cam;
+	cam.init();
 
-	// initialize gl
-	glInit();
-	
-	// enable antialiasing
-	glEnable(GL_ANTIALIAS);
-	
-	// setup the rear plane
-	glClearColor(0,0,0,31); // BG must be opaque for AA to work
-	glClearPolyID(63); // BG must have a unique polygon ID for AA to work
-	glClearDepth(0x7FFF);
-	
-	// Set our view port to be the same size as the screen
-	glViewport(0,0,255,191);
-	
-	//camera
-//	float rotX = 0, rotY = 0;
-
+	StaticDraw sd;
+	Underground *ug = new Underground();
 
 	//keep track of vertex ram usage
 	int polygon_count;
@@ -87,9 +75,9 @@ int main() {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		if(keysHeld() & KEY_B)
-			gluPerspective(70, 256.0 / 192.0, 0.1, 10);
+			cam.Perspective();
 		else 
-			glOrtho(-4,4,-3,3,0.1,10);	
+			cam.Ortho();
 
 		//change cull mode
 		if( held & KEY_A)
@@ -105,6 +93,7 @@ int main() {
 //		glRotateY(rotY);
 //		glRotateX(rotX);
 //		glTranslatef(0,0,translate);
+		sd.draw(ug, 0, 0, 0);
 
 		deltaPointer = ry;
 
