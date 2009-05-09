@@ -14,6 +14,7 @@ class UndergroundDraw: public Underground
 		}
 
 		void draw();
+		void drawSegment(int x, int y, int rightx, int upy);
 		void computeCircles();
 
 	private:
