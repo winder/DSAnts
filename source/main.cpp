@@ -2,7 +2,7 @@
 #include <nds.h>
 
 #include <stdio.h>
-#include "Underground.h"
+#include "UndergroundDraw.h"
 #include "StaticDraw.h"
 #include "Camera.h"
 
@@ -23,7 +23,7 @@ int main()
 	cam.init();
 
 	StaticDraw sd;
-	Underground *ug = new Underground();
+	UndergroundDraw *ug = new UndergroundDraw();
 
 	//keep track of vertex ram usage
 	int polygon_count;
@@ -88,10 +88,10 @@ int main()
 			cam.Ortho();
 
 		//change cull mode
-		if( held & KEY_A)
+//		if( held & KEY_A)
 			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE );
-		else
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT );
+//		else
+//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT );
 
 		// Set the current matrix to be the model matrix
 		glMatrixMode(GL_MODELVIEW);
@@ -104,7 +104,8 @@ int main()
 		cam.rotate();
 		cam.move();
 
-		sd.draw(ug, 0, 0, 0);
+		//sd.draw(ug, 0, 0, 0);
+		ug->draw();
 
 		deltaPointer = ry;
 

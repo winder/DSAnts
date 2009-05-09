@@ -17,6 +17,10 @@ class Camera
 		void move();
 		void rotate();
 
+		// future...
+		// void set coord (x,y,z)
+		// void set look at (x,y,z)
+
 		// Move camera variables, inc.
 		void translateXinc(float x){ translation.x += x; }
 		void translateYinc(float y){ translation.y += y; }

@@ -13,7 +13,7 @@
 #define PATCH_EGG 5
 
 // Draw distance.
-#define UNDERGROUND_GRID_DRAW 8
+#define UNDERGROUND_GRID_DRAW 7
 
 // there is a built in vector: "GLvector" but it uses ints...
 // I'm not that good yet.
