@@ -7,7 +7,8 @@ void UndergroundDraw::draw()
 	glBegin(GL_QUADS);
 	// This needs to be made to work with the wrapped coordinates.
 	// i.e. x=40+++++ x=10
-	for(x=15; x < lats-15; x+=2)  // this cuts off the top and bottom.
+	//for(x=15; x < lats-15; x+=2)  // this cuts off the top and bottom.
+		for(x=0; x < lats; x+=2)
 		for(y=0; y < longs; y+=2)
 		{
 

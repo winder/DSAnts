@@ -5,6 +5,7 @@
 #include "UndergroundDraw.h"
 #include "StaticDraw.h"
 #include "Camera.h"
+#include "UndergroundCamera.h"
 
 
 int main()
@@ -20,8 +21,10 @@ int main()
 
 	// Camera class..
 	Camera cam;
-	cam.init();
+	UndergroundCamera ugCam;
 
+	cam.init();
+	ugCam.init();
 	UndergroundDraw *ug = new UndergroundDraw();
 
 	//keep track of vertex ram usage
@@ -47,12 +50,22 @@ int main()
 		int pressed = keysDown();
 		
 		// D-Pad to translate.
+/*
 		if( held & KEY_LEFT) cam.translateXinc(0.1);
 		if( held & KEY_RIGHT) cam.translateXinc(-0.1);
 		if( held & KEY_UP) cam.translateYinc(0.1);
 		if( held & KEY_DOWN) cam.translateYinc(-0.1);
 		if( held & KEY_R) cam.translateZinc(0.1);
 		if( held & KEY_L) cam.translateZinc(-0.1);
+*/
+		if( held & KEY_LEFT) ugCam.moveLeft();
+		if( held & KEY_RIGHT) ugCam.moveRight();
+		if( held & KEY_UP) ugCam.moveUp();
+		if( held & KEY_DOWN) ugCam.moveDown();
+
+		if( held & KEY_L) ugCam.zoomIn();
+		if( held & KEY_R) ugCam.zoomOut();
+
 //		if( pressed & KEY_UP || pressed & KEY_DOWN ) udButton = 0;
 //		if( held & KEY_UP) udButton += 0.1;
 //		if( held & KEY_DOWN) udButton -= 0.1;
@@ -97,12 +110,10 @@ int main()
 		glLoadIdentity();
 
 		//handle camera
-		//glRotateY(rotY);
-		//glRotateX(rotX);
-		//glTranslatef(0,0,translate);
-		cam.rotate();
-		cam.move();
-
+		//cam.rotate();
+		//cam.move();
+		//cam.render();
+		ugCam.render();
 		ug->draw();
 
 		deltaPointer = ry;
@@ -117,6 +128,9 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
+		printf("\nCamera location: (%f,", ugCam.getCamLocation().x);
+		printf("\n                  %f,", ugCam.getCamLocation().y);
+		printf("\n                  %f)", ugCam.getCamLocation().z);
 /*
 		printf("\nPlayer Position: %f", p1->getPosition());
 		printf("\n");

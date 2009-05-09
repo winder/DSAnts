@@ -10,9 +10,9 @@ class Camera
 		Camera();
 
 		// Setup wrappers.
-		void init();
-		void Perspective();
-		void Ortho();
+		virtual void init();
+		virtual void Perspective();
+		virtual void Ortho();
 
 		void move();
 		void rotate();
@@ -39,7 +39,12 @@ class Camera
 		void rotateYset(float y){ rotation.y += y; }
 		void rotateZset(float z){ rotation.z += z; }
 
+		void render();
+
 	private:
+		VectorF location;
+		VectorF lookAt;
+
 		VectorF translation;
 		VectorF rotation;
 };

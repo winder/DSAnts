@@ -54,3 +54,9 @@ void Camera::rotate()
 	glRotateZ(rotation.z);
 }
 
+void Camera::render()
+{
+	gluLookAt(translation.x, translation.y, translation.z, // Cam position.
+						0.0, 0.0, 0.0,															 // Look at origin
+						0.0, 1.0, 0.0);															 // Up
+}

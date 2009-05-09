@@ -18,7 +18,7 @@
 // there is a built in vector: "GLvector" but it uses ints...
 // I'm not that good yet.
 typedef struct {
-	float x, y, z;
+	float x, y, z, d;
 } VectorF;
 
 #endif
