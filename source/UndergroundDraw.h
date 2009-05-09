@@ -3,6 +3,7 @@
 
 #include "Underground.h"
 #include "StaticDraw.h"
+#include "Patch.h"
 
 class UndergroundDraw: public Underground
 {
@@ -14,13 +15,11 @@ class UndergroundDraw: public Underground
 		}
 
 		void draw();
-		void drawSegment(int x, int y, int rightx, int upy);
+		void drawSegment(int x, int y, int rightx, int upy, Patch* p);
 		void computeCircles();
 
 	private:
 		bool cached;
-//		const static int lats = 50;
-//		const static int longs = 15;
 		const static int lats = 50;
 		const static int longs = 50;
 		VectorF inner[lats+1][longs+1];

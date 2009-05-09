@@ -10,6 +10,7 @@ class Underground
 	public:
 		Underground(){ underground = new DirtDisk(); }
 		virtual ~Underground(){ delete underground; }
+		virtual void draw() = 0;
 
 		DirtDisk* getDisk()
 			{	return underground; }
@@ -17,7 +18,8 @@ class Underground
 	private:
 		std::vector<Ant> inhabitants;
 		DirtDisk *underground;
-
+		int centerX, centerY;
+		float rotationX, rotationY;
 };
 
 #endif

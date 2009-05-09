@@ -2,51 +2,25 @@
 
 void UndergroundDraw::draw()
 {
-
 	int x, y, upy, rightx;
-//	Patch *topLeft = ug->getDisk()->getPatch(slice, width, height);
-//	Patch *t;
-
+	Patch* p = new Patch(1,1,1);
 	glBegin(GL_QUADS);
-	//for(x1=0; x1 < lats; x1++)
-	for(x=15; x < lats-15; x++)  // this cuts off the top and bottom.
-		//for(y1=15; y1 < longs-15; y1++)  // this makes it visor-like.
-		for(y=0; y < longs; y++)
+	// This needs to be made to work with the wrapped coordinates.
+	// i.e. x=40+++++ x=10
+	for(x=15; x < lats-15; x+=2)  // this cuts off the top and bottom.
+		for(y=0; y < longs; y+=2)
 		{
 
 			upy = (y+1)%longs;
 			rightx = x+1;
 			
-			drawSegment(x, y, rightx, upy);
+			drawSegment(x, y, rightx, upy, p);
 		}
-		glEnd();
-//	Box(-3.5, 0, -7, 0.2, 1.5, 1);
-/*
-	// Shift to the left a little so the screen will be centered.
-	for(x = 0; x < UNDERGROUND_GRID_DRAW; x++)
-		topLeft = topLeft->getLeft();
 
-	t = topLeft;
-
-	// Draw the box 3 to the right and 3 down.
-	y = UNDERGROUND_GRID_DRAW * -1;
-	do {
-		for (x = UNDERGROUND_GRID_DRAW * -1; t && x < UNDERGROUND_GRID_DRAW; x++)
-		{
-//			Box(x, y, -5,  0.4, 0.4, 1);
-			Sphere(x, y, -5, 0.1);
-			t = t->getRight();
-		}
-		if (topLeft)
-		{
-			topLeft = topLeft->getBottom();
-			t = topLeft;
-		}
-	} while (y++, t && y < UNDERGROUND_GRID_DRAW);
-*/
+	glEnd();
 }
 
-void UndergroundDraw::drawSegment(int x, int y, int rightx, int upy)
+void UndergroundDraw::drawSegment(int x, int y, int rightx, int upy, Patch* p)
 {
 			if (x%3 == 0)
 			glColor3f(1,0,0);
@@ -58,23 +32,42 @@ void UndergroundDraw::drawSegment(int x, int y, int rightx, int upy)
 			glColor3f(1,0,1);
 			else
 			glColor3f(1,1,1);
-
-			//glVertex3f( inner[rightx][y1].x, 	inner[rightx][y1].y, 	inner[rightx][y1].z		);
-			//glVertex3f( inner[rightx][upy].x,	inner[rightx][upy].y, inner[rightx][upy].z	);
-			//glVertex3f( inner[x1][upy].x, 		inner[x1][upy].y, 		inner[x1][upy].z			);
-			//glVertex3f( inner[x1][y1].x, 			inner[x1][y1].y, 			inner[x1][y1].z				);
 	
 			// front face.
-			glVertex3f( inner[x][y].x, 			inner[x][y].y, 			inner[x][y].z				);
-			glVertex3f( inner[x][upy].x, 		inner[x][upy].y, 		inner[x][upy].z			);
+			glVertex3f( inner[x][y].x, 			inner[x][y].y, 			inner[x][y].z							);
+			glVertex3f( inner[x][upy].x, 		inner[x][upy].y, 		inner[x][upy].z						);
 			glVertex3f( inner[rightx][upy].x,	inner[rightx][upy].y, inner[rightx][upy].z	);
 			glVertex3f( inner[rightx][y].x, 	inner[rightx][y].y, 	inner[rightx][y].z		);
 
 			// rear face.
-			glVertex3f( outer[x][y].x, 			outer[x][y].y, 			outer[x][y].z				);
-			glVertex3f( outer[x][upy].x, 		outer[x][upy].y, 		outer[x][upy].z			);
+			glVertex3f( outer[x][y].x, 			outer[x][y].y, 			outer[x][y].z							);
+			glVertex3f( outer[x][upy].x, 		outer[x][upy].y, 		outer[x][upy].z						);
 			glVertex3f( outer[rightx][upy].x,	outer[rightx][upy].y, outer[rightx][upy].z	);
 			glVertex3f( outer[rightx][y].x, 	outer[rightx][y].y, 	outer[rightx][y].z		);
+
+			// x face.
+			glVertex3f( inner[x][y].x, 		inner[x][y].y, 		inner[x][y].z		);
+			glVertex3f( inner[x][upy].x, 	inner[x][upy].y, 	inner[x][upy].z	);
+			glVertex3f( outer[x][upy].x,	outer[x][upy].y,	outer[x][upy].z	);
+			glVertex3f( outer[x][y].x, 		outer[x][y].y, 		outer[x][y].z		);
+
+			// x+ face.
+			glVertex3f( inner[rightx][y].x, 	inner[rightx][y].y, 	inner[rightx][y].z		);
+			glVertex3f( outer[rightx][y].x,		outer[rightx][y].y, 	outer[rightx][y].z		);
+			glVertex3f( outer[rightx][upy].x,	outer[rightx][upy].y,	outer[rightx][upy].z	);
+			glVertex3f( inner[rightx][upy].x, inner[rightx][upy].y, inner[rightx][upy].z	);
+
+			// y face.
+			glVertex3f( inner[x][y].x, 			inner[x][y].y, 			inner[x][y].z				);
+			glVertex3f( outer[x][y].x,			outer[x][y].y, 			outer[x][y].z				);
+			glVertex3f( outer[rightx][y].x,	outer[rightx][y].y,	outer[rightx][y].z	);
+			glVertex3f( inner[rightx][y].x, inner[rightx][y].y, inner[rightx][y].z	);
+
+			// y+ face.
+			glVertex3f( inner[x][upy].x, 			inner[x][upy].y, 			inner[x][upy].z				);
+			glVertex3f( inner[rightx][upy].x,	inner[rightx][upy].y, inner[rightx][upy].z	);
+			glVertex3f( outer[rightx][upy].x,	outer[rightx][upy].y,	outer[rightx][upy].z	);
+			glVertex3f( outer[x][upy].x, 			outer[x][upy].y, 			outer[x][upy].z				);
 }
 void UndergroundDraw::computeCircles()
 {

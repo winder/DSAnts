@@ -22,7 +22,6 @@ int main()
 	Camera cam;
 	cam.init();
 
-	StaticDraw sd;
 	UndergroundDraw *ug = new UndergroundDraw();
 
 	//keep track of vertex ram usage
@@ -104,7 +103,6 @@ int main()
 		cam.rotate();
 		cam.move();
 
-		//sd.draw(ug, 0, 0, 0);
 		ug->draw();
 
 		deltaPointer = ry;
