@@ -8,6 +8,33 @@
 #include "UndergroundCamera.h"
 
 
+void drawXYZaxis()
+{
+	glBegin(GL_QUADS);
+
+	// X axis.
+	glColor3f(1,1,0);
+	glVertex3f(-200.0f, 0.1f, 0.1f);
+	glVertex3f(200.0f, 0.1f, 0.1f);
+	glVertex3f(200.0f, -0.1f, -0.1f);
+	glVertex3f(-200.0f, -0.1f, -0.1f);
+
+	// Y axis.
+	glColor3f(0,1,1);
+	glVertex3f(0.1f, -200.0f, 0.1f);
+	glVertex3f(0.1f, 200.0f, 0.1f);
+	glVertex3f(-0.1f, 200.0f, -0.1f);
+	glVertex3f(-0.1f, -200.0f, -0.1f);
+	glEnd();
+
+	// Y axis.
+	glColor3f(1,1,1);
+	glVertex3f(0.1f, 0.1f, -200.0f);
+	glVertex3f(0.1f, 0.1f, 200.0f);
+	glVertex3f(-0.1f, -0.1f, 200.0f);
+	glVertex3f(-0.1f, -0.1f, -200.0f);
+}
+
 int main()
 {	
 
@@ -25,6 +52,12 @@ int main()
 
 	cam.init();
 	ugCam.init();
+
+	glClearColor(0,0,0,0);
+	glClearDepth(0x7FFF);
+  glLight(0, RGB15(31,31,31) , 0, floattov10(-1.0), 0); // setup the light
+
+
 	UndergroundDraw *ug = new UndergroundDraw();
 
 	//keep track of vertex ram usage
@@ -85,34 +118,29 @@ int main()
 			oldx = touchXY.px;
 			oldy = touchXY.py;
 		}
-		// I had to swap ry and rx, not exactly sure why ....
-		cam.rotateXinc(ry * 0.31);
-		cam.rotateYinc(rx * 0.31);
-		rx = 0;
-		ry = 0;
 
 		//change ortho vs perspective
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		if(keysHeld() & KEY_B)
-			cam.Perspective();
-		else 
 			cam.Ortho();
+		else 
+			cam.Perspective();
 
 		//change cull mode
-//		if( held & KEY_A)
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE );
-//		else
-//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT );
+		if( held & KEY_A)
+			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | POLY_FORMAT_LIGHT0);
+			//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT );
+		else
+			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0);
+			//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE);
 
 		// Set the current matrix to be the model matrix
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
 		//handle camera
-		//cam.rotate();
-		//cam.move();
-		//cam.render();
+//		drawXYZaxis();
 		ugCam.render();
 		ug->draw();
 
@@ -131,25 +159,6 @@ int main()
 		printf("\nCamera location: (%f,", ugCam.getCamLocation().x);
 		printf("\n                  %f,", ugCam.getCamLocation().y);
 		printf("\n                  %f)", ugCam.getCamLocation().z);
-/*
-		printf("\nPlayer Position: %f", p1->getPosition());
-		printf("\n");
-		printf("\nPointer deltas:");
-		printf("\n  x-coord: %d", rx);
-		printf("\n  y-coord: %f", deltaPointer);
-
-		printf("\n");
-		printf("\nBall info:");
-		printf("\n  x-coord: %f", ball->getX());
-		printf("\n  y-coord: %f", ball->getY());
-		printf("\n  Direction vector:");
-		printf("\n    x-coord: %f", ball->velX());
-		printf("\n    y-coord: %f", ball->velY());
-*/
-//		printf("\n\nRam usage: Culling none" );
-//		printf("\nVertex ram: %i", vertex_count);
-//		printf("\nPolygon ram: %i", polygon_count);
-
 		// flush to the screen
 		glFlush(0);
 

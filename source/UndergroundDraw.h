@@ -20,10 +20,15 @@ class UndergroundDraw: public Underground
 
 	private:
 		bool cached;
-		const static int lats = 50;
-		const static int longs = 50;
-		VectorF inner[lats+1][longs+1];
-		VectorF outer[lats+1][longs+1];
+		const static float innerR = 2;
+		const static float outerR = 2.1;
+		const static int lats = 100;
+		const static int longs = 100;
+		VectorF inner[lats][longs];
+		VectorF outer[lats][longs];
+
+		// need some sort of storage to know where to map the patches to the sphere.
+		int centerPointX, centerPointY;
 };
 
 #endif

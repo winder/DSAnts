@@ -8,17 +8,22 @@
 class Underground
 {
 	public:
-		Underground(){ underground = new DirtDisk(); }
+		Underground(){	underground = new DirtDisk(); 
+										centerX=0;
+										slice=0;
+										centerY=50; // equator?
+									}
 		virtual ~Underground(){ delete underground; }
 		virtual void draw() = 0;
 
 		DirtDisk* getDisk()
 			{	return underground; }
 
-	private:
+//TODO: fix this, commented out so that UndergroundDraw could access these...?
+//	private:
 		std::vector<Ant> inhabitants;
 		DirtDisk *underground;
-		int centerX, centerY;
+		int centerX, centerY, slice;
 		float rotationX, rotationY;
 };
 

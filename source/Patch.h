@@ -21,12 +21,22 @@ class Patch
 		short getDepth(){ return depth; }
 
 		virtual int getType(){ return PATCH; }
+
+		// TODO: fix this stuff
+		void setColor(float r, float g, float b)
+			{ red=r; green=g; blue=b; }
+		float getR(){ return red; }
+		float getG(){ return green; }
+		float getB(){ return blue; }
+
 	private:
 		Patch *left;
 		Patch *right;
 		Patch *top;
 		Patch *bottom;
 		short slice, width, depth;
+
+		float red,green,blue;
 };
 
 #endif

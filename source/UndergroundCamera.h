@@ -16,10 +16,10 @@ class UndergroundCamera:public Camera
 	public:
 		UndergroundCamera():Camera(){ cached=false; radius=6; track=0; lat=0;}
 
-		void moveRight(){ track+=0.5; cached=false; }
-		void moveLeft(){ track-=0.5; cached=false; }
-		void moveUp(){	lat+=0.5; cached=false; }
-		void moveDown(){ lat-=0.5; cached=false; }
+		void moveRight(){ track+=2.5; cached=false; }
+		void moveLeft(){ track-=2.5; cached=false; }
+		void moveUp(){	lat+=2.5; cached=false; }
+		void moveDown(){ lat-=2.5; cached=false; }
 		void zoomIn(){ radius+=0.1; cached=false; }
 		void zoomOut(){ radius-=0.1; cached=false; }
 		

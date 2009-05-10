@@ -24,6 +24,9 @@ DirtDisk::DirtDisk()
 				dd[x][y][z]->setBottom( getBottom( dd[x][y][z]) );
 				dd[x][y][z]->setLeft( getLeft( dd[x][y][z]) );
 				dd[x][y][z]->setRight( getRight( dd[x][y][z]) );
+
+				// TODO: handle this differently.
+				dd[x][y][z]->setColor(0.5, 0.5, 0.5);
 			}
 }
 
