@@ -15,7 +15,15 @@ class UndergroundDrawGrid: public Underground
 		int getLeftIndex(){ return centerX - GRID_SIZE; }
 		int getRightIndex(){ return centerX + GRID_SIZE; }
 
+		// increment a scene shift some amount before scrolling the tiles.
+		virtual void incX(); 
+		virtual void decX(); 
+
+		virtual void incY(); 
+		virtual void decY(); 
+
 	private:
+		float smoothScrollX, smoothScrollY;
 		float boxSide;
 };
 

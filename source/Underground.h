@@ -18,11 +18,11 @@ class Underground
 
 		// reference to slice and centerX passed in.
 		// This is for increasing the index into the underground grid.
-		void incX(){ underground->moveRight(slice, centerX); }
-		void decX(){ underground->moveLeft(slice, centerX); }
+		virtual void incX(){ underground->moveRight(slice, centerX); }
+		virtual void decX(){ underground->moveLeft(slice, centerX); }
 
-		void incY(){ underground->moveUp(centerY); }
-		void decY(){ underground->moveDown(centerY); }
+		virtual void incY(){ underground->moveUp(centerY); }
+		virtual void decY(){ underground->moveDown(centerY); }
 		DirtDisk* getDisk()
 			{	return underground; }
 

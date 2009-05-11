@@ -2,7 +2,52 @@
 
 UndergroundDrawGrid::UndergroundDrawGrid()
 {
+	smoothScrollX = smoothScrollY = 0;
 	boxSide = 0.1;
+}
+
+
+// increment a scene shift some amount before scrolling the tiles.
+void UndergroundDrawGrid::incX()
+{
+	smoothScrollX+=0.01;	
+
+	if (smoothScrollX >= 0.2)
+	{
+		underground->moveRight(slice, centerX); 
+		smoothScrollX = 0;
+	}
+}
+void UndergroundDrawGrid::decX()
+{ 
+	smoothScrollX-=0.01;	
+	if (smoothScrollX <= -0.2)
+	{
+		underground->moveLeft(slice, centerX);
+		smoothScrollX = 0;
+	}
+}
+
+void UndergroundDrawGrid::incY()
+{ 
+	if (centerY == 0) return;
+	smoothScrollY+=0.01;
+	if (smoothScrollY >= 0.2)
+	{
+		underground->moveUp(centerY);
+		smoothScrollY = 0;
+	}
+}
+void UndergroundDrawGrid::decY()
+{ 
+	if (centerY == 44) return;
+
+	smoothScrollY-=0.01;
+	if (smoothScrollY <= -0.2)
+	{
+		underground->moveDown(centerY);
+		smoothScrollY = 0;
+	}
 }
 
 void UndergroundDrawGrid::draw()
@@ -39,7 +84,8 @@ void UndergroundDrawGrid::draw()
 		for (x=GRID_SIZE*-1; x < ((GRID_SIZE*2)+1); x+=1)
 		{
 			tp=tp->right;
-			drawBox(x*0.2, y*0.2, tp);
+			// "translate" by adding the smooth scroll factors.
+			drawBox(x*0.2+smoothScrollX, y*0.2-smoothScrollY, tp);
 		}
 		if (bottomLeft)
 			bottomLeft = bottomLeft->top;
