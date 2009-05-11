@@ -11,10 +11,11 @@
 #define PATCH_BARRIER 3
 #define PATCH_FOOD 4
 #define PATCH_EGG 5
+#define PATCH_TOP 6
 
 // Draw distance.
 #define UNDERGROUND_GRID_DRAW 7
-#define GRID_SIZE 7
+#define GRID_SIZE 5
 
 // there is a built in vector: "GLvector" but it uses ints...
 // I'm not that good yet.

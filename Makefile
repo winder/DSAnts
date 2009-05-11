@@ -20,7 +20,8 @@ BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
-
+GDBLINE := 0x0200215C
+MOUNTDIR := /media/disk
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -105,6 +106,14 @@ clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).nds $(TARGET).arm9 $(TARGET).ds.gba
 
+#---------------------------------------------------------------------------------
+findline:
+	arm-eabi-addr2line -e $(TARGET).elf $(GDBLINE)
+
+#---------------------------------------------------------------------------------
+copy:
+	cp $(TARGET).nds $(MOUNTDIR)/DSAnts
+	sudo umount $(MOUNTDIR)
 
 #---------------------------------------------------------------------------------
 else

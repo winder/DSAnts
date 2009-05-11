@@ -1,19 +1,19 @@
-#include "UndergroundDraw.h"
+#include "UndergroundDrawSphere.h"
 
-void UndergroundDraw::draw()
+void UndergroundDrawSphere::draw()
 {
+	int xindex;
+	int yindex;
+	int x, y, upy, rightx;
 
-	int left = centerX - GRID_SIZE;
-	int right = centerX + GRID_SIZE;
-	int top = centerY - GRID_SIZE;
-	int bottom = centerY + GRID_SIZE;
+	int left = getLeftIndex();
+//	int right = getRightIndex();
+	int top = centerY + GRID_SIZE;
+//	int bottom = centerY - GRID_SIZE;
 	int temp=0;
 
 
-	//if (left < 0) left+=lats;
-	//if (top < 0) top+=longs;
-	left = 90;
-	top = 20;
+	if (top < 0) top+=longs;
 
 	Patch* topLeft;
 	Patch* center;
@@ -25,19 +25,34 @@ void UndergroundDraw::draw()
 	
 	// Shift from the center to the topLeft.
 	// shift left a bunch of times.
-	for (temp=0; temp > left; temp--)
-		topLeft = topLeft->getLeft();
+	for (temp=0; (topLeft->left) && (temp > left); temp--)
+		topLeft = topLeft->left;
 
 	// shift up a bunch of times or until we hit the surface.
-	for (temp=0; (topLeft->getTop()) && (temp < top); temp++)
-		topLeft = topLeft->getTop();
+	for (temp=0; (topLeft->top) && (temp < top); temp++)
+		topLeft = topLeft->top;
 
 	tp=topLeft;
 
+/*
+	Patch *red = new Patch(1,1,1);
+	red->setColor(1, 0, 0);
 
-	int xindex;
-	int yindex;
-	int x, y, upy, rightx;
+	Patch *green = new Patch(1,1,1);
+	green->setColor(0,1,0);
+
+	Patch *blue = new Patch(1,1,1);
+	blue->setColor(0,0,1);
+
+	drawSegment(9, 9, 10, 10, red);
+	drawSegment(10, 10, 11, 11, green);
+	drawSegment(12, 12, 13, 13, blue);
+
+	for (x=0; x < lats; x+=2)
+		drawSegment(x, 20, x+1, 21, green);
+*/
+
+  // This appears to work properly.
 	glBegin(GL_QUADS);
 	// This needs to be made to work with the wrapped coordinates.
 	// i.e. x=40+++++ x=10
@@ -54,17 +69,17 @@ void UndergroundDraw::draw()
 						
 		
 			drawSegment(xindex, yindex, rightx, upy, tp);
-			tp=tp->getRight();				
+			tp=tp->right;				
 		}
-		if (topLeft->getBottom())
-			topLeft=topLeft->getBottom();
+		if (topLeft->bottom)
+			topLeft=topLeft->bottom;
 		tp=topLeft;
 	}
 
 	glEnd();
 }
 
-void UndergroundDraw::drawSegment(int y, int x, int upy, int rightx, Patch* p)
+void UndergroundDrawSphere::drawSegment(int x, int y, int rightx, int upy, Patch* p)
 {
 
 			if (x%3 == 0)
@@ -78,7 +93,7 @@ void UndergroundDraw::drawSegment(int y, int x, int upy, int rightx, Patch* p)
 			else
 			glColor3f(1,1,1);
 
-			glColor3f(p->getR(), p->getG(), p->getB());
+//			glColor3f(p->getR(), p->getG(), p->getB());
 
 			 // front face.
 			glVertex3f( inner[x][y].x, 			inner[x][y].y, 			inner[x][y].z							);
@@ -119,7 +134,7 @@ void UndergroundDraw::drawSegment(int y, int x, int upy, int rightx, Patch* p)
 
 
 // This function could probably utilize the 8-way symmetry that circles are said to have.
-void UndergroundDraw::computeCircles()
+void UndergroundDrawSphere::computeCircles()
 {
 		float increment = 360.0f/lats;
 		float yinc = 180.0f/longs;

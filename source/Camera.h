@@ -40,6 +40,7 @@ class Camera
 		void rotateZset(float z){ rotation.z += z; }
 
 		void render();
+		VectorF getCamLocation(){ return translation; }
 
 	private:
 		VectorF location;

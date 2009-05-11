@@ -12,7 +12,7 @@ void StaticDraw::draw(Underground *ug, short slice, short width, short height)
 
 	// Shift to the left a little so the screen will be centered.
 	for(x = 0; x < UNDERGROUND_GRID_DRAW; x++)
-		topLeft = topLeft->getLeft();
+		topLeft = topLeft->left;
 
 	t = topLeft;
 
@@ -23,11 +23,11 @@ void StaticDraw::draw(Underground *ug, short slice, short width, short height)
 		{
 //			Box(x, y, -5,  0.4, 0.4, 1);
 			Sphere(x, y, -5, 0.1);
-			t = t->getRight();
+			t = t->right;
 		}
 		if (topLeft)
 		{
-			topLeft = topLeft->getBottom();
+			topLeft = topLeft->bottom;
 			t = topLeft;
 		}
 	} while (y++, t && y < UNDERGROUND_GRID_DRAW);
@@ -75,7 +75,7 @@ void StaticDraw::Sphere(float x, float y, float z, float radius)
 	cache = true;
 
 	int x1, y1;
-	int upx, upy, rightx, righty, uprightx, uprighty;
+	int upy, rightx;
 	glBegin(GL_QUADS);
 	for(x1=0; x1 < lats; x1++)
 		for(y1=0; y1 < longs; y1++)

@@ -11,11 +11,18 @@ class Underground
 		Underground(){	underground = new DirtDisk(); 
 										centerX=0;
 										slice=0;
-										centerY=50; // equator?
+										centerY=0;
 									}
 		virtual ~Underground(){ delete underground; }
-		virtual void draw() = 0;
+//		virtual void draw() = 0;
 
+		// reference to slice and centerX passed in.
+		// This is for increasing the index into the underground grid.
+		void incX(){ underground->moveRight(slice, centerX); }
+		void decX(){ underground->moveLeft(slice, centerX); }
+
+		void incY(){ underground->moveUp(centerY); }
+		void decY(){ underground->moveDown(centerY); }
 		DirtDisk* getDisk()
 			{	return underground; }
 
@@ -23,7 +30,7 @@ class Underground
 //	private:
 		std::vector<Ant> inhabitants;
 		DirtDisk *underground;
-		int centerX, centerY, slice;
+		short centerX, centerY, slice;
 		float rotationX, rotationY;
 };
 

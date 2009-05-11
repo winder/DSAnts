@@ -2,10 +2,12 @@
 #include <nds.h>
 
 #include <stdio.h>
-#include "UndergroundDraw.h"
+#include "UndergroundDrawSphere.h"
+#include "UndergroundDrawGrid.h"
 #include "StaticDraw.h"
 #include "Camera.h"
 #include "UndergroundCamera.h"
+#include "memoryStats.h"
 
 
 void drawXYZaxis()
@@ -14,25 +16,25 @@ void drawXYZaxis()
 
 	// X axis.
 	glColor3f(1,1,0);
-	glVertex3f(-200.0f, 0.1f, 0.1f);
-	glVertex3f(200.0f, 0.1f, 0.1f);
-	glVertex3f(200.0f, -0.1f, -0.1f);
-	glVertex3f(-200.0f, -0.1f, -0.1f);
+	glVertex3f(-20.0f, 0.01f, 0.01f);
+	glVertex3f(20.0f, 0.01f, 0.01f);
+	glVertex3f(20.0f, -0.01f, -0.01f);
+	glVertex3f(-20.0f, -0.01f, -0.01f);
 
 	// Y axis.
 	glColor3f(0,1,1);
-	glVertex3f(0.1f, -200.0f, 0.1f);
-	glVertex3f(0.1f, 200.0f, 0.1f);
-	glVertex3f(-0.1f, 200.0f, -0.1f);
-	glVertex3f(-0.1f, -200.0f, -0.1f);
+	glVertex3f(0.01f, -20.0f, 0.01f);
+	glVertex3f(0.01f, 20.0f, 0.01f);
+	glVertex3f(-0.01f, 20.0f, -0.01f);
+	glVertex3f(-0.01f, -20.0f, -0.01f);
 	glEnd();
 
 	// Y axis.
 	glColor3f(1,1,1);
-	glVertex3f(0.1f, 0.1f, -200.0f);
-	glVertex3f(0.1f, 0.1f, 200.0f);
-	glVertex3f(-0.1f, -0.1f, 200.0f);
-	glVertex3f(-0.1f, -0.1f, -200.0f);
+	glVertex3f(0.01f, 0.01f, -20.0f);
+	glVertex3f(0.01f, 0.01f, 20.0f);
+	glVertex3f(-0.01f, -0.01f, 20.0f);
+	glVertex3f(-0.01f, -0.1f, -20.0f);
 }
 
 int main()
@@ -46,6 +48,9 @@ int main()
 	//setup the sub screen for basic printing
 	consoleDemoInit();
 
+	// Exception handler.
+	defaultExceptionHandler();
+
 	// Camera class..
 	Camera cam;
 	UndergroundCamera ugCam;
@@ -58,7 +63,8 @@ int main()
   glLight(0, RGB15(31,31,31) , 0, floattov10(-1.0), 0); // setup the light
 
 
-	UndergroundDraw *ug = new UndergroundDraw();
+	//UndergroundDrawSphere *ug = new UndergroundDrawSphere();
+	UndergroundDrawGrid *ug = new UndergroundDrawGrid();
 
 	//keep track of vertex ram usage
 	int polygon_count;
@@ -88,13 +94,21 @@ int main()
 		if( held & KEY_RIGHT) cam.translateXinc(-0.1);
 		if( held & KEY_UP) cam.translateYinc(0.1);
 		if( held & KEY_DOWN) cam.translateYinc(-0.1);
+*/
 		if( held & KEY_R) cam.translateZinc(0.1);
 		if( held & KEY_L) cam.translateZinc(-0.1);
-*/
+
+/* // CAMERA control with D-Pad
 		if( held & KEY_LEFT) ugCam.moveLeft();
 		if( held & KEY_RIGHT) ugCam.moveRight();
 		if( held & KEY_UP) ugCam.moveUp();
 		if( held & KEY_DOWN) ugCam.moveDown();
+*/
+
+		if( held & KEY_LEFT) ug->decX();
+		if( held & KEY_RIGHT) ug->incX();
+		if( held & KEY_UP) ug->incY();
+		if( held & KEY_DOWN) ug->decY();
 
 		if( held & KEY_L) ugCam.zoomIn();
 		if( held & KEY_R) ugCam.zoomOut();
@@ -141,7 +155,10 @@ int main()
 
 		//handle camera
 //		drawXYZaxis();
-		ugCam.render();
+//		ugCam.render();
+		cam.rotate();
+		cam.move();
+//		cam.render();
 		ug->draw();
 
 		deltaPointer = ry;
@@ -156,9 +173,19 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
-		printf("\nCamera location: (%f,", ugCam.getCamLocation().x);
-		printf("\n                  %f,", ugCam.getCamLocation().y);
-		printf("\n                  %f)", ugCam.getCamLocation().z);
+//		printf("\nCamera location: (%f,", ugCam.getCamLocation().x);
+//		printf("\n                  %f,", ugCam.getCamLocation().y);
+//		printf("\n                  %f)", ugCam.getCamLocation().z);
+		printf("\nGrid slice/X/Y = %i/%i/%i", ug->slice, ug->centerX, ug->centerY);
+		printf("\nCamera location: (%f,", cam.getCamLocation().x);
+		printf("\n                  %f,", cam.getCamLocation().y);
+		printf("\n                  %f)", cam.getCamLocation().z);
+
+		printf("\n\nMemory Statistics:");
+		printf("\n\t\tTotal mem: %i", getMemUsed() + getMemFree());
+		printf("\n\t\tMem Used: %i", getMemUsed());
+		printf("\n\t\tMem Free: %i", getMemFree());
+
 		// flush to the screen
 		glFlush(0);
 

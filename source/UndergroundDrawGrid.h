@@ -1,0 +1,22 @@
+#ifndef UNDERGROUNDDRAWGRID_H
+#define UNDERGROUNDDRAWGRID_H
+
+#include "Underground.h"
+#include "StaticDraw.h"
+#include "Patch.h"
+
+class UndergroundDrawGrid: public Underground
+{
+	public:
+		UndergroundDrawGrid();
+		void draw();
+		void drawBox(float x, float y, Patch *p);
+
+		int getLeftIndex(){ return centerX - GRID_SIZE; }
+		int getRightIndex(){ return centerX + GRID_SIZE; }
+
+	private:
+		float boxSide;
+};
+
+#endif

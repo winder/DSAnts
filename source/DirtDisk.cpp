@@ -9,10 +9,15 @@ DirtDisk::DirtDisk()
 		for (y=0; y < WIDTH; y++)
 			for (z=0; z < DEPTH; z++)
 			{
+				dd[x][y][z] = new Patch();
 			if (z == DEPTH-1)
-				dd[x][y][z] = new Barrier(x,y,z);
+				dd[x][y][z]->TYPE = PATCH_BARRIER;
+			else if ( z == 0 )
+				dd[x][y][z]->TYPE = PATCH_TOP;
+			else if (y%2 == 1)
+				dd[x][y][z]->TYPE = PATCH_EMPTY;
 			else
-					dd[x][y][z] = new Dirt(x,y,z);
+				dd[x][y][z]->TYPE = PATCH_DIRT;
 			}
 
 	// Connect the objects.
@@ -20,80 +25,102 @@ DirtDisk::DirtDisk()
 		for (y=0; y < WIDTH; y++)
 			for (z=0; z < DEPTH; z++)
 			{
-				dd[x][y][z]->setTop( getTop( dd[x][y][z]) );
-				dd[x][y][z]->setBottom( getBottom( dd[x][y][z]) );
-				dd[x][y][z]->setLeft( getLeft( dd[x][y][z]) );
-				dd[x][y][z]->setRight( getRight( dd[x][y][z]) );
-
-				// TODO: handle this differently.
-				dd[x][y][z]->setColor(0.5, 0.5, 0.5);
+				dd[x][y][z]->top = getTop( dd[x][y][z] ,x,y,z);
+				dd[x][y][z]->bottom = getBottom( dd[x][y][z] ,x,y,z);
+				dd[x][y][z]->left = getLeft( dd[x][y][z] ,x,y,z);
+				dd[x][y][z]->right = getRight( dd[x][y][z] ,x,y,z);
 			}
 }
 
-Patch* DirtDisk::getRight(Patch* p)
+void DirtDisk::moveRight(short &slice, short &x)
 {
-	short s,w;
-
-
 	// Slice / Width roll-over
-	if ( p->getWidth() != WIDTH - 1 )
+	if ( x != WIDTH - 1 )
 	{
-		s = p->getSlice();
-		w = p->getWidth() + 1;
+//		slice = slice;
+		x = x + 1;
 	}
 	else
 	{
-		w = 0;
+		x = 0;
 		// Slice roll-over
-		if ( p->getSlice() != SLICES - 1 )
-			s = p->getSlice() + 1;
+		if ( slice != SLICES - 1 )
+			slice = slice + 1;
 		else
-			s = 0;
+			slice = 0;
 	}
-
-	// Depth max/min doesn't change moving right/left
-	return dd[s][w][ p->getDepth() ];
 }
 
-
-Patch* DirtDisk::getLeft(Patch* p)
+void DirtDisk::moveLeft(short &slice, short &x)
 {
-	short s,w;
-
-
 	// Slice / Width roll-over
-	if ( p->getWidth() >= 1 )
+	if ( x >= 1 )
 	{
-		s = p->getSlice();
-		w = p->getWidth() - 1;
+		slice = slice;
+		x = x - 1;
 	}
 	else
 	{
-		w = WIDTH - 1;
+		x = WIDTH - 1;
 		// Slice roll-over
-		if ( p->getSlice() != 0 )
-			s = p->getSlice() - 1;
+		if ( slice != 0 )
+			slice = slice - 1;
 		else
-			s = SLICES - 1;
+			slice = SLICES - 1;
 	}
+}
+
+bool DirtDisk::moveUp(short &y)
+{
+	// SLICE and WIDTH don't change.
+	if ( y == 0 )
+		return false;
+	y--;
+	return true;
+}
+bool DirtDisk::moveDown(short &y)
+{
+	// SLICE and WIDTH don't change.
+	if ( y == DEPTH - 1 )
+		return false;
+	y++;
+	return true;
+}
+Patch* DirtDisk::getRight(Patch* p, int x, int y, int z)
+{
+	short s;
+	short w;
+	s = x;
+	w = y;
+
+	moveRight(s, w);
+	// Depth max/min doesn't change moving right/left
+	return dd[s][w][ z ];
+}
+
+
+Patch* DirtDisk::getLeft(Patch* p, int x, int y, int z)
+{
+	short s, w;
+	s = x;
+	w = y;
+	moveLeft(s, w);
 
 	// Depth max/min doesn't change moving right/left
-
-	return dd[s][w][ p->getDepth() ];
+	return dd[s][w][ z ];
 }
-Patch* DirtDisk::getTop(Patch* p)
+Patch* DirtDisk::getTop(Patch* p, int x, int y, int z)
 {
-	// SLICE and WIDTH don't change.
-	if ( p->getDepth() == 0 )
-		return '\0';
+	short d = z;
+	if (!moveUp(d)) return '\0';
 
-	return dd[ p->getSlice() ][ p->getWidth() ][ p->getDepth() - 1 ];
+	return dd[ x ][ y ][ d ];
 }
-Patch* DirtDisk::getBottom(Patch* p)
+Patch* DirtDisk::getBottom(Patch* p, int x, int y, int z)
 {
-	// SLICE and WIDTH don't change.
-	if ( p->getDepth() == DEPTH - 1 )
-		return '\0';
+	short d = z;
+	if (!moveDown(d)) return '\0';
 
-	return dd[ p->getSlice() ][ p->getWidth() ][ p->getDepth() + 1 ];
+
+	return dd[ x ][ y ][ d ];
 }
