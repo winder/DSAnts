@@ -19,10 +19,11 @@ class DirtDisk
 		bool moveUp(short &y);
 		bool moveDown(short &y);
 
-		Patch* getRight(Patch* p, int x, int y, int z);
-		Patch* getLeft(Patch* p, int x, int y, int z);
-		Patch* getTop(Patch* p, int x, int y, int z);
-		Patch* getBottom(Patch* p, int x, int y, int z);
+		Patch* getRight(int x, int y, int z);
+		Patch* getLeft(int x, int y, int z);
+		Patch* getTop(int x, int y, int z);
+		Patch* getBottom(int x, int y, int z);
+
 	private:
 		Patch* dd[SLICES][WIDTH][DEPTH];
 };

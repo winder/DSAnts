@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "UndergroundCamera.h"
 #include "memoryStats.h"
+#include "cpu_usage.h"
+
 
 
 void drawXYZaxis()
@@ -46,6 +48,7 @@ int main()
 	lcdMainOnTop();
 
 	//setup the sub screen for basic printing
+	// TODO: this is said to be very heavy weight for basic console needs.
 	consoleDemoInit();
 
 	// Exception handler.
@@ -60,12 +63,14 @@ int main()
 
 	glClearColor(0,0,0,0);
 	glClearDepth(0x7FFF);
-  glLight(0, RGB15(31,31,31) , 0, floattov10(-1.0), 0); // setup the light
+  glLight(0, RGB15(31,31,31) , floattov10(-0.5), floattov10(-0.5), floattov10(-0.5)); // setup the light
+	glSetOutlineColor(0,RGB15(31,31,31));
 
 
 	//UndergroundDrawSphere *ug = new UndergroundDrawSphere();
 	UndergroundDrawGrid *ug = new UndergroundDrawGrid();
 
+	u32 cpu_percent = 0;
 	//keep track of vertex ram usage
 	int polygon_count;
 	int vertex_count;
@@ -133,6 +138,10 @@ int main()
 			oldy = touchXY.py;
 		}
 
+	glClearColor(0,0,0,0);
+	glClearDepth(0x7FFF);
+  glLight(0, RGB15(31,31,31) , floattov10(rx), floattov10(ry), floattov10(rx)); // setup the light
+	glSetOutlineColor(0,RGB15(31,31,31));
 		//change ortho vs perspective
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -143,10 +152,12 @@ int main()
 
 		//change cull mode
 		if( held & KEY_A)
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | POLY_FORMAT_LIGHT0);
+			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | POLY_FORMAT_LIGHT0 | POLY_ID(1));
+//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | POLY_FORMAT_LIGHT0);
 			//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT );
 		else
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0);
+			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0 | POLY_ID(1));
+//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0);
 			//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE);
 
 		// Set the current matrix to be the model matrix
@@ -159,7 +170,9 @@ int main()
 		cam.rotate();
 		cam.move();
 //		cam.render();
+		CPU_StartTest(0,0);
 		ug->draw();
+		cpu_percent = CPU_EndTest();
 
 		deltaPointer = ry;
 
@@ -185,6 +198,7 @@ int main()
 		printf("\n\t\tTotal mem: %i", getMemUsed() + getMemFree());
 		printf("\n\t\tMem Used: %i", getMemUsed());
 		printf("\n\t\tMem Free: %i", getMemFree());
+		printf("\n\nCPU Percent for drawing: %i%", cpu_percent);
 
 		// flush to the screen
 		glFlush(0);

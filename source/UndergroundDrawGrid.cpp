@@ -18,6 +18,7 @@ void UndergroundDrawGrid::incX()
 		smoothScrollX = 0;
 	}
 }
+
 void UndergroundDrawGrid::decX()
 { 
 	smoothScrollX-=0.01;	
@@ -38,6 +39,7 @@ void UndergroundDrawGrid::incY()
 		smoothScrollY = 0;
 	}
 }
+
 void UndergroundDrawGrid::decY()
 { 
 	if (centerY == 44) return;
@@ -97,7 +99,8 @@ void UndergroundDrawGrid::drawBox(float x, float y, Patch *p)
 // float boxSide = 0.1;
 	float s = boxSide;
 	glBegin(GL_QUADS);
-
+/*
+// glColor can't work with glNormal.
 	if (p->TYPE == PATCH_DIRT)
 	glColor3f(1,1,1);
 	else if (p->TYPE == PATCH_EMPTY)
@@ -106,13 +109,20 @@ void UndergroundDrawGrid::drawBox(float x, float y, Patch *p)
 	glColor3f(1,1,0);
 	else if (p->TYPE == PATCH_TOP)
 	glColor3f(0,0,1);
+*/
+	glMaterialf(GL_DIFFUSE, RGB15(31, 31, 31) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
+	glMaterialf(GL_AMBIENT, RGB15(4, 4, 5));
+	glMaterialf(GL_SPECULAR, RGB15(0, 0, 0)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
+	glMaterialf(GL_EMISSION, RGB15(0, 0, 0));
 
 	//z face
+	glNormal3f(0,0,-1);
 	glVertex3f(x	,y	,0);
 	glVertex3f(x+s,y	,0);
 	glVertex3f(x+s,y+s,0);
 	glVertex3f(x	,y+s,0);
 
+	glNormal3f(0,0,1);
 	//z+ face
 	glVertex3f(x	,y	,s);
 	glVertex3f(x	,y+s,s);
@@ -121,24 +131,28 @@ void UndergroundDrawGrid::drawBox(float x, float y, Patch *p)
 
 	
 	//x  face
+	glNormal3f(1,0,0);
 	glVertex3f(x,y		,0);
 	glVertex3f(x,y+s	,0);
 	glVertex3f(x,y+s	,s);
 	glVertex3f(x,y		,s);
 
 	//x + width face
+	glNormal3f(-1,0,0);
 	glVertex3f(x+s,y 	,0);
 	glVertex3f(x+s,y 	,s);
 	glVertex3f(x+s,y+s,s);
 	glVertex3f(x+s,y+s,0);
 
 	//y  face
+	glNormal3f(0,-1,0);
 	glVertex3f(x 	,y,0);
 	glVertex3f(x 	,y,s);
 	glVertex3f(x+s,y,s);
 	glVertex3f(x+s,y,0);
 
 	//y  + height face
+	glNormal3f(0,1,0);
 	glVertex3f(x 	,y+s,0);
 	glVertex3f(x+s,y+s,0);
 	glVertex3f(x+s,y+s,s);

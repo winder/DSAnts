@@ -25,10 +25,10 @@ DirtDisk::DirtDisk()
 		for (y=0; y < WIDTH; y++)
 			for (z=0; z < DEPTH; z++)
 			{
-				dd[x][y][z]->top = getTop( dd[x][y][z] ,x,y,z);
-				dd[x][y][z]->bottom = getBottom( dd[x][y][z] ,x,y,z);
-				dd[x][y][z]->left = getLeft( dd[x][y][z] ,x,y,z);
-				dd[x][y][z]->right = getRight( dd[x][y][z] ,x,y,z);
+				dd[x][y][z]->top = getTop(x,y,z);
+				dd[x][y][z]->bottom = getBottom(x,y,z);
+				dd[x][y][z]->left = getLeft(x,y,z);
+				dd[x][y][z]->right = getRight(x,y,z);
 			}
 }
 
@@ -78,6 +78,7 @@ bool DirtDisk::moveUp(short &y)
 	y--;
 	return true;
 }
+
 bool DirtDisk::moveDown(short &y)
 {
 	// SLICE and WIDTH don't change.
@@ -86,7 +87,9 @@ bool DirtDisk::moveDown(short &y)
 	y++;
 	return true;
 }
-Patch* DirtDisk::getRight(Patch* p, int x, int y, int z)
+
+// use the reference methods above to take a pointer and get the one left to it.
+Patch* DirtDisk::getRight(int x, int y, int z)
 {
 	short s;
 	short w;
@@ -98,8 +101,7 @@ Patch* DirtDisk::getRight(Patch* p, int x, int y, int z)
 	return dd[s][w][ z ];
 }
 
-
-Patch* DirtDisk::getLeft(Patch* p, int x, int y, int z)
+Patch* DirtDisk::getLeft(int x, int y, int z)
 {
 	short s, w;
 	s = x;
@@ -109,14 +111,14 @@ Patch* DirtDisk::getLeft(Patch* p, int x, int y, int z)
 	// Depth max/min doesn't change moving right/left
 	return dd[s][w][ z ];
 }
-Patch* DirtDisk::getTop(Patch* p, int x, int y, int z)
+Patch* DirtDisk::getTop(int x, int y, int z)
 {
 	short d = z;
 	if (!moveUp(d)) return '\0';
 
 	return dd[ x ][ y ][ d ];
 }
-Patch* DirtDisk::getBottom(Patch* p, int x, int y, int z)
+Patch* DirtDisk::getBottom(int x, int y, int z)
 {
 	short d = z;
 	if (!moveDown(d)) return '\0';
