@@ -9,6 +9,7 @@
 #include "UndergroundCamera.h"
 #include "memoryStats.h"
 #include "cpu_usage.h"
+#include "Lighting.h"
 
 
 
@@ -60,10 +61,30 @@ int main()
 
 	cam.init();
 	ugCam.init();
+	// Lights are as follows:
+	// light0 = left->right, bottom->top, rear->front.
+	// light1 = right->left, top->bottom, front->rear.
+	Lighting light0;
+	light0.setLight(0);
+	// From cam perspective lights up: RIGHT, TOP, FRONT planes
+	light0.move(0.7f, 0.5f, 0.8f);
+	light0.color(31, 1, 1);
+	light0.color(31, 31, 31);
+	light0.enable();
 
+	Lighting light1;
+	light1.setLight(1);
+	// From cam perspective lights up: LEFT, BOTTOM, REAR planes
+	light1.move(-0.7f, -0.2f, 0.2f);
+	light1.color(1, 1, 31);
+	light1.color(31, 31, 31);
+	light1.enable();
 	glClearColor(0,0,0,0);
 	glClearDepth(0x7FFF);
-  glLight(0, RGB15(31,31,31) , floattov10(-0.5), floattov10(-0.5), floattov10(-0.5)); // setup the light
+
+	light0.set();
+	light1.set();
+
 	glSetOutlineColor(0,RGB15(31,31,31));
 
 
@@ -76,7 +97,8 @@ int main()
 	int vertex_count;
 
 	//object 
-	int rx = 0, ry = 0;
+	// v10, this seems to work great but could have issues with resolution.
+	v10 rx = 0, ry = 0;
 	int oldx = 0, oldy = 0;
 
 	float deltaPointer = 0;
@@ -140,7 +162,10 @@ int main()
 
 	glClearColor(0,0,0,0);
 	glClearDepth(0x7FFF);
-  glLight(0, RGB15(31,31,31) , floattov10(rx), floattov10(ry), floattov10(rx)); // setup the light
+//	light0.move(rx, ry, (v10)0.5);
+//	light1.move(rx*-1, ry*-1, (v10)-0.5);
+	light0.set();
+	light1.set();
 	glSetOutlineColor(0,RGB15(31,31,31));
 		//change ortho vs perspective
 		glMatrixMode(GL_PROJECTION);
@@ -152,13 +177,9 @@ int main()
 
 		//change cull mode
 		if( held & KEY_A)
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | POLY_FORMAT_LIGHT0 | POLY_ID(1));
-//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | POLY_FORMAT_LIGHT0);
-			//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT );
+			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 		else
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0 | POLY_ID(1));
-//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0);
-			//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE);
+			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 
 		// Set the current matrix to be the model matrix
 		glMatrixMode(GL_MODELVIEW);

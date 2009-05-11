@@ -99,31 +99,26 @@ void UndergroundDrawGrid::drawBox(float x, float y, Patch *p)
 // float boxSide = 0.1;
 	float s = boxSide;
 	glBegin(GL_QUADS);
-/*
-// glColor can't work with glNormal.
+
+// glColor can't work with glNormal, so use materials.
 	if (p->TYPE == PATCH_DIRT)
-	glColor3f(1,1,1);
+	material(31,31,31);
 	else if (p->TYPE == PATCH_EMPTY)
-	glColor3f(0.5,0.5,0.5);
+	material(15,15,15);
 	else if (p->TYPE == PATCH_BARRIER)
-	glColor3f(1,1,0);
+	material(30,30,0);
 	else if (p->TYPE == PATCH_TOP)
-	glColor3f(0,0,1);
-*/
-	glMaterialf(GL_DIFFUSE, RGB15(31, 31, 31) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
-	glMaterialf(GL_AMBIENT, RGB15(4, 4, 5));
-	glMaterialf(GL_SPECULAR, RGB15(0, 0, 0)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
-	glMaterialf(GL_EMISSION, RGB15(0, 0, 0));
+	material(1,1,30);
 
 	//z face
-	glNormal3f(0,0,-1);
+	glNormal3f(0,0,1);
 	glVertex3f(x	,y	,0);
 	glVertex3f(x+s,y	,0);
 	glVertex3f(x+s,y+s,0);
 	glVertex3f(x	,y+s,0);
 
-	glNormal3f(0,0,1);
 	//z+ face
+	glNormal3f(0,0,-1);
 	glVertex3f(x	,y	,s);
 	glVertex3f(x	,y+s,s);
 	glVertex3f(x+s,y+s,s);
@@ -159,4 +154,13 @@ void UndergroundDrawGrid::drawBox(float x, float y, Patch *p)
 	glVertex3f(x 	,y+s,s);
 
 	glEnd();
+}
+
+void UndergroundDrawGrid::material(int r, int g, int b)
+{
+// This seems to work alright.
+	glMaterialf(GL_DIFFUSE, RGB15(r, g, b) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
+	glMaterialf(GL_AMBIENT, RGB15(4, 4, 5));
+	glMaterialf(GL_SPECULAR, RGB15(0, 0, 0)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
+	glMaterialf(GL_EMISSION, RGB15(0, 0, 0));
 }

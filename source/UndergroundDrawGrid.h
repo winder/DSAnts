@@ -23,6 +23,8 @@ class UndergroundDrawGrid: public Underground
 		virtual void decY(); 
 
 	private:
+		void material(int r, int g, int b);
+
 		float smoothScrollX, smoothScrollY;
 		float boxSide;
 };
