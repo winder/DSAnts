@@ -11,6 +11,14 @@ UndergroundDrawGrid::UndergroundDrawGrid()
 // increment a scene shift some amount before scrolling the tiles.
 void UndergroundDrawGrid::incX()
 {
+/*
+	smoothScrollX++;
+	if (smoothScrollX >= 20)
+	{
+		underground->moveRight(slice, centerX);
+		smoothScrollX = 0;
+	}
+*/
 	smoothScrollX+=0.01;	
 
 	if (smoothScrollX >= 0.2)
@@ -18,32 +26,69 @@ void UndergroundDrawGrid::incX()
 		underground->moveRight(slice, centerX); 
 		smoothScrollX = 0;
 	}
+
 }
 
 void UndergroundDrawGrid::decX()
 { 
+/*
+	smoothScrollX--;
+	if (smoothScrollX <= -20)
+	{
+		underground->moveLeft(slice, centerX);
+		smoothScrollX = 0;
+	}
+*/
+
 	smoothScrollX-=0.01;	
 	if (smoothScrollX <= -0.2)
 	{
 		underground->moveLeft(slice, centerX);
 		smoothScrollX = 0;
 	}
+
 }
 
+// When drawing a grid, we don't want to pan too shallow.
 void UndergroundDrawGrid::incY()
 { 
+/*
+//	if (centerY <= 7) return;
 	if (centerY == 0) return;
+
+	smoothScrollY++;
+	if (smoothScrollY >= 20)
+	{
+		underground->moveUp(centerY);
+		smoothScrollY = 0;
+	}
+*/
+	if (centerY <= 7) return;
 	smoothScrollY+=0.01;
 	if (smoothScrollY >= 0.2)
 	{
 		underground->moveUp(centerY);
 		smoothScrollY = 0;
 	}
+
 }
 
 void UndergroundDrawGrid::decY()
 { 
-	if (centerY == 44) return;
+/*
+	// The bottom should show up at the bottom of the map.
+	//		-1 since it is zero based.
+	if (centerY == DEPTH-GRID_SIZE-1) return;
+
+	smoothScrollY--;
+	if (smoothScrollY <= -20)
+	{
+		underground->moveDown(centerY);
+		smoothScrollY = 0;
+	}
+*/
+
+	if (centerY == DEPTH-GRID_SIZE-1) return;
 
 	smoothScrollY-=0.01;
 	if (smoothScrollY <= -0.2)
@@ -51,13 +96,15 @@ void UndergroundDrawGrid::decY()
 		underground->moveDown(centerY);
 		smoothScrollY = 0;
 	}
+
 }
 
 
 // WARNING: COPY / PASTE / TWEAK of UndergroundDrawGrid::draw()
 bool UndergroundDrawGrid::pickPoint(int x, int y, Camera &cam)
 {
-glPushMatrix();
+  // This flag makes it so "startCheck" and "endCheck" are called
+  // before and after every polygon is drawn
 	pickMode = true;
 
 
@@ -70,6 +117,10 @@ glPushMatrix();
 		cam.Perspective();
 		glMatrixMode(GL_MODELVIEW);
 
+		// where do I setup the camera??
+//		glLoadIdentity();
+//		cam.render();
+
 	if (picked)
 		picked->picked = false;
 
@@ -81,7 +132,6 @@ glPushMatrix();
 
 	pickMode = false;
 
-glPopMatrix(1);
 	return endCheck();
 }
 Patch* UndergroundDrawGrid::draw()
@@ -100,13 +150,16 @@ Patch* UndergroundDrawGrid::draw()
 		bottomLeft = bottomLeft->left;
 
 	// shift up a bunch of times or until we hit the surface.
-	for (temp=GRID_SIZE; ((bottomLeft) && (bottomLeft->bottom) && (temp < GRID_SIZE)); temp++)
+//	for (temp=GRID_SIZE; ((bottomLeft) && (bottomLeft->bottom) && (temp < GRID_SIZE)); temp++)
+	for (temp=0; ((bottomLeft) && (bottomLeft->bottom) && (temp < GRID_SIZE)); temp++)
 		bottomLeft = bottomLeft->bottom;
 
 	tp=bottomLeft;
 
 	// Setup for drawing.
 	glBegin(GL_QUADS);
+
+	float increment = 1.0f / 20.0f;
 
 	for (y=GRID_SIZE*-1; (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
 	{
@@ -117,7 +170,10 @@ Patch* UndergroundDrawGrid::draw()
 			if (pickMode)
 				startCheck();
 			// scale by *0.2 then "translate" by adding the smooth scroll factors.
+			// I really have no idea why I was scaling this thing, but I think this is screwing
+			// up tile alignment.
 			drawPatch(x*0.2-smoothScrollX, y*0.2-smoothScrollY, tp);
+//			drawPatch(x-(increment*smoothScrollX), y-(increment*smoothScrollY), tp);
 			if (pickMode)
 			{
 				if (endCheck())
@@ -140,12 +196,15 @@ Patch* UndergroundDrawGrid::draw()
 
 void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 {
-// float boxSide = 0.1;
 	float s = boxSide;
+	// make it take up all the space.
+	s = 0.2;
 
+	// WARNING: this optomization makes it so picking only works from one side of the X/Y plane.
+	// (when cam location z > 0)
 	if (pickMode)
 	{
-		drawRect(x, y, 0, s, s);
+		drawRect(x, y, s, s, s);
 		// if in pick mode, draw a simple rectangle simply for identifying the location.
 		return;
 	}
@@ -156,13 +215,27 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 	}
 // glColor can't work with glNormal, so use materials.
 	else if (p->TYPE == PATCH_DIRT)
-	{
-		material(31,31,31);
+	{ // brown.
+		material(19,10,5);
 		// Draw filled dirt.
+
+		// if it is completely enclosed.... only draw the front.
+		// THIS FIXES THE WEIRD BOXY PROBLEM, WHEN I IMPLEMENT THE EMPTY
+		// CODE STUFF I WILL BE ABLE TO ONLY DRAW THE RECTANGLE ALL THE TIME
+		// WHICH WILL FIX THE GRAPHICAL ERROR ALL THE TIME.
+		if (p->top->TYPE == PATCH_DIRT)
+		if (p->left->TYPE == PATCH_DIRT)
+		if (p->right->TYPE == PATCH_DIRT)
+		if (p->bottom->TYPE == PATCH_DIRT)
+		{
+			// this assumes I'm going to be looking at it from the wrong side...
+			drawRect(x, y, s, s, s);
+			return;
+		}
 	}
 	else if (p->TYPE == PATCH_EMPTY)
 	{
-		material(15,15,15);
+		material(5,5,5);
 		// Check top, bottom, left, right and draw
 		// empty patch with paths that can link to
 		// whichever are missing, this will either be a bunch of call lists
@@ -182,6 +255,12 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 		//     EMPTY_LEFT_UP_DOWN
 		//     EMPTY_UP_RIGHT_DOWN
 		//     EMPTY_UP_RIGHT_LEFT_DOWN
+
+		// this rectangle is assuming I will go with the looking-at-wrong-side approach.
+		drawRect(x, y, 0, s, s);
+
+		// special drawing for this now....
+		return;
 	}
 	else if (p->TYPE == PATCH_BARRIER)
 	{
@@ -194,7 +273,20 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 	else if (p->TYPE == PATCH_TOP)
 	{
 		material(1,1,30);
-		// Draw the sky, this will probably be some sort of tile that keeps going up.
+		// Draw the sky, this will probably be some sort flat texture that gets tiled and keeps going up.
+
+		
+		// this rectangle is assuming I will go with the looking-at-wrong-side approach.
+
+		material(1,31,10); // Greenish
+		drawRect(x, y, 0, s, s);
+		material(5,5,28); // Bluish
+//		drawRect(x, y+s, 0, s, 1);
+//		drawRect(x, y+(s*2), 0, s, 1);
+//		drawRect(x, y+(s*3), 0, s, 1);
+
+		// special drawing for this now...
+		return;
 	}
 	else
 	{
@@ -264,10 +356,11 @@ void UndergroundDrawGrid::material(int r, int g, int b)
 
 void UndergroundDrawGrid::drawRect(float x, float y, float z, float width, float height)
 {
+	glNormal3f(0,0,-1);
 	glVertex3f(x	,y	,z);
-	glVertex3f(x+width,y	,z);
-	glVertex3f(x+width,y+height,z);
 	glVertex3f(x	,y+height,z);
+	glVertex3f(x+width,y+height,z);
+	glVertex3f(x+width,y	,z);
 }
 
 void UndergroundDrawGrid::startCheck()

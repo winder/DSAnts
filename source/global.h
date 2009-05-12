@@ -15,7 +15,7 @@
 
 // Draw distance.
 #define UNDERGROUND_GRID_DRAW 7
-#define GRID_SIZE 5
+#define GRID_SIZE 7
 
 // there is a built in vector: "GLvector" but it uses ints...
 // I'm not that good yet.

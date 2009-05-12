@@ -8,13 +8,17 @@
 class Underground
 {
 	public:
+		// TODO: this will need to be slightly restructured to allow multiple nests
+		//				so that a huge chunk of memory for multiple "DirtDisks" will not
+		//				be needed.
 		Underground(){	underground = new DirtDisk(); 
+										undergroundSize = 30;
+										underground->generateNest(undergroundSize);
 										centerX=0;
 										slice=0;
 										centerY=0;
 									}
 		virtual ~Underground(){ delete underground; }
-//		virtual void draw() = 0;
 
 		// reference to slice and centerX passed in.
 		// This is for increasing the index into the underground grid.
@@ -29,6 +33,7 @@ class Underground
 //TODO: fix this, commented out so that UndergroundDraw could access these...?
 //	private:
 		std::vector<Ant> inhabitants;
+		int undergroundSize;
 		DirtDisk *underground;
 		short centerX, centerY, slice;
 		float rotationX, rotationY;

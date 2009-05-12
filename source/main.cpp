@@ -108,7 +108,6 @@ int main()
 	int oldx = 0, oldy = 0;
 
 	float deltaPointer = 0;
-	bool attempt, at;
 
 	//main loop
 	while (1) {
@@ -119,15 +118,16 @@ int main()
 		
 		if( held & KEY_R) cam.translateZinc(0.1);
 		if( held & KEY_L) cam.translateZinc(-0.1);
-
+int t;
 		// D-Pad to translate
-		if( held & KEY_LEFT) ug->decX();
-		if( held & KEY_RIGHT) ug->incX();
-		if( held & KEY_UP) ug->incY();
-		if( held & KEY_DOWN) ug->decY();
+		// please ignore the lazy way I made things scroll faster
+		if( held & KEY_LEFT) for(t=0; t<5; t++) ug->decX();
+		if( held & KEY_RIGHT) for(t=0; t<5; t++) ug->incX();
+		if( held & KEY_UP) for(t=0; t<5; t++) ug->incY();
+		if( held & KEY_DOWN) for(t=0; t<5; t++) ug->decY();
 
-		if( held & KEY_L) ugCam.zoomIn();
-		if( held & KEY_R) ugCam.zoomOut();
+		if( held & KEY_L) for(t=0; t<5; t++) ugCam.zoomIn();
+		if( held & KEY_R) for(t=0; t<5; t++) ugCam.zoomOut();
 
 		touchRead(&touchXY);
 		//reset x and y when user touches screen
@@ -144,13 +144,15 @@ int main()
 			oldy = touchXY.py;
 		}
 
+	// not needed?
+	glResetMatrixStack();
 	glClearColor(0,0,0,0);
 	glClearDepth(0x7FFF);
+
 //	light0.move(rx, ry, (v10)0.5);
 //	light1.move(rx*-1, ry*-1, (v10)-0.5);
 	light0.set();
 	light1.set();
-	glSetOutlineColor(0,RGB15(31,31,31));
 
 		glViewport(0,0,255,191); // set the viewport to fullscreen
 		glMatrixMode(GL_PROJECTION);
@@ -184,9 +186,7 @@ int main()
 		ug->draw();
 		// If the touch pad is being touched... see what its touching.
 		if( held & KEY_TOUCH)
-		{ at = true;
-			attempt = ug->pickPoint(touchXY.px, touchXY.py, cam);
-		} else at = false;
+			ug->pickPoint(touchXY.px, touchXY.py, cam);
 
 		cpu_percent = CPU_EndTest();
 
@@ -202,13 +202,6 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
-		if (at){ printf("\n TRIED TO PICK Result: ");
-				if (attempt) printf("HIT");
-				else printf("MISS");
-		} else printf("\n DID NOT PICK");
-//		printf("\nCamera location: (%f,", ugCam.getCamLocation().x);
-//		printf("\n                  %f,", ugCam.getCamLocation().y);
-//		printf("\n                  %f)", ugCam.getCamLocation().z);
 		printf("\nGrid slice/X/Y = %i/%i/%i", ug->slice, ug->centerX, ug->centerY);
 		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
 		printf("\nCamera location: (%f,", cam.getCamLocation().x);
