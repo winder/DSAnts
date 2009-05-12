@@ -45,8 +45,8 @@ int main()
 
 	touchPosition touchXY;
 	//put 3D on top/bottom
-	//lcdMainOnBottom();
-	lcdMainOnTop();
+	lcdMainOnBottom();
+	//lcdMainOnTop();
 
 	//setup the sub screen for basic printing
 	// TODO: this is said to be very heavy weight for basic console needs.
@@ -54,6 +54,12 @@ int main()
 
 	// Exception handler.
 	defaultExceptionHandler();
+
+	// I threw this in here for testing.
+	// enable edge outlining, this will be used to show which object is selected
+	glEnable(GL_OUTLINE);
+	//set the first outline color to white
+	glSetOutlineColor(0,RGB15(31,31,31));
 
 	// Camera class..
 	Camera cam;
@@ -75,7 +81,7 @@ int main()
 	Lighting light1;
 	light1.setLight(1);
 	// From cam perspective lights up: LEFT, BOTTOM, REAR planes
-	light1.move(-0.7f, -0.2f, 0.2f);
+	light1.move(-0.7f, -0.2f, -0.8f);
 	light1.color(1, 1, 31);
 	light1.color(31, 31, 31);
 	light1.enable();
@@ -102,36 +108,19 @@ int main()
 	int oldx = 0, oldy = 0;
 
 	float deltaPointer = 0;
+	bool attempt, at;
 
 	//main loop
 	while (1) {
-
 		//process input
 		scanKeys();
-
-		touchRead(&touchXY);
-
-		
 		int held = keysHeld();
 		int pressed = keysDown();
 		
-		// D-Pad to translate.
-/*
-		if( held & KEY_LEFT) cam.translateXinc(0.1);
-		if( held & KEY_RIGHT) cam.translateXinc(-0.1);
-		if( held & KEY_UP) cam.translateYinc(0.1);
-		if( held & KEY_DOWN) cam.translateYinc(-0.1);
-*/
 		if( held & KEY_R) cam.translateZinc(0.1);
 		if( held & KEY_L) cam.translateZinc(-0.1);
 
-/* // CAMERA control with D-Pad
-		if( held & KEY_LEFT) ugCam.moveLeft();
-		if( held & KEY_RIGHT) ugCam.moveRight();
-		if( held & KEY_UP) ugCam.moveUp();
-		if( held & KEY_DOWN) ugCam.moveDown();
-*/
-
+		// D-Pad to translate
 		if( held & KEY_LEFT) ug->decX();
 		if( held & KEY_RIGHT) ug->incX();
 		if( held & KEY_UP) ug->incY();
@@ -140,12 +129,7 @@ int main()
 		if( held & KEY_L) ugCam.zoomIn();
 		if( held & KEY_R) ugCam.zoomOut();
 
-//		if( pressed & KEY_UP || pressed & KEY_DOWN ) udButton = 0;
-//		if( held & KEY_UP) udButton += 0.1;
-//		if( held & KEY_DOWN) udButton -= 0.1;
-//		if( held & KEY_L) translate += .1;
-//		if( held & KEY_R) translate -= .1;
-
+		touchRead(&touchXY);
 		//reset x and y when user touches screen
 		if( pressed & KEY_TOUCH)  {
 			oldx = touchXY.px;
@@ -167,9 +151,11 @@ int main()
 	light0.set();
 	light1.set();
 	glSetOutlineColor(0,RGB15(31,31,31));
-		//change ortho vs perspective
+
+		glViewport(0,0,255,191); // set the viewport to fullscreen
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+		//change ortho vs perspective
 		if(keysHeld() & KEY_B)
 			cam.Ortho();
 		else 
@@ -185,14 +171,23 @@ int main()
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		//handle camera
-//		drawXYZaxis();
-//		ugCam.render();
-		cam.rotate();
-		cam.move();
-//		cam.render();
+		//--------------//
+		// PLACE CAMERA //
+		//--------------//
+		cam.render();
+
+		//------------//
+		// DRAW SCENE //
+		//------------//
 		CPU_StartTest(0,0);
+
 		ug->draw();
+		// If the touch pad is being touched... see what its touching.
+		if( held & KEY_TOUCH)
+		{ at = true;
+			attempt = ug->pickPoint(touchXY.px, touchXY.py, cam);
+		} else at = false;
+
 		cpu_percent = CPU_EndTest();
 
 		deltaPointer = ry;
@@ -207,19 +202,30 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
+		if (at){ printf("\n TRIED TO PICK Result: ");
+				if (attempt) printf("HIT");
+				else printf("MISS");
+		} else printf("\n DID NOT PICK");
 //		printf("\nCamera location: (%f,", ugCam.getCamLocation().x);
 //		printf("\n                  %f,", ugCam.getCamLocation().y);
 //		printf("\n                  %f)", ugCam.getCamLocation().z);
 		printf("\nGrid slice/X/Y = %i/%i/%i", ug->slice, ug->centerX, ug->centerY);
+		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
 		printf("\nCamera location: (%f,", cam.getCamLocation().x);
 		printf("\n                  %f,", cam.getCamLocation().y);
 		printf("\n                  %f)", cam.getCamLocation().z);
 
 		printf("\n\nMemory Statistics:");
-		printf("\n\t\tTotal mem: %i", getMemUsed() + getMemFree());
-		printf("\n\t\tMem Used: %i", getMemUsed());
-		printf("\n\t\tMem Free: %i", getMemFree());
-		printf("\n\nCPU Percent for drawing: %i%", cpu_percent);
+		printf("\n\tTotal mem: %i", getMemUsed() + getMemFree());
+		float pc_free = (float)getMemFree() / (float)(getMemUsed()+getMemFree()) * 100.0;
+		float pc_used = (float)getMemUsed() / (float)(getMemUsed()+getMemFree()) * 100.0;
+		printf("\n\tMem Used: %i (%.1f%%)", getMemUsed(), pc_used);
+		printf("\n\tMem Free: %i (%.1f%%)", getMemFree(), pc_free);
+//		printf("\n\nCPU Percent for drawing: %i%", cpu_percent);
+		printf("\n\n");
+		PrintMemoryStatistics();
+		printf("\nVideo info: Vert Ram = %i", vertex_count);
+		printf("\n            Poly Count = %i", polygon_count);
 
 		// flush to the screen
 		glFlush(0);

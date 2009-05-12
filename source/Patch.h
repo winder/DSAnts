@@ -10,6 +10,7 @@ struct Patch
 	Patch *top;
 	Patch *bottom;
 	short TYPE;
+	bool picked;
 };
 
 /*
