@@ -109,27 +109,29 @@ bool UndergroundDrawGrid::pickPoint(int x, int y, Camera &cam)
 
 
 	int viewport[]={0,0,255,191}; // used later for gluPickMatrix()
-		//change ortho vs perspective
-		glViewport(0,192,0,192); // set the viewport to fullscreen
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPickMatrix(x,(191-y),4,4,viewport); // render only what is below the cursor
-		cam.Perspective();
-		glMatrixMode(GL_MODELVIEW);
+	//change ortho vs perspective
+	glViewport(0,192,0,192); // set the viewport to fullscreen
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPickMatrix(x,(191-y),4,4,viewport); // render only what is below the cursor
+	cam.Perspective();
+	glMatrixMode(GL_MODELVIEW);
 
-		// where do I setup the camera??
-//		glLoadIdentity();
-//		cam.render();
+	// opaque polygons, no culling, this fixes al my problems.
+	glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE);
 
+	// Un-mark the last one.
 	if (picked)
 		picked->picked = false;
 
 	// pick mode flags will do the magic & return picked patch.
-	draw();
+	picked = draw();
 
+	// Mark the new one (which may still be the last one btw)
 	if (picked)
 		picked->picked = true;
 
+	// Turn off pick mode.
 	pickMode = false;
 
 	return endCheck();
@@ -159,8 +161,6 @@ Patch* UndergroundDrawGrid::draw()
 	// Setup for drawing.
 	glBegin(GL_QUADS);
 
-	float increment = 1.0f / 20.0f;
-
 	for (y=GRID_SIZE*-1; (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
 	{
 		tp=bottomLeft;
@@ -172,19 +172,15 @@ Patch* UndergroundDrawGrid::draw()
 			// scale by *0.2 then "translate" by adding the smooth scroll factors.
 			// I really have no idea why I was scaling this thing, but I think this is screwing
 			// up tile alignment.
+			// OK, well if x and y get too big I get weird graphical issues with boxes wrapping
+			// around the screen, so lets keep things small for now...
 			drawPatch(x*0.2-smoothScrollX, y*0.2-smoothScrollY, tp);
-//			drawPatch(x-(increment*smoothScrollX), y-(increment*smoothScrollY), tp);
 			if (pickMode)
-			{
 				if (endCheck())
 				{
-//					tp->picked = true;
-					picked = tp;
-					picked->picked = true;
 					glEnd();
 					return tp;
 				}
-			}
 		}
 		if (bottomLeft)
 			bottomLeft = bottomLeft->top;
@@ -192,6 +188,7 @@ Patch* UndergroundDrawGrid::draw()
 
 	// Finished drawing.
 	glEnd();
+	return '\0';
 }
 
 void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
@@ -281,9 +278,9 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 		material(1,31,10); // Greenish
 		drawRect(x, y, 0, s, s);
 		material(5,5,28); // Bluish
-//		drawRect(x, y+s, 0, s, 1);
-//		drawRect(x, y+(s*2), 0, s, 1);
-//		drawRect(x, y+(s*3), 0, s, 1);
+		drawRect(x, y+s, 0, s, 1);
+		drawRect(x, y+(s*2), 0, s, 1);
+		drawRect(x, y+(s*3), 0, s, 1);
 
 		// special drawing for this now...
 		return;

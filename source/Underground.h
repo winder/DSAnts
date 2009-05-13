@@ -20,8 +20,13 @@ class Underground
 									}
 		virtual ~Underground(){ delete underground; }
 
-		// reference to slice and centerX passed in.
+		// Adds an ant in a random location.
+		void addAnt(Ant *a);
+
+		void addAnt(Ant *a, int x, int y);
+
 		// This is for increasing the index into the underground grid.
+		// Used primarily for determining where the map should be pointing.
 		virtual void incX(){ underground->moveRight(slice, centerX); }
 		virtual void decX(){ underground->moveLeft(slice, centerX); }
 

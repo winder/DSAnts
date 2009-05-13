@@ -11,8 +11,6 @@
 #include "cpu_usage.h"
 #include "Lighting.h"
 
-
-
 void drawXYZaxis()
 {
 	glBegin(GL_QUADS);
@@ -116,18 +114,16 @@ int main()
 		int held = keysHeld();
 		int pressed = keysDown();
 		
-		if( held & KEY_R) cam.translateZinc(0.1);
-		if( held & KEY_L) cam.translateZinc(-0.1);
-int t;
+		if( held & KEY_R) cam.translateZinc(0.5);
+		if( held & KEY_L) cam.translateZinc(-0.5);
+
+		int t;
 		// D-Pad to translate
 		// please ignore the lazy way I made things scroll faster
 		if( held & KEY_LEFT) for(t=0; t<5; t++) ug->decX();
 		if( held & KEY_RIGHT) for(t=0; t<5; t++) ug->incX();
 		if( held & KEY_UP) for(t=0; t<5; t++) ug->incY();
 		if( held & KEY_DOWN) for(t=0; t<5; t++) ug->decY();
-
-		if( held & KEY_L) for(t=0; t<5; t++) ugCam.zoomIn();
-		if( held & KEY_R) for(t=0; t<5; t++) ugCam.zoomOut();
 
 		touchRead(&touchXY);
 		//reset x and y when user touches screen
