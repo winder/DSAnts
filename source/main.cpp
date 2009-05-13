@@ -12,6 +12,11 @@
 #include "cpu_usage.h"
 #include "Lighting.h"
 
+//TODO: setup the function that implements the VBlank handling
+//      put a GameWorld->step() call in there.  That way even
+//      if I get to the point where things are too complicated
+//      to draw, things still feel like they move in real time.
+
 void drawXYZaxis()
 {
 	glBegin(GL_QUADS);
@@ -41,8 +46,9 @@ void drawXYZaxis()
 
 int main()
 {	
+	//UndergroundDrawGrid *ug = new UndergroundDrawGrid();
+	GameWorld *gw = new GameWorld();
 
-	touchPosition touchXY;
 	//put 3D on top/bottom
 	lcdMainOnBottom();
 	//lcdMainOnTop();
@@ -60,10 +66,8 @@ int main()
 	//set the first outline color to white
 	glSetOutlineColor(0,RGB15(31,31,31));
 
-	// Camera class..
-	Camera cam;
-	cam.init();
-  cam.translateZinc(3.5);
+	// Camera needs to be initialized.
+	gw->init();
 
 	//---------------------//
 	// INITIALIZE LIGHTING //
@@ -90,9 +94,6 @@ int main()
 
 	glSetOutlineColor(0,RGB15(31,31,31));
 
-	//UndergroundDrawGrid *ug = new UndergroundDrawGrid();
-	GameWorld *gw = new GameWorld();
-
 	u32 cpu_percent = 0;
 	//keep track of vertex ram usage
 	int polygon_count;
@@ -107,60 +108,28 @@ int main()
 
 	//main loop
 	while (1) {
-		//process input
-		scanKeys();
-		int held = keysHeld();
-		int pressed = keysDown();
-		
-		if( held & KEY_R) cam.translateZinc(0.5);
-		if( held & KEY_L) cam.translateZinc(-0.5);
+//		gw->getInput();
+		gw->stepForward();
 
-		int t;
-		// D-Pad to translate
-		// please ignore the lazy way I made things scroll faster
-		if( held & KEY_LEFT) for(t=0; t<5; t++) gw->decX();
-		if( held & KEY_RIGHT) for(t=0; t<5; t++) gw->incX();
-		if( held & KEY_UP) for(t=0; t<5; t++) gw->incY();
-		if( held & KEY_DOWN) for(t=0; t<5; t++) gw->decY();
+		// not needed?
+		glResetMatrixStack();
+		glClearColor(0,0,0,0);
+		glClearDepth(0x7FFF);
 
-		touchRead(&touchXY);
-		//reset x and y when user touches screen
-		if( pressed & KEY_TOUCH)  {
-			oldx = touchXY.px;
-			oldy = touchXY.py;
-		}
-
-		//if user drags then grab the delta
-		if( held & KEY_TOUCH) {
-			rx += touchXY.px - oldx; 
-			ry += touchXY.py - oldy;
-			oldx = touchXY.px;
-			oldy = touchXY.py;
-		}
-
-	// not needed?
-	glResetMatrixStack();
-	glClearColor(0,0,0,0);
-	glClearDepth(0x7FFF);
-
-//	light0.move(rx, ry, (v10)0.5);
-//	light1.move(rx*-1, ry*-1, (v10)-0.5);
-	light0.set();
-	light1.set();
+		//light0.move(rx, ry, (v10)0.5);
+		//light1.move(rx*-1, ry*-1, (v10)-0.5);
+		light0.set();
+		light1.set();
 
 		glViewport(0,0,255,191); // set the viewport to fullscreen
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		//change ortho vs perspective
-		if(keysHeld() & KEY_B)
-			cam.Ortho();
-		else 
-			cam.Perspective();
+		gw->setProjection();
 
 		//change cull mode
-		if( held & KEY_A)
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
-		else
+//		if( gw->getInput() )
+//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
+//		else
 			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 
 		// Set the current matrix to be the model matrix
@@ -170,7 +139,7 @@ int main()
 		//--------------//
 		// PLACE CAMERA //
 		//--------------//
-		cam.render();
+		gw->placeCamera();
 
 		//------------//
 		// DRAW SCENE //
@@ -178,9 +147,6 @@ int main()
 		CPU_StartTest(0,0);
 
 		gw->draw();
-		// If the touch pad is being touched... see what its touching.
-		if( held & KEY_TOUCH)
-			gw->pickPoint(touchXY.px, touchXY.py, cam);
 
 		cpu_percent = CPU_EndTest();
 
@@ -196,11 +162,11 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
-		printf("\nGrid X/Y = %i/%i", gw->getUG()->centerX, gw->getUG()->centerY);
-		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
-		printf("\nCamera location: (%f,", cam.getCamLocation().x);
-		printf("\n                  %f,", cam.getCamLocation().y);
-		printf("\n                  %f)", cam.getCamLocation().z);
+//		printf("\nGrid X/Y = %i/%i", gw->getUG()->centerX, gw->getUG()->centerY);
+//		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
+//		printf("\nCamera location: (%f,", cam.getCamLocation().x);
+//		printf("\n                  %f,", cam.getCamLocation().y);
+//		printf("\n                  %f)", cam.getCamLocation().z);
 
 		printf("\n\nMemory Statistics:");
 		printf("\n\tTotal mem: %i", getMemUsed() + getMemFree());

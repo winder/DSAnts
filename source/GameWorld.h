@@ -8,6 +8,7 @@
 #include <vector>
 #include "Ant.h"
 #include "Camera.h"
+#include "Input.h"
 
 class GameWorld
 {
@@ -15,7 +16,7 @@ class GameWorld
 		GameWorld();
 		~GameWorld();
 		void draw();
-		void pickPoint(short x, short y, Camera cam);
+		void pickPoint(short x, short y);
 		// TODO: This will move the player, and depending on player information will
 		//       then move the screen.
 		void incX(){ ug->incX(); }
@@ -24,7 +25,25 @@ class GameWorld
 		void decY(){ ug->decY(); }
 
 		UndergroundDrawGrid* getUG(){ return ug; }
+
+		// Get INPUT, everything else will use input as though
+		// it is up to date.
+		int getInput();
+
+		void stepForward();
+
+		// Camera needs to set itself up.
+		void init(){	cam->init();
+									cam->translateZinc(3.5); }
+
+		void placeCamera(){ cam->render(); }
+
+		void setProjection();
 	private:
+		// cache for if the input is new.
+		bool newInput;
+		Input *in;
+
 		short STATE;
 		UndergroundDrawGrid *ug;
 		//Surface &surf;
@@ -33,6 +52,14 @@ class GameWorld
 		Ant* tester;
 		std::vector<Ant*> black;
 		//std::vector<Ant> red;
+
+		// Camera
+		Camera *cam;
+
+		int held, pressed;
+		int touchX, touchY;
+		int oldX, oldY;
+		int curX, curY;
 };
 
 #endif

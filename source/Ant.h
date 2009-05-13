@@ -16,6 +16,9 @@ class Ant
 		short getX(){ return x; }
 		short getY(){ return y; }
 
+		void setPatch(Patch* inp){ p = inp; }
+		Patch* getPatch(){ return p; }
+
 		// move the ant.
 		void moveRight();
 		void moveLeft();

@@ -163,6 +163,11 @@ void UndergroundDrawGrid::drawAnt(Ant* a)
 }
 Patch* UndergroundDrawGrid::draw()
 {
+
+	// TODO: don't use MODEL_SCALE and smoothScrollX/Y, I'm leaving this uncommented so I don't forget to fix it.
+//	glTranslatef(smoothScrollX, smoothScrollY, 0);
+//	glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+
 	int x,y, temp;
 	Patch* bottomLeft = '\0';
 	Patch* tp = '\0';
