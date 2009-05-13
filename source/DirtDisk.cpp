@@ -5,74 +5,52 @@ DirtDisk::DirtDisk()
 	int x,y,z;
 
 	// Create the objects.
-	for (x=0; x < SLICES; x++)
-		for (y=0; y < WIDTH; y++)
-			for (z=0; z < DEPTH; z++)
-			{
-				dd[x][y][z] = new Patch();
+	for (x=0; x < WIDTH; x++)
+		for (y=0; y < DEPTH; y++)
+		{
+			dd[x][y] = new Patch();
 			// Unpassable patch at the deepest level.
-			if (z == DEPTH-1)
-				dd[x][y][z]->TYPE = PATCH_BARRIER;
+			if (y == DEPTH-1)
+				dd[x][y]->TYPE = PATCH_BARRIER;
 			// Sky / trigger to enter surface world at the top.  This patch will
 			// have a coordinate to where on the surface the hole emerges.
-			else if ( z == 0 )
-				dd[x][y][z]->TYPE = PATCH_TOP;
+			else if ( y == 0 )
+				dd[x][y]->TYPE = PATCH_TOP;
 			// This was for making something to look at.
 //			else if (y%2 == 1)
 //				dd[x][y][z]->TYPE = PATCH_EMPTY;
 			// Everything else is dirt.
 			else
-				dd[x][y][z]->TYPE = PATCH_DIRT;
+				dd[x][y]->TYPE = PATCH_DIRT;
 			}
 
 	// Connect the objects.
-	for (x=0; x < SLICES; x++)
-		for (y=0; y < WIDTH; y++)
-			for (z=0; z < DEPTH; z++)
-			{
-				dd[x][y][z]->top = getTop(x,y,z);
-				dd[x][y][z]->bottom = getBottom(x,y,z);
-				dd[x][y][z]->left = getLeft(x,y,z);
-				dd[x][y][z]->right = getRight(x,y,z);
-			}
+	for (x=0; x < WIDTH; x++)
+		for (y=0; y < DEPTH; y++)
+		{
+			dd[x][y]->top = getTop(x,y);
+			dd[x][y]->bottom = getBottom(x,y);
+			dd[x][y]->left = getLeft(x,y);
+			dd[x][y]->right = getRight(x,y);
+		}
 }
 
-void DirtDisk::moveRight(short &slice, short &x)
+void DirtDisk::moveRight(short &x)
 {
-	// Slice / Width roll-over
+	// Width roll-over
 	if ( x != WIDTH - 1 )
-	{
-//		slice = slice;
 		x = x + 1;
-	}
 	else
-	{
 		x = 0;
-		// Slice roll-over
-		if ( slice != SLICES - 1 )
-			slice = slice + 1;
-		else
-			slice = 0;
-	}
 }
 
-void DirtDisk::moveLeft(short &slice, short &x)
+void DirtDisk::moveLeft(short &x)
 {
-	// Slice / Width roll-over
+	// Width roll-over
 	if ( x >= 1 )
-	{
-		slice = slice;
 		x = x - 1;
-	}
 	else
-	{
 		x = WIDTH - 1;
-		// Slice roll-over
-		if ( slice != 0 )
-			slice = slice - 1;
-		else
-			slice = SLICES - 1;
-	}
 }
 
 bool DirtDisk::moveUp(short &y)
@@ -94,49 +72,43 @@ bool DirtDisk::moveDown(short &y)
 }
 
 // use the reference methods above to take a pointer and get the one left to it.
-Patch* DirtDisk::getRight(int x, int y, int z)
+Patch* DirtDisk::getRight(int x, int y)
 {
-	short s;
-	short w;
-	s = x;
-	w = y;
-
-	moveRight(s, w);
-	// Depth max/min doesn't change moving right/left
-	return dd[s][w][ z ];
-}
-
-Patch* DirtDisk::getLeft(int x, int y, int z)
-{
-	short s, w;
-	s = x;
-	w = y;
-	moveLeft(s, w);
+	short w = x;
+	moveRight(w);
 
 	// Depth max/min doesn't change moving right/left
-	return dd[s][w][ z ];
+	return dd[w][y];
 }
-Patch* DirtDisk::getTop(int x, int y, int z)
+
+Patch* DirtDisk::getLeft(int x, int y)
 {
-	short d = z;
+	short w = x;
+	moveLeft(w);
+
+	// Depth max/min doesn't change moving right/left
+	return dd[w][y];
+}
+Patch* DirtDisk::getTop(int x, int y)
+{
+	short d = y;
 	if (!moveUp(d)) return '\0';
 
-	return dd[ x ][ y ][ d ];
+	return dd[x][d];
 }
-Patch* DirtDisk::getBottom(int x, int y, int z)
+Patch* DirtDisk::getBottom(int x, int y)
 {
-	short d = z;
+	short d = y;
 	if (!moveDown(d)) return '\0';
 
-
-	return dd[ x ][ y ][ d ];
+	return dd[x][d];
 }
 
 // This algorithm works, it does what its supposed to, but it doesn't make a
 // very convincing nest.
 void DirtDisk::generateNest(int size)
 {
-	Patch *start = getPatch(0,0,1);
+	Patch *start = getPatch(0,1);
 
 	// dig down a little and set them as empty spot
 	start->TYPE = PATCH_EMPTY;

@@ -19,26 +19,26 @@ class DirtDisk
 		DirtDisk();
 
 		// clamp the values just in case.
-		Patch* getPatch(short slice, short width, short depth)
-			{	if (slice<0) slice=0; if (width<0) width=0; if (depth<0) depth=0;
-				return dd[slice%SLICES][width%WIDTH][depth%DEPTH]; }
+		Patch* getPatch(short width, short depth)
+			{	if (width<0) width=0; if (depth<0) depth=0;
+				return dd[width%WIDTH][depth%DEPTH]; }
 
-		void moveRight(short &slice, short &x);
-		void moveLeft(short &slice, short &x);
+		void moveRight(short &x);
+		void moveLeft(short &x);
 		bool moveUp(short &y);
 		bool moveDown(short &y);
 
-		Patch* getRight(int x, int y, int z);
-		Patch* getLeft(int x, int y, int z);
-		Patch* getTop(int x, int y, int z);
-		Patch* getBottom(int x, int y, int z);
+		Patch* getRight(int x, int y);
+		Patch* getLeft(int x, int y);
+		Patch* getTop(int x, int y);
+		Patch* getBottom(int x, int y);
 
 		// This will generate a random nest with 'size' connected empty spaces
 		// It will have one entrance which is always at (0,20,0)
 		void generateNest(int size);
 
 	private:
-		Patch* dd[SLICES][WIDTH][DEPTH];
+		Patch* dd[WIDTH][DEPTH];
 };
 
 #endif

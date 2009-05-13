@@ -198,7 +198,7 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
-		printf("\nGrid slice/X/Y = %i/%i/%i", ug->slice, ug->centerX, ug->centerY);
+		printf("\nGrid X/Y = %i/%i/%i", ug->centerX, ug->centerY);
 		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
 		printf("\nCamera location: (%f,", cam.getCamLocation().x);
 		printf("\n                  %f,", cam.getCamLocation().y);

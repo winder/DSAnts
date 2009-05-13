@@ -15,7 +15,6 @@ class Underground
 										undergroundSize = 30;
 										underground->generateNest(undergroundSize);
 										centerX=0;
-										slice=0;
 										centerY=0;
 									}
 		virtual ~Underground(){ delete underground; }
@@ -27,8 +26,8 @@ class Underground
 
 		// This is for increasing the index into the underground grid.
 		// Used primarily for determining where the map should be pointing.
-		virtual void incX(){ underground->moveRight(slice, centerX); }
-		virtual void decX(){ underground->moveLeft(slice, centerX); }
+		virtual void incX(){ underground->moveRight(centerX); }
+		virtual void decX(){ underground->moveLeft(centerX); }
 
 		virtual void incY(){ underground->moveUp(centerY); }
 		virtual void decY(){ underground->moveDown(centerY); }
@@ -40,7 +39,7 @@ class Underground
 		std::vector<Ant> inhabitants;
 		int undergroundSize;
 		DirtDisk *underground;
-		short centerX, centerY, slice;
+		short centerX, centerY;
 		float rotationX, rotationY;
 };
 

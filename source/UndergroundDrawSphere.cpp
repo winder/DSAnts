@@ -21,7 +21,7 @@ void UndergroundDrawSphere::draw()
 
 	// Eventually this call will be made to whatever generic character the
 	// map should be centered on.  i.e. the player, or an enemy ant.
-	topLeft = center = underground->getPatch(slice, centerX, centerY);
+	topLeft = center = underground->getPatch(centerX, centerY);
 	
 	// Shift from the center to the topLeft.
 	// shift left a bunch of times.

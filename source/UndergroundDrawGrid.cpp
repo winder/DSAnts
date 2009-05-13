@@ -15,7 +15,7 @@ void UndergroundDrawGrid::incX()
 	smoothScrollX++;
 	if (smoothScrollX >= 20)
 	{
-		underground->moveRight(slice, centerX);
+		underground->moveRight(centerX);
 		smoothScrollX = 0;
 	}
 */
@@ -23,7 +23,7 @@ void UndergroundDrawGrid::incX()
 
 	if (smoothScrollX >= 0.2)
 	{
-		underground->moveRight(slice, centerX); 
+		underground->moveRight(centerX); 
 		smoothScrollX = 0;
 	}
 
@@ -35,7 +35,7 @@ void UndergroundDrawGrid::decX()
 	smoothScrollX--;
 	if (smoothScrollX <= -20)
 	{
-		underground->moveLeft(slice, centerX);
+		underground->moveLeft(centerX);
 		smoothScrollX = 0;
 	}
 */
@@ -43,7 +43,7 @@ void UndergroundDrawGrid::decX()
 	smoothScrollX-=0.01;	
 	if (smoothScrollX <= -0.2)
 	{
-		underground->moveLeft(slice, centerX);
+		underground->moveLeft(centerX);
 		smoothScrollX = 0;
 	}
 
@@ -144,7 +144,7 @@ Patch* UndergroundDrawGrid::draw()
 
 	// Eventually this call will be made to whatever generic character the
 	// map should be centered on.  i.e. the player, or an enemy ant.
-	bottomLeft = underground->getPatch(slice, centerX, centerY);
+	bottomLeft = underground->getPatch(centerX, centerY);
 
 	// Shift from the center to the bottomLeft.
 	// shift left a bunch of times.
