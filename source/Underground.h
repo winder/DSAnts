@@ -1,7 +1,6 @@
 #ifndef UNDERGROUND_H
 #define UNDERGROUND_H
 
-#include <vector>
 #include "Ant.h"
 #include "DirtDisk.h"
 
@@ -36,7 +35,6 @@ class Underground
 
 //TODO: fix this, commented out so that UndergroundDraw could access these...?
 //	private:
-		std::vector<Ant> inhabitants;
 		int undergroundSize;
 		DirtDisk *underground;
 		short centerX, centerY;

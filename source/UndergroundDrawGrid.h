@@ -5,6 +5,7 @@
 #include "StaticDraw.h"
 #include "Patch.h"
 #include "Camera.h"
+#include <vector>
 
 // need this for picking.
 #include <nds/arm9/postest.h>
@@ -13,7 +14,11 @@ class UndergroundDrawGrid: public Underground
 {
 	public:
 		UndergroundDrawGrid();
+
+		// Drawing functions.
 		Patch* draw();
+		void drawAnts(std::vector<Ant*> &black, std::vector<Ant*> &red);
+		void drawAnt(Ant* a);
 		void drawPatch(float x, float y, Patch *p);
 		void drawBox(float x, float y, float z, float width, float height, float depth);
 		void drawRect(float x, float y, float z, float width, float height);
@@ -21,13 +26,17 @@ class UndergroundDrawGrid: public Underground
 		// This function does picking to find out where in the grid the touch occurred.
 		bool pickPoint(int x, int y, Camera &cam);
 
-		int getLeftIndex(){ return centerX - GRID_SIZE; }
-		int getRightIndex(){ return centerX + GRID_SIZE; }
+		// returns true if the x/y coordinate is in the drawing range.
+		bool isVisible(short x, short y);
+		// if an object is visible (should be checked seperately) these will return the
+		// MODELVIEW x / y coordinates.
+		float positionX(short x);
+		float positionY(short y);
 
-		// increment a scene shift some amount before scrolling the tiles.
+		// Used for determining the center of the map.
+		// TODO: increment a scene shift some amount before scrolling the tiles.
 		virtual void incX(); 
 		virtual void decX(); 
-
 		virtual void incY(); 
 		virtual void decY(); 
 

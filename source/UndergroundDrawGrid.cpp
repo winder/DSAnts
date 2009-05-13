@@ -11,17 +11,9 @@ UndergroundDrawGrid::UndergroundDrawGrid()
 // increment a scene shift some amount before scrolling the tiles.
 void UndergroundDrawGrid::incX()
 {
-/*
-	smoothScrollX++;
-	if (smoothScrollX >= 20)
-	{
-		underground->moveRight(centerX);
-		smoothScrollX = 0;
-	}
-*/
-	smoothScrollX+=0.01;	
+	smoothScrollX+=MODEL_SCALE_INCREMENT;	
 
-	if (smoothScrollX >= 0.2)
+	if (smoothScrollX >= MODEL_SCALE)
 	{
 		underground->moveRight(centerX); 
 		smoothScrollX = 0;
@@ -31,17 +23,8 @@ void UndergroundDrawGrid::incX()
 
 void UndergroundDrawGrid::decX()
 { 
-/*
-	smoothScrollX--;
-	if (smoothScrollX <= -20)
-	{
-		underground->moveLeft(centerX);
-		smoothScrollX = 0;
-	}
-*/
-
-	smoothScrollX-=0.01;	
-	if (smoothScrollX <= -0.2)
+	smoothScrollX-=MODEL_SCALE_INCREMENT;	
+	if (smoothScrollX <= (-1*MODEL_SCALE))
 	{
 		underground->moveLeft(centerX);
 		smoothScrollX = 0;
@@ -52,20 +35,9 @@ void UndergroundDrawGrid::decX()
 // When drawing a grid, we don't want to pan too shallow.
 void UndergroundDrawGrid::incY()
 { 
-/*
-//	if (centerY <= 7) return;
-	if (centerY == 0) return;
-
-	smoothScrollY++;
-	if (smoothScrollY >= 20)
-	{
-		underground->moveUp(centerY);
-		smoothScrollY = 0;
-	}
-*/
 	if (centerY <= 7) return;
-	smoothScrollY+=0.01;
-	if (smoothScrollY >= 0.2)
+	smoothScrollY+=MODEL_SCALE_INCREMENT;
+	if (smoothScrollY >= MODEL_SCALE)
 	{
 		underground->moveUp(centerY);
 		smoothScrollY = 0;
@@ -75,23 +47,10 @@ void UndergroundDrawGrid::incY()
 
 void UndergroundDrawGrid::decY()
 { 
-/*
-	// The bottom should show up at the bottom of the map.
-	//		-1 since it is zero based.
 	if (centerY == DEPTH-GRID_SIZE-1) return;
 
-	smoothScrollY--;
-	if (smoothScrollY <= -20)
-	{
-		underground->moveDown(centerY);
-		smoothScrollY = 0;
-	}
-*/
-
-	if (centerY == DEPTH-GRID_SIZE-1) return;
-
-	smoothScrollY-=0.01;
-	if (smoothScrollY <= -0.2)
+	smoothScrollY-=MODEL_SCALE_INCREMENT;
+	if (smoothScrollY <= (-1*MODEL_SCALE))
 	{
 		underground->moveDown(centerY);
 		smoothScrollY = 0;
@@ -136,6 +95,72 @@ bool UndergroundDrawGrid::pickPoint(int x, int y, Camera &cam)
 
 	return endCheck();
 }
+
+// WOW there's gotta be something better than this...
+bool UndergroundDrawGrid::isVisible(short x, short y)
+{
+	// out of array bounds.
+	if ((x<0) || (y < 0) || (y>=WIDTH) || (x>=WIDTH))
+		return false;
+
+	// Out of visible Y values.
+	if (	(y > (centerY+GRID_SIZE)) ||
+				(y < (centerY-GRID_SIZE)) )
+		return false;
+
+	// To get here, y value is good.
+
+	// Basic case
+	if (	(x < (centerX+GRID_SIZE)) &&
+				(x > (centerX-GRID_SIZE)))
+		return true;
+
+	else if (	((WIDTH-1) < (centerX+GRID_SIZE)) &&
+				(x < ((centerX+GRID_SIZE)%WIDTH)))
+		return true;
+
+	else if (	((centerX-GRID_SIZE) < 0) &&
+						(x > (centerX-GRID_SIZE+WIDTH)))
+		return true;
+
+	// if none of those then...
+	return false;
+}
+
+// This is complicated because there's a circular array...
+float UndergroundDrawGrid::positionX(short x)
+{
+	if (	(x < (centerX+GRID_SIZE)) &&
+				(x > (centerX-GRID_SIZE)))
+		return ((centerX - x + 1) * -1) * MODEL_SCALE;
+
+	else if (	((WIDTH-1) < (centerX+GRID_SIZE)) &&
+				(x < ((centerX+GRID_SIZE)%WIDTH)))
+		return ((centerX - (x+WIDTH) + 1) * -1) * MODEL_SCALE;
+
+	else if (	((centerX-GRID_SIZE) < 0) &&
+						(x > (centerX-GRID_SIZE+WIDTH)))
+		return ((centerX - (x-WIDTH) + 1) * -1) * MODEL_SCALE;
+}
+float UndergroundDrawGrid::positionY(short y)
+{
+	return (centerY - y) * MODEL_SCALE;
+}
+void UndergroundDrawGrid::drawAnt(Ant* a)
+{
+		material(3,3,3);
+	// exit early if not visible.
+	if (! isVisible(a->getX(), a->getY()))
+		return;
+
+	// can easily find X/Y location by finding offset from center.
+	float x = positionX(a->getX());
+	float y = positionY(a->getY());
+
+	// draw at x, y.
+
+	drawBox(x-smoothScrollX, y-smoothScrollY, 0, MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+}
 Patch* UndergroundDrawGrid::draw()
 {
 	int x,y, temp;
@@ -169,12 +194,12 @@ Patch* UndergroundDrawGrid::draw()
 			tp=tp->right;
 			if (pickMode)
 				startCheck();
-			// scale by *0.2 then "translate" by adding the smooth scroll factors.
+			// scale by *MODEL_SCALE then "translate" by adding the smooth scroll factors.
 			// I really have no idea why I was scaling this thing, but I think this is screwing
 			// up tile alignment.
 			// OK, well if x and y get too big I get weird graphical issues with boxes wrapping
 			// around the screen, so lets keep things small for now...
-			drawPatch(x*0.2-smoothScrollX, y*0.2-smoothScrollY, tp);
+			drawPatch(x*MODEL_SCALE-smoothScrollX, y*MODEL_SCALE-smoothScrollY, tp);
 			if (pickMode)
 				if (endCheck())
 				{
@@ -195,7 +220,7 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 {
 	float s = boxSide;
 	// make it take up all the space.
-	s = 0.2;
+	s = MODEL_SCALE;
 
 	// WARNING: this optomization makes it so picking only works from one side of the X/Y plane.
 	// (when cam location z > 0)

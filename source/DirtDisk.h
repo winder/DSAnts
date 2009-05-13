@@ -23,10 +23,10 @@ class DirtDisk
 			{	if (width<0) width=0; if (depth<0) depth=0;
 				return dd[width%WIDTH][depth%DEPTH]; }
 
-		void moveRight(short &x);
-		void moveLeft(short &x);
-		bool moveUp(short &y);
-		bool moveDown(short &y);
+		static void moveRight(short &x);
+		static void moveLeft(short &x);
+		static bool moveUp(short &y);
+		static bool moveDown(short &y);
 
 		Patch* getRight(int x, int y);
 		Patch* getLeft(int x, int y);

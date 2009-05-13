@@ -2,6 +2,7 @@
 #include <nds.h>
 
 #include <stdio.h>
+#include "GameWorld.h"
 #include "UndergroundDrawSphere.h"
 #include "UndergroundDrawGrid.h"
 #include "StaticDraw.h"
@@ -61,13 +62,12 @@ int main()
 
 	// Camera class..
 	Camera cam;
-	UndergroundCamera ugCam;
-
 	cam.init();
-	ugCam.init();
-	// Lights are as follows:
-	// light0 = left->right, bottom->top, rear->front.
-	// light1 = right->left, top->bottom, front->rear.
+  cam.translateZinc(3.5);
+
+	//---------------------//
+	// INITIALIZE LIGHTING //
+	//---------------------//
 	Lighting light0;
 	light0.setLight(0);
 	// From cam perspective lights up: RIGHT, TOP, FRONT planes
@@ -75,7 +75,6 @@ int main()
 	light0.color(31, 1, 1);
 	light0.color(31, 31, 31);
 	light0.enable();
-
 	Lighting light1;
 	light1.setLight(1);
 	// From cam perspective lights up: LEFT, BOTTOM, REAR planes
@@ -91,9 +90,8 @@ int main()
 
 	glSetOutlineColor(0,RGB15(31,31,31));
 
-
-	//UndergroundDrawSphere *ug = new UndergroundDrawSphere();
-	UndergroundDrawGrid *ug = new UndergroundDrawGrid();
+	//UndergroundDrawGrid *ug = new UndergroundDrawGrid();
+	GameWorld *gw = new GameWorld();
 
 	u32 cpu_percent = 0;
 	//keep track of vertex ram usage
@@ -120,10 +118,10 @@ int main()
 		int t;
 		// D-Pad to translate
 		// please ignore the lazy way I made things scroll faster
-		if( held & KEY_LEFT) for(t=0; t<5; t++) ug->decX();
-		if( held & KEY_RIGHT) for(t=0; t<5; t++) ug->incX();
-		if( held & KEY_UP) for(t=0; t<5; t++) ug->incY();
-		if( held & KEY_DOWN) for(t=0; t<5; t++) ug->decY();
+		if( held & KEY_LEFT) for(t=0; t<5; t++) gw->decX();
+		if( held & KEY_RIGHT) for(t=0; t<5; t++) gw->incX();
+		if( held & KEY_UP) for(t=0; t<5; t++) gw->incY();
+		if( held & KEY_DOWN) for(t=0; t<5; t++) gw->decY();
 
 		touchRead(&touchXY);
 		//reset x and y when user touches screen
@@ -179,10 +177,10 @@ int main()
 		//------------//
 		CPU_StartTest(0,0);
 
-		ug->draw();
+		gw->draw();
 		// If the touch pad is being touched... see what its touching.
 		if( held & KEY_TOUCH)
-			ug->pickPoint(touchXY.px, touchXY.py, cam);
+			gw->pickPoint(touchXY.px, touchXY.py, cam);
 
 		cpu_percent = CPU_EndTest();
 
@@ -198,7 +196,7 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
-		printf("\nGrid X/Y = %i/%i/%i", ug->centerX, ug->centerY);
+		printf("\nGrid X/Y = %i/%i", gw->getUG()->centerX, gw->getUG()->centerY);
 		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
 		printf("\nCamera location: (%f,", cam.getCamLocation().x);
 		printf("\n                  %f,", cam.getCamLocation().y);
