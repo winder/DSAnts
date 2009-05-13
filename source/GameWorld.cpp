@@ -62,32 +62,29 @@ int GameWorld::getInput()
 
 void GameWorld::stepForward()
 {
-/*
-	// snag new input.
-	in->processInput();
+	// GET INPUT and STORE IT
+	scanKeys();
+	held = keysHeld();
+	pressed = keysDown();
 
-	// apply input to world.
-	if( in->getHeld() & KEY_R) cam->translateZinc(0.5);
-	if( in->getHeld() & KEY_L) cam->translateZinc(-0.5);
-
-	if( in->getHeld() & KEY_LEFT)	ug->decX();
-	if( in->getHeld() & KEY_RIGHT)	ug->incX();
-	if( in->getHeld() & KEY_UP)		ug->incY();
-	if( in->getHeld() & KEY_DOWN)	ug->decY();
-*/
-
-		//process input
-		scanKeys();
-		held = keysHeld();
-		pressed = keysDown();
-
+	// Camera zoom with triggers
 	if( held & KEY_R) cam->translateZinc(0.5);
 	if( held & KEY_L) cam->translateZinc(-0.5);
 
+	// move the player
+/* // Move map:
 	if( held & KEY_LEFT)	ug->decX();
 	if( held & KEY_RIGHT)	ug->incX();
 	if( held & KEY_UP)		ug->incY();
 	if( held & KEY_DOWN)	ug->decY();
+*/
+	if( held & KEY_LEFT)	tester->moveLeft();
+	if( held & KEY_RIGHT)	tester->moveRight();
+	if( held & KEY_UP)		tester->moveUp();
+	if( held & KEY_DOWN)	tester->moveDown();
+
+	// TODO: this will be the player ant:
+	ug->shiftCenter(tester);
 
 	// no draw here, it is handled elsewhere so that things will be able
 	// to move forward if things start to lag.

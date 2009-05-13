@@ -33,6 +33,8 @@ class UndergroundDrawGrid: public Underground
 		float positionX(short x);
 		float positionY(short y);
 
+		void shiftCenter(Ant *p);
+
 		// Used for determining the center of the map.
 		// TODO: increment a scene shift some amount before scrolling the tiles.
 		virtual void incX(); 

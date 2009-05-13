@@ -146,6 +146,25 @@ float UndergroundDrawGrid::positionY(short y)
 {
 	return (centerY - y) * MODEL_SCALE;
 }
+
+// Shift the center if the player is too far to the side of the map.
+void UndergroundDrawGrid::shiftCenter(Ant *p)
+{
+	float pos = positionY(p->getY());
+
+	// if the ant is 5 boxes away from the center, start trying to follow it.
+	if (pos < (-1*(MODEL_SCALE * 5)) )
+		decY();
+	else if (pos > (MODEL_SCALE * 5)) 
+		incY();
+
+	pos = positionX(p->getX());
+	if (pos < (-1 *(MODEL_SCALE * 5)))
+		decX();
+	else if (pos > (MODEL_SCALE * 5)) 
+		incX();
+}
+
 void UndergroundDrawGrid::drawAnt(Ant* a)
 {
 		material(3,3,3);
@@ -154,8 +173,9 @@ void UndergroundDrawGrid::drawAnt(Ant* a)
 		return;
 
 	// can easily find X/Y location by finding offset from center.
-	float x = positionX(a->getX());
-	float y = positionY(a->getY());
+	// Then of course, add the offset for smoothly moving between 2 squares.
+	float x = positionX(a->getX()) + (a->getOffsetX()*MODEL_SCALE_INCREMENT);
+	float y = positionY(a->getY()) + (a->getOffsetY()*MODEL_SCALE_INCREMENT);
 
 	// draw at x, y.
 

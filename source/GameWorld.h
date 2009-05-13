@@ -10,6 +10,18 @@
 #include "Camera.h"
 #include "Input.h"
 
+
+// TODO: this class would make more sense as a "GameSquare" if I decide to go
+//			 the original SimAnt route and have multiple colonies spanning a grid.
+// TODO: this class should be broken apart from all the camera and other crap
+//			 I stuck in here, those should go somewhere else and use this class to
+//			 get needed info.
+
+// This class is designed to hold all the pieces of the world together.
+// Major pieces include:
+//			Underground / Surface world information.
+//			Creature (black/red ants, spiders, pill bugs, etc) information.
+//			Object (Food, eggs, rocks, etc) information.
 class GameWorld
 {
 	public:

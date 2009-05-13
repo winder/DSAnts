@@ -164,5 +164,22 @@ void DirtDisk::generateNest(int size)
 
 		start->TYPE = PATCH_EMPTY;
 	}
-	
+/*
+	// Make a big cross for testing.
+	int var;
+	start = getPatch(0,1);
+
+	for (var=0; var < 30; var++)
+	{
+		start->TYPE = PATCH_EMPTY;
+		start = start->bottom;
+	}
+
+	start = getPatch(15, 15);
+	for (var=0; var < 30; var++)
+	{
+		start->TYPE = PATCH_EMPTY;
+		start = start->left;
+	}
+*/
 }

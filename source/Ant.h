@@ -20,11 +20,14 @@ class Ant
 		Patch* getPatch(){ return p; }
 
 		// move the ant.
+		// TODO: This could use more tweaking efficiency wise.
 		void moveRight();
 		void moveLeft();
 		void moveUp();
 		void moveDown();
 
+		int getOffsetX(){ return offsetX; }
+		int getOffsetY(){ return offsetY; }
 	private:
 		   //-----------------//
 		  // AI INFORMATION: //
