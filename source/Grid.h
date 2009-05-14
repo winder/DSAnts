@@ -24,10 +24,17 @@ class Grid
 			{	if (width<0) width=0; if (depth<0) depth=0;
 				return dd[width%WIDTH][depth%DEPTH]; }
 
+		// move the x/y coord around.
 		static void moveRight(short &x);
 		static void moveLeft(short &x);
 		static bool moveUp(short &y);
 		static bool moveDown(short &y);
+
+		// move the Patch around.
+		static Patch* getRight(Patch* p);
+		static Patch* getLeft(Patch* p);
+		static Patch* getUp(Patch* p);
+		static Patch* getDown(Patch* p);
 
 		Patch* getRight(int x, int y);
 		Patch* getLeft(int x, int y);

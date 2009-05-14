@@ -9,16 +9,16 @@ class Ant
 {
 	public:
 		Ant();
-		Ant(int inx, int iny, Patch* pat);
+		Ant(Patch* pat);
 
 		// the ant doesn't draw itself.  the world draws the ants.
 //		virtual void draw();
 
-		void setXY(short inx, short iny)
-			{ x = inx; y = iny; }
+//		void setXY(short inx, short iny)
+//			{ x = inx; y = iny; }
 
-		short getX(){ return x; }
-		short getY(){ return y; }
+		short getX(){ return p->x; }
+		short getY(){ return p->y; }
 
 		void setPatch(Patch* inp){ p = inp; }
 		Patch* getPatch(){ return p; }
@@ -67,8 +67,10 @@ class Ant
 		  // LOCATION INFORMATION: //
 		 //-----------------------//
 		// The x/y coordinate the ant is in, for convenient draw checks.
-		short x;
-		short y;
+		// these are now stored in the Patch.
+//		short x;
+//		short y;
+
 		// The patch the ant is in, for convenient adjacentcy checks.
 		Patch *p;
 		// The offset within the patch

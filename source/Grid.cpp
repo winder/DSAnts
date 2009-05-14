@@ -72,6 +72,26 @@ bool Grid::moveDown(short &y)
 	return true;
 }
 
+Patch* Grid::getRight(Patch* p)
+{
+	return p->right;
+}
+
+Patch* Grid::getLeft(Patch* p)
+{
+	return p->left;
+}
+
+Patch* Grid::getUp(Patch* p)
+{
+	return p->top;
+}
+
+Patch* Grid::getDown(Patch* p)
+{
+	return p->bottom;
+}
+
 // use the reference methods above to take a pointer and get the one left to it.
 Patch* Grid::getRight(int x, int y)
 {

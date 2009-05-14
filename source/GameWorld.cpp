@@ -8,7 +8,7 @@ GameWorld::GameWorld()
 	ug = new UndergroundDrawGrid();
 
 	tester = new Ant();
-	tester->setXY(0, 2);
+//	tester->setXY(0, 2);
 	tester->setPatch( ug->getGrid()->getPatch(0,2) );
 	p = new Player(tester);
 
@@ -139,7 +139,7 @@ void GameWorld::stepForward()
 	if(pressed & KEY_A)
 	{
 		// add a new ant on press.
-		Ant *t = new Ant(0, 2, ug->getGrid()->getPatch(0,2));
+		Ant *t = new Ant(ug->getGrid()->getPatch(0,2));
 		t->setAction( ANT_ACTION_WANDER );
 		black.push_back(t);
 	}

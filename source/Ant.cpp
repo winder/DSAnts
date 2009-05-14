@@ -6,12 +6,12 @@ Ant::Ant()
 	offsetY = 0;
 }
 
-Ant::Ant(int inx, int iny, Patch* pat)
+Ant::Ant(Patch* pat)
 {
 	offsetX = 0;
 	offsetY = 0;
-	x=inx;
-	y=iny;
+//	x=inx;
+//	y=iny;
 	p=pat;
 }
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.
@@ -41,8 +41,7 @@ bool Ant::moveRight()
 	if (offsetX >= (ANIMATION_SIZE / 2))
 	{
 		offsetX=-1 * (ANIMATION_SIZE / 2);
-		Grid::moveRight(x);
-		p = p->right;
+		p = Grid::getRight(p);
 		return true;
 	}
 	return false;
@@ -61,8 +60,7 @@ bool Ant::moveLeft()
 	if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
 	{
 		offsetX=(ANIMATION_SIZE / 2);
-		Grid::moveLeft(x);
-		p = p->left;
+		p = Grid::getLeft(p);
 		return true;
 	}
 	return false;
@@ -85,8 +83,7 @@ bool Ant::moveUp()
 	if (offsetY >= (ANIMATION_SIZE / 2))
 	{
 		offsetY=-1 * (ANIMATION_SIZE / 2);
-		Grid::moveUp(y);
-		p = p->top;
+		p = Grid::getUp(p);
 		return true;
 	}
 	return false;
@@ -108,8 +105,7 @@ bool Ant::moveDown()
 	if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
 	{
 		offsetY=(ANIMATION_SIZE / 2);
-		Grid::moveDown(y);
-		p = p->bottom;
+		p = Grid::getDown(p);
 		return true;
 	}
 	return false;
