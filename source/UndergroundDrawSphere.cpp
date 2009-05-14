@@ -8,7 +8,7 @@ void UndergroundDrawSphere::draw()
 
 	int left = getLeftIndex();
 //	int right = getRightIndex();
-	int top = centerY + GRID_SIZE;
+	int top = getCenterY() + GRID_SIZE;
 //	int bottom = centerY - GRID_SIZE;
 	int temp=0;
 
@@ -21,7 +21,7 @@ void UndergroundDrawSphere::draw()
 
 	// Eventually this call will be made to whatever generic character the
 	// map should be centered on.  i.e. the player, or an enemy ant.
-	topLeft = center = underground->getPatch(centerX, centerY);
+	topLeft = center = getGrid()->getPatch(getCenterX(), getCenterY());
 	
 	// Shift from the center to the topLeft.
 	// shift left a bunch of times.

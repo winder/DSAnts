@@ -15,7 +15,8 @@ void UndergroundDrawGrid::incX()
 
 	if (smoothScrollX >= MODEL_SCALE)
 	{
-		underground->moveRight(centerX); 
+		//getGrid()->moveRight(centerX); 
+		moveCenterRight();
 		smoothScrollX = 0;
 	}
 
@@ -26,7 +27,8 @@ void UndergroundDrawGrid::decX()
 	smoothScrollX-=MODEL_SCALE_INCREMENT;	
 	if (smoothScrollX <= (-1*MODEL_SCALE))
 	{
-		underground->moveLeft(centerX);
+		//getGrid()->moveLeft(centerX);
+		moveCenterLeft();
 		smoothScrollX = 0;
 	}
 
@@ -35,11 +37,12 @@ void UndergroundDrawGrid::decX()
 // When drawing a grid, we don't want to pan too shallow.
 void UndergroundDrawGrid::incY()
 { 
-	if (centerY <= 7) return;
+	if (getCenterY() <= 7) return;
 	smoothScrollY+=MODEL_SCALE_INCREMENT;
 	if (smoothScrollY >= MODEL_SCALE)
 	{
-		underground->moveUp(centerY);
+		//getGrid()->moveUp(centerY);
+		moveCenterUp();
 		smoothScrollY = 0;
 	}
 
@@ -47,12 +50,13 @@ void UndergroundDrawGrid::incY()
 
 void UndergroundDrawGrid::decY()
 { 
-	if (centerY == DEPTH-GRID_SIZE-1) return;
+	if (getCenterY() == DEPTH-GRID_SIZE-1) return;
 
 	smoothScrollY-=MODEL_SCALE_INCREMENT;
 	if (smoothScrollY <= (-1*MODEL_SCALE))
 	{
-		underground->moveDown(centerY);
+		//getGrid()->moveDown(centerY);
+		moveCenterDown();
 		smoothScrollY = 0;
 	}
 
@@ -104,23 +108,23 @@ bool UndergroundDrawGrid::isVisible(short x, short y)
 		return false;
 
 	// Out of visible Y values.
-	if (	(y > (centerY+GRID_SIZE)) ||
-				(y < (centerY-GRID_SIZE)) )
+	if (	(y > (getCenterY()+GRID_SIZE)) ||
+				(y < (getCenterY()-GRID_SIZE)) )
 		return false;
 
 	// To get here, y value is good.
 
 	// Basic case
-	if (	(x < (centerX+GRID_SIZE)) &&
-				(x > (centerX-GRID_SIZE)))
+	if (	(x < (getCenterX()+GRID_SIZE)) &&
+				(x > (getCenterX()-GRID_SIZE)))
 		return true;
 
-	else if (	((WIDTH-1) < (centerX+GRID_SIZE)) &&
-				(x < ((centerX+GRID_SIZE)%WIDTH)))
+	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) &&
+				(x < ((getCenterX()+GRID_SIZE)%WIDTH)))
 		return true;
 
-	else if (	((centerX-GRID_SIZE) < 0) &&
-						(x > (centerX-GRID_SIZE+WIDTH)))
+	else if (	((getCenterX()-GRID_SIZE) < 0) &&
+						(x > (getCenterX()-GRID_SIZE+WIDTH)))
 		return true;
 
 	// if none of those then...
@@ -130,17 +134,17 @@ bool UndergroundDrawGrid::isVisible(short x, short y)
 // This is complicated because there's a circular array...
 float UndergroundDrawGrid::positionX(short x)
 {
-	if (	(x < (centerX+GRID_SIZE)) &&
-				(x > (centerX-GRID_SIZE)))
-		return ((centerX - x + 1) * -1) * MODEL_SCALE;
+	if (	(x < (getCenterX()+GRID_SIZE)) &&
+				(x > (getCenterX()-GRID_SIZE)))
+		return ((getCenterX() - x + 1) * -1) * MODEL_SCALE;
 
-	else if (	((WIDTH-1) < (centerX+GRID_SIZE)) &&
-				(x < ((centerX+GRID_SIZE)%WIDTH)))
-		return ((centerX - (x+WIDTH) + 1) * -1) * MODEL_SCALE;
+	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) &&
+				(x < ((getCenterX()+GRID_SIZE)%WIDTH)))
+		return ((getCenterX() - (x+WIDTH) + 1) * -1) * MODEL_SCALE;
 
-	else if (	((centerX-GRID_SIZE) < 0) &&
-						(x > (centerX-GRID_SIZE+WIDTH)))
-		return ((centerX - (x-WIDTH) + 1) * -1) * MODEL_SCALE;
+	else if (	((getCenterX()-GRID_SIZE) < 0) &&
+						(x > (getCenterX()-GRID_SIZE+WIDTH)))
+		return ((getCenterX() - (x-WIDTH) + 1) * -1) * MODEL_SCALE;
 
 
 	//TODO: throw exception?
@@ -148,7 +152,7 @@ float UndergroundDrawGrid::positionX(short x)
 }
 float UndergroundDrawGrid::positionY(short y)
 {
-	return (centerY - y) * MODEL_SCALE;
+	return (getCenterY() - y) * MODEL_SCALE;
 }
 
 // Shift the center if the player is too far to the side of the map.
@@ -201,7 +205,7 @@ Patch* UndergroundDrawGrid::draw()
 
 	// Eventually this call will be made to whatever generic character the
 	// map should be centered on.  i.e. the player, or an enemy ant.
-	bottomLeft = underground->getPatch(centerX, centerY);
+	bottomLeft = getGrid()->getPatch(getCenterX(), getCenterY());
 
 	// Shift from the center to the bottomLeft.
 	// shift left a bunch of times.

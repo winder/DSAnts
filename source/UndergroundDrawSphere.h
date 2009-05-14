@@ -18,11 +18,20 @@ class UndergroundDrawSphere: public Underground
 		void drawSegment(int x, int y, int rightx, int upy, Patch* p);
 		void computeCircles();
 
-		void incX(){ centerX++; if (centerX > lats) centerX%=lats; }
-		void decX(){ centerX--; if (centerX == -1) centerX=lats-1; }
+		void incX(){	setCenterX(getCenterX()+1);
+									if (getCenterX() > lats)
+										setCenterX( getCenterX()%lats ); }
 
-		void incY(){ centerY++; if (centerY > longs) centerY%=longs; }
-		void decY(){ centerY--; if (centerY == -1) centerY=longs-1; }
+		void decX(){	setCenterX(getCenterX()-1);
+									if (getCenterX() == -1)
+										setCenterX( lats-1 ); }
+
+		void incY(){	setCenterY( getCenterY()+1 );
+									if (getCenterY() > longs)
+										setCenterY( getCenterY()%longs ); }
+		void decY(){	setCenterY( getCenterY()-1 );
+									if (getCenterY() == -1)
+										setCenterY( longs-1 ); }
 
 		// Returns index Num to the right of X, accounting for array wrap.
 		int toTheRight(int X, int num){	int right = X + num;
@@ -33,9 +42,9 @@ class UndergroundDrawSphere: public Underground
 																		if (left < 0) return (lats-1)+left;
 																		return left; }
 		// Shifts the center to the left and accounts for array wrap.
-		int getLeftIndex(){	return toTheLeft(centerX, GRID_SIZE); }
+		int getLeftIndex(){	return toTheLeft(getCenterX(), GRID_SIZE); }
 		// Shifts the center to the right and accounts for array wrap.
-		int getRightIndex(){	return toTheRight(centerX, GRID_SIZE); }
+		int getRightIndex(){	return toTheRight(getCenterX(), GRID_SIZE); }
 
 	private:
 		bool cached;
