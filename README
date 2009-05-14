@@ -1,38 +1,73 @@
 Concept:
 
 Sim-Ants / DigDug style game created in a large disk, mario-galaxy style world.
+-Decided to go with a grid for now, sphere math was taking way too long.
 
-Both red and black ants will share the same disk underground world
+Both red and black ants will share the same underground world
 
 Initially the game will focus more on the under-ground aspect and building an impenetrable ant-cave and focus less on the above ground aspects.
 
 
-Development process:
+Development process, Asterisk indicates complete:
 
-1. Create the 2D / circular underground world.
-	- circular / 2d
-	- destrutable, player
+*1. Create the 2D underground world.
+*	- 2d
+*	- destrutable, player
+* - basic types:
+*		-Dirt
+*		-Empty
+*		-Surface
+*		-Barrier
 
-2. Create occupants
-	- Player
+
+2. Create basics
+*	- Player
+*	- Ants
+*	- Basic AI
+*	- Camera following
+	- Player control
+*		- D-Pad
+*		- Touch, simple
+		- Touch, dijkstra
+
+3. Create surface world
+	- Link to underground
+	- Obstacles (Rocks, pits, shoe)
+	- Food
+
+4. A.I. / Enemy base.
+	- Ant action AI's:
+*		-Wander
+		-Forage
+		-Attack
+		-Defend
+		-???
+	- Base design
+*		-simple/random
+		-more interesting?
+
+5. Gameplay
+	- Enemies (Pincer pit, spider, food)
 	- Queen
 	- Egg / Hatch system
 	- Food / Eating system
 	- Workers / Breeders / Soldiers
+	- Scores
+	- Ant statistics
+	- Ant combat.
 
-3. Create surface world
+6. Polish
 	- Terrain themes (outdoors, patio, kitchen, etc)
-	- Obstacles (Rocks, pits, shoe)
-	- Food
-	- Enemies (Pincer pit, spider, food)
-
-4. A.I. / Enemy base.
-	- Food gathering
-	- Play style (aggressive, defensive)
-	- Base design
+	- Object models:
+		-dirt
+		-barriers
+		-???
 
 
-
+NOTE: The below was determined to be too much work for too little reward,
+      the effect was not as impressive as hoped for so it was scraped for
+      a plain old 2D array rendered on a 3D plane.
+-------------------------------------------------------------------------
 Underground world data structure.
 
 The world is a flat donut, with an unpassable "rock" core at the bottom.

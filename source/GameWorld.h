@@ -4,7 +4,8 @@
 #define UNDERGROUND_S 1
 #define SURFACE_S 2
 
-#include "UndergroundDrawGrid.h"
+#include "Underground.h"
+//#include "Surface.h"
 #include <vector>
 #include "Ant.h"
 #include "Camera.h"
@@ -38,7 +39,7 @@ class GameWorld
 		void decX(){ ug->decX(); }
 		void decY(){ ug->decY(); }
 
-		UndergroundDrawGrid* getUG(){ return ug; }
+		Underground* getUG(){ return ug; }
 
 		// Get INPUT, everything else will use input as though
 		// it is up to date.
@@ -67,7 +68,7 @@ class GameWorld
 		Input *in;
 
 		short STATE;
-		UndergroundDrawGrid *ug;
+		Underground *ug;
 		//Surface &surf;
 
 		Player *p;

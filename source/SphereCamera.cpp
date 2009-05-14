@@ -1,6 +1,6 @@
-#include "UndergroundCamera.h"
+#include "SphereCamera.h"
 
-void UndergroundCamera::render()
+void SphereCamera::render()
 {
 	if (!cached) calcPosition();
 
@@ -10,7 +10,7 @@ void UndergroundCamera::render()
 }
 
 
-void UndergroundCamera::calcPosition()
+void SphereCamera::calcPosition()
 {
 	float latitude = lat;
 	float longitude = track;

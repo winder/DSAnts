@@ -1,6 +1,7 @@
 #include "StaticDraw.h"
 
-void StaticDraw::draw(Underground *ug, short slice, short width, short height)
+/*
+void StaticDraw::draw(MapDraw *ug, short slice, short width, short height)
 {
 
 
@@ -34,7 +35,7 @@ void StaticDraw::draw(Underground *ug, short slice, short width, short height)
 
 
 }
-
+*/
 
 void StaticDraw::draw(Patch *p)
 {

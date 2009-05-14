@@ -1,7 +1,7 @@
-#ifndef UNDERGROUNDDRAWGRID_H
-#define UNDERGROUNDDRAWGRID_H
+#ifndef MAPDRAW_H
+#define MAPDRAW_H
 
-#include "Underground.h"
+#include "Map.h"
 #include "StaticDraw.h"
 #include "Patch.h"
 #include "Camera.h"
@@ -10,10 +10,10 @@
 // need this for picking.
 #include <nds/arm9/postest.h>
 
-class UndergroundDrawGrid: public Underground
+class MapDraw: public Map
 {
 	public:
-		UndergroundDrawGrid();
+		MapDraw();
 
 		// Drawing functions.
 		Patch* draw();

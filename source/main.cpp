@@ -3,11 +3,11 @@
 
 #include <stdio.h>
 #include "GameWorld.h"
-#include "UndergroundDrawSphere.h"
-#include "UndergroundDrawGrid.h"
+//#include "UndergroundDrawSphere.h"
+#include "Underground.h"
 #include "StaticDraw.h"
 #include "Camera.h"
-#include "UndergroundCamera.h"
+#include "SphereCamera.h"
 #include "memoryStats.h"
 #include "cpu_usage.h"
 #include "Lighting.h"

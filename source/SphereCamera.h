@@ -1,5 +1,5 @@
-#ifndef UNDERGROUNDCAMERA_H
-#define UNDERGROUNDCAMERA_H
+#ifndef SPHERECAMERA_H
+#define SPHERECAMERA_H
 
 #include <nds.h>
 #include <math.h>
@@ -11,10 +11,10 @@
 
 // This class is special because it runs along a circular track around the
 // origin, looking inward.
-class UndergroundCamera:public Camera
+class SphereCamera:public Camera
 {
 	public:
-		UndergroundCamera():Camera(){ cached=false; radius=6; track=0; lat=0;}
+		SphereCamera():Camera(){ cached=false; radius=6; track=0; lat=0;}
 
 		void moveRight(){ track+=2.5; cached=false; }
 		void moveLeft(){ track-=2.5; cached=false; }

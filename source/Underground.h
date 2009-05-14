@@ -3,9 +3,9 @@
 
 #include "Ant.h"
 #include "Grid.h"
-#include "Map.h"
+#include "MapDraw.h"
 
-class Underground: public Map
+class Underground: public MapDraw
 {
 	public:
 		// This is structured to make a tunnel.  Need to change it to allow

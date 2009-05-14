@@ -1,6 +1,6 @@
-#include "UndergroundDrawGrid.h"
+#include "MapDraw.h"
 
-UndergroundDrawGrid::UndergroundDrawGrid()
+MapDraw::MapDraw()
 {
 	smoothScrollX = smoothScrollY = 0;
 	boxSide = 0.1;
@@ -9,7 +9,7 @@ UndergroundDrawGrid::UndergroundDrawGrid()
 
 
 // increment a scene shift some amount before scrolling the tiles.
-void UndergroundDrawGrid::incX()
+void MapDraw::incX()
 {
 	smoothScrollX+=MODEL_SCALE_INCREMENT;	
 
@@ -22,7 +22,7 @@ void UndergroundDrawGrid::incX()
 
 }
 
-void UndergroundDrawGrid::decX()
+void MapDraw::decX()
 { 
 	smoothScrollX-=MODEL_SCALE_INCREMENT;	
 	if (smoothScrollX <= (-1*MODEL_SCALE))
@@ -35,7 +35,7 @@ void UndergroundDrawGrid::decX()
 }
 
 // When drawing a grid, we don't want to pan too shallow.
-void UndergroundDrawGrid::incY()
+void MapDraw::incY()
 { 
 	if (getCenterY() <= 7) return;
 	smoothScrollY+=MODEL_SCALE_INCREMENT;
@@ -48,7 +48,7 @@ void UndergroundDrawGrid::incY()
 
 }
 
-void UndergroundDrawGrid::decY()
+void MapDraw::decY()
 { 
 	if (getCenterY() == DEPTH-GRID_SIZE-1) return;
 
@@ -63,8 +63,8 @@ void UndergroundDrawGrid::decY()
 }
 
 
-// WARNING: COPY / PASTE / TWEAK of UndergroundDrawGrid::draw()
-bool UndergroundDrawGrid::pickPoint(int x, int y, Camera &cam)
+// WARNING: COPY / PASTE / TWEAK of MapDraw::draw()
+bool MapDraw::pickPoint(int x, int y, Camera &cam)
 {
   // This flag makes it so "startCheck" and "endCheck" are called
   // before and after every polygon is drawn
@@ -101,7 +101,7 @@ bool UndergroundDrawGrid::pickPoint(int x, int y, Camera &cam)
 }
 
 // WOW there's gotta be something better than this...
-bool UndergroundDrawGrid::isVisible(short x, short y)
+bool MapDraw::isVisible(short x, short y)
 {
 	// out of array bounds.
 	if ((x<0) || (y < 0) || (y>=WIDTH) || (x>=WIDTH))
@@ -132,7 +132,7 @@ bool UndergroundDrawGrid::isVisible(short x, short y)
 }
 
 // This is complicated because there's a circular array...
-float UndergroundDrawGrid::positionX(short x)
+float MapDraw::positionX(short x)
 {
 	if (	(x < (getCenterX()+GRID_SIZE)) &&
 				(x > (getCenterX()-GRID_SIZE)))
@@ -150,13 +150,13 @@ float UndergroundDrawGrid::positionX(short x)
 	//TODO: throw exception?
 	return 1215;
 }
-float UndergroundDrawGrid::positionY(short y)
+float MapDraw::positionY(short y)
 {
 	return (getCenterY() - y) * MODEL_SCALE;
 }
 
 // Shift the center if the player is too far to the side of the map.
-void UndergroundDrawGrid::shiftCenter(Ant *p)
+void MapDraw::shiftCenter(Ant *p)
 {
 	float pos = positionY(p->getY());
 
@@ -173,7 +173,7 @@ void UndergroundDrawGrid::shiftCenter(Ant *p)
 		incX();
 }
 
-void UndergroundDrawGrid::drawAnt(Ant* a)
+void MapDraw::drawAnt(Ant* a)
 {
 		material(3,3,3);
 	// exit early if not visible.
@@ -191,7 +191,7 @@ void UndergroundDrawGrid::drawAnt(Ant* a)
 	// TODO: going to need to put this in the center when I get a real model.
 	drawBox(x-smoothScrollX, y-smoothScrollY, 0.01, MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
 }
-Patch* UndergroundDrawGrid::draw()
+Patch* MapDraw::draw()
 {
 
 	// TODO: don't use MODEL_SCALE and smoothScrollX/Y,
@@ -252,7 +252,7 @@ Patch* UndergroundDrawGrid::draw()
 	return '\0';
 }
 
-void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
+void MapDraw::drawPatch(float x, float y, Patch *p)
 {
 	float s = boxSide;
 	// make it take up all the space.
@@ -358,7 +358,7 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 	// if it does its business.
 	drawBox(x, y, 0, s, s, s);
 }
-void UndergroundDrawGrid::drawBox(float x, float y, float z, float width, float height, float depth)
+void MapDraw::drawBox(float x, float y, float z, float width, float height, float depth)
 {
 
 	//z face
@@ -404,7 +404,7 @@ void UndergroundDrawGrid::drawBox(float x, float y, float z, float width, float 
 	glVertex3f(x 	,y+height,z+depth);
 }
 
-void UndergroundDrawGrid::material(int r, int g, int b)
+void MapDraw::material(int r, int g, int b)
 {
 // This seems to work alright.
 	glMaterialf(GL_DIFFUSE, RGB15(r, g, b) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
@@ -413,7 +413,7 @@ void UndergroundDrawGrid::material(int r, int g, int b)
 	glMaterialf(GL_EMISSION, RGB15(0, 0, 0));
 }
 
-void UndergroundDrawGrid::drawRect(float x, float y, float z, float width, float height)
+void MapDraw::drawRect(float x, float y, float z, float width, float height)
 {
 	glNormal3f(0,0,-1);
 	glVertex3f(x	,y	,z);
@@ -422,7 +422,7 @@ void UndergroundDrawGrid::drawRect(float x, float y, float z, float width, float
 	glVertex3f(x+width,y	,z);
 }
 
-void UndergroundDrawGrid::startCheck()
+void MapDraw::startCheck()
 {
 	while(PosTestBusy()); // wait for the position test to finish
 	while(GFX_BUSY); // wait for all the polygons from the last object to be drawn
@@ -430,7 +430,7 @@ void UndergroundDrawGrid::startCheck()
 	polyCount = GFX_POLYGON_RAM_USAGE; // save the polygon count
 }
 
-bool UndergroundDrawGrid::endCheck()
+bool MapDraw::endCheck()
 {
 	while(GFX_BUSY); // wait for all the polygons to get drawn
 	while(PosTestBusy()); // wait for the position test to finish

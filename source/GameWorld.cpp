@@ -5,7 +5,7 @@ GameWorld::GameWorld()
 	cam = new Camera();
 	cam->translateZinc(3.5);
 
-	ug = new UndergroundDrawGrid();
+	ug = new Underground();
 
 	tester = new Ant();
 //	tester->setXY(0, 2);
