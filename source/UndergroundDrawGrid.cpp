@@ -76,7 +76,7 @@ bool UndergroundDrawGrid::pickPoint(int x, int y, Camera &cam)
 	cam.Perspective();
 	glMatrixMode(GL_MODELVIEW);
 
-	// opaque polygons, no culling, this fixes al my problems.
+	// opaque polygons, no culling, this fixes my problems.
 	glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE);
 
 	// Un-mark the last one.
@@ -141,6 +141,10 @@ float UndergroundDrawGrid::positionX(short x)
 	else if (	((centerX-GRID_SIZE) < 0) &&
 						(x > (centerX-GRID_SIZE+WIDTH)))
 		return ((centerX - (x-WIDTH) + 1) * -1) * MODEL_SCALE;
+
+
+	//TODO: throw exception?
+	return 1215;
 }
 float UndergroundDrawGrid::positionY(short y)
 {
@@ -179,12 +183,15 @@ void UndergroundDrawGrid::drawAnt(Ant* a)
 
 	// draw at x, y.
 
-	drawBox(x-smoothScrollX, y-smoothScrollY, 0, MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+	// slightly off the background to get rid of overlaping.
+	// TODO: going to need to put this in the center when I get a real model.
+	drawBox(x-smoothScrollX, y-smoothScrollY, 0.01, MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
 }
 Patch* UndergroundDrawGrid::draw()
 {
 
-	// TODO: don't use MODEL_SCALE and smoothScrollX/Y, I'm leaving this uncommented so I don't forget to fix it.
+	// TODO: don't use MODEL_SCALE and smoothScrollX/Y,
+	// dropping these in at the beginning would let me use less floating point math.
 //	glTranslatef(smoothScrollX, smoothScrollY, 0);
 //	glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
 
@@ -282,7 +289,8 @@ void UndergroundDrawGrid::drawPatch(float x, float y, Patch *p)
 	}
 	else if (p->TYPE == PATCH_EMPTY)
 	{
-		material(5,5,5);
+//		material(5,5,5);
+		material(31,31,31); // make it easier to see ants...
 		// Check top, bottom, left, right and draw
 		// empty patch with paths that can link to
 		// whichever are missing, this will either be a bunch of call lists

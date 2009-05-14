@@ -2,16 +2,16 @@
 #define UNDERGROUND_H
 
 #include "Ant.h"
-#include "DirtDisk.h"
+#include "Grid.h"
 
 class Underground
 {
 	public:
 		// TODO: this will need to be slightly restructured to allow multiple nests
-		//				so that a huge chunk of memory for multiple "DirtDisks" will not
+		//				so that a huge chunk of memory for multiple "Grid's" will not
 		//				be needed.
-		Underground(){	underground = new DirtDisk(); 
-										undergroundSize = 30;
+		Underground(){	underground = new Grid(); 
+										undergroundSize = 60;
 										underground->generateNest(undergroundSize);
 										centerX=0;
 										centerY=0;
@@ -30,13 +30,13 @@ class Underground
 
 		virtual void incY(){ underground->moveUp(centerY); }
 		virtual void decY(){ underground->moveDown(centerY); }
-		DirtDisk* getDisk()
+		Grid* getGrid()
 			{	return underground; }
 
 //TODO: fix this, commented out so that UndergroundDraw could access these...?
 //	private:
 		int undergroundSize;
-		DirtDisk *underground;
+		Grid *underground;
 		short centerX, centerY;
 		float rotationX, rotationY;
 };

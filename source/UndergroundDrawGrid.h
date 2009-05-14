@@ -26,6 +26,8 @@ class UndergroundDrawGrid: public Underground
 		// This function does picking to find out where in the grid the touch occurred.
 		bool pickPoint(int x, int y, Camera &cam);
 
+		// returns NULL if nothing is picked.
+		Patch* getPicked(){ return picked; }
 		// returns true if the x/y coordinate is in the drawing range.
 		bool isVisible(short x, short y);
 		// if an object is visible (should be checked seperately) these will return the

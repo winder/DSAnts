@@ -9,7 +9,7 @@
 #include "Ant.h"
 #include "Camera.h"
 #include "Input.h"
-
+#include "Player.h"
 
 // TODO: this class would make more sense as a "GameSquare" if I decide to go
 //			 the original SimAnt route and have multiple colonies spanning a grid.
@@ -27,8 +27,10 @@ class GameWorld
 	public:
 		GameWorld();
 		~GameWorld();
+
 		void draw();
 		void pickPoint(short x, short y);
+
 		// TODO: This will move the player, and depending on player information will
 		//       then move the screen.
 		void incX(){ ug->incX(); }
@@ -42,6 +44,10 @@ class GameWorld
 		// it is up to date.
 		int getInput();
 
+		// Calls AI functions on each ant individually.
+		void stepAntsForward();
+
+		// Coordinates a step in the game.
 		void stepForward();
 
 		// Camera needs to set itself up.
@@ -52,6 +58,10 @@ class GameWorld
 
 		void setProjection();
 	private:
+		// store the picked patch.
+		Patch *picked;
+		bool automove;
+
 		// cache for if the input is new.
 		bool newInput;
 		Input *in;
@@ -60,10 +70,10 @@ class GameWorld
 		UndergroundDrawGrid *ug;
 		//Surface &surf;
 
-		//Player p;
-		Ant* tester;
+		Player *p;
+		Ant *tester;
 		std::vector<Ant*> black;
-		//std::vector<Ant> red;
+		std::vector<Ant*> red;
 
 		// Camera
 		Camera *cam;

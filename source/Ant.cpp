@@ -1,5 +1,19 @@
 #include "Ant.h"
 
+Ant::Ant()
+{
+	offsetX = 0;
+	offsetY = 0;
+}
+
+Ant::Ant(int inx, int iny, Patch* pat)
+{
+	offsetX = 0;
+	offsetY = 0;
+	x=inx;
+	y=iny;
+	p=pat;
+}
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.
 // center the offending piece if they arne't 0.
 // I added a couple tweaks:
@@ -24,10 +38,10 @@ void Ant::moveRight()
 		offsetX++;
 
 	// if we are half way towards the next way, swap to the next one.
-	if (offsetX >= 10)
+	if (offsetX >= (ANIMATION_SIZE / 2))
 	{
-		offsetX=-10;
-		DirtDisk::moveRight(x);
+		offsetX=-1 * (ANIMATION_SIZE / 2);
+		Grid::moveRight(x);
 		p = p->right;
 	}
 }
@@ -42,10 +56,10 @@ void Ant::moveLeft()
 	else if ((offsetX <= 0) && (offsetY < 0) && (p->left->bottom->TYPE != PATCH_EMPTY)) offsetY++;
 	else
 		offsetX--;
-	if (offsetX <= -10)
+	if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
 	{
-		offsetX=10;
-		DirtDisk::moveLeft(x);
+		offsetX=(ANIMATION_SIZE / 2);
+		Grid::moveLeft(x);
 		p = p->left;
 	}
 }
@@ -64,10 +78,10 @@ void Ant::moveUp()
 	else if ((offsetY >= 0) && (offsetX < 0) && (p->top->left->TYPE != PATCH_EMPTY))	offsetX++;
 	else
 		offsetY++;
-	if (offsetY >= 10)
+	if (offsetY >= (ANIMATION_SIZE / 2))
 	{
-		offsetY=-10;
-		DirtDisk::moveUp(y);
+		offsetY=-1 * (ANIMATION_SIZE / 2);
+		Grid::moveUp(y);
 		p = p->top;
 	}
 }
@@ -85,10 +99,10 @@ void Ant::moveDown()
 	else
 		offsetY--;
 
-	if (offsetY <= -10)
+	if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
 	{
-		offsetY=10;
-		DirtDisk::moveDown(y);
+		offsetY=(ANIMATION_SIZE / 2);
+		Grid::moveDown(y);
 		p = p->bottom;
 	}
 }
@@ -114,7 +128,7 @@ void Ant::moveRight()
 	if (offsetX >= 1)
 	{
 		offsetX=-19;
-		DirtDisk::moveRight(x);
+		Grid::moveRight(x);
 		p = p->right;
 	}
 }
@@ -135,7 +149,7 @@ void Ant::moveLeft()
 	if (offsetX <= -1)
 	{
 		offsetX=19;
-		DirtDisk::moveLeft(x);
+		Grid::moveLeft(x);
 		p = p->left;
 	}
 }
@@ -157,7 +171,7 @@ void Ant::moveUp()
 	if (offsetY >= 1)
 	{
 		offsetY=-19;
-		DirtDisk::moveUp(y);
+		Grid::moveUp(y);
 		p = p->top;
 	}
 }
@@ -178,7 +192,7 @@ void Ant::moveDown()
 	if (offsetY <= -1)
 	{
 		offsetY=19;
-		DirtDisk::moveDown(y);
+		Grid::moveDown(y);
 		p = p->bottom;
 	}
 }

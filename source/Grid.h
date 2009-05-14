@@ -6,6 +6,7 @@
 
 //#include <nds.h>
 #include <time.h>
+#include <vector>
 
 #include "global.h"
 #include "Patch.h"
@@ -13,10 +14,10 @@
 //#include "Empty.h"
 //#include "Barrier.h"
 
-class DirtDisk
+class Grid
 {
 	public:
-		DirtDisk();
+		Grid();
 
 		// clamp the values just in case.
 		Patch* getPatch(short width, short depth)
@@ -37,8 +38,14 @@ class DirtDisk
 		// It will have one entrance which is always at (0,20,0)
 		void generateNest(int size);
 
+		// Keep track of cleared tiles in a vector.
+		std::vector<Patch*> getCleared(){ return cleared; }
+		void clear(Patch* p);
 	private:
 		Patch* dd[WIDTH][DEPTH];
+
+		// a list of cleared tiles.
+		std::vector<Patch*> cleared;
 };
 
 #endif

@@ -5,7 +5,7 @@ void StaticDraw::draw(Underground *ug, short slice, short width, short height)
 
 
 	int x, y;
-	Patch *topLeft = ug->getDisk()->getPatch(width, height);
+	Patch *topLeft = ug->getGrid()->getPatch(width, height);
 	Patch *t;
 
 //	Box(-3.5, 0, -7, 0.2, 1.5, 1);

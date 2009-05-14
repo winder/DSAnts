@@ -99,13 +99,6 @@ int main()
 	int polygon_count;
 	int vertex_count;
 
-	//object 
-	// v10, this seems to work great but could have issues with resolution.
-	v10 rx = 0, ry = 0;
-	int oldx = 0, oldy = 0;
-
-	float deltaPointer = 0;
-
 	//main loop
 	while (1) {
 //		gw->getInput();
@@ -149,8 +142,6 @@ int main()
 		gw->draw();
 
 		cpu_percent = CPU_EndTest();
-
-		deltaPointer = ry;
 
 		swiWaitForVBlank();
 

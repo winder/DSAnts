@@ -9,7 +9,8 @@ GameWorld::GameWorld()
 
 	tester = new Ant();
 	tester->setXY(0, 2);
-	tester->setPatch( ug->getDisk()->getPatch(0,2) );
+	tester->setPatch( ug->getGrid()->getPatch(0,2) );
+	p = new Player(tester);
 
 	STATE = UNDERGROUND_S;
 }
@@ -24,9 +25,18 @@ void GameWorld::draw()
 	// Draw the SCENE
 	if (STATE == UNDERGROUND_S)
 	{
+			// Draw game field.
 			ug->draw();
 			//ug->drawAnts(black, red);
-			ug->drawAnt(tester);
+
+			// draw the ants			
+			for (unsigned int i=0; i < black.size(); i++)
+				ug->drawAnt(black[i]);
+
+//			for (unsigned int i=0; i < red.size(); i++)
+//				ug->drawAnt(red[i]);
+
+			ug->drawAnt(p->getPlayerAnt());
 	}
 	else if (STATE == SURFACE_S)
 	{
@@ -48,7 +58,17 @@ void GameWorld::draw()
 void GameWorld::pickPoint(short x, short y)
 {
 	if (STATE == UNDERGROUND_S)
-		ug->pickPoint(x, y, *cam);
+	{
+		if (ug->pickPoint(x, y, *cam))
+		{
+			picked = ug->getPicked();
+			p->setDestination(picked->x, picked->y);
+			if (picked->TYPE == PATCH_EMPTY)
+				automove = true;
+			else
+				automove = false;
+		}
+	}
 	else if (STATE == SURFACE_S)
 	{
 		//surf->pickPoint();
@@ -58,6 +78,29 @@ void GameWorld::pickPoint(short x, short y)
 int GameWorld::getInput()
 {
 	return in->getPressed();
+}
+
+void GameWorld::stepAntsForward()
+{
+	int direction;
+	// test, move each ant around randomly.
+	for (unsigned int i=0; i < black.size(); i++)
+	{
+		// AI for ant "black[i]->AImove()"
+		
+		// move in a random direction.
+		direction = rand()%4;
+
+		if ((direction == 0) && (black[i]->getPatch()->bottom) && (black[i]->getPatch()->bottom->TYPE == PATCH_EMPTY))
+			black[i]->moveDown();
+		else if ((direction <= 1) && (black[i]->getPatch()->right) && (black[i]->getPatch()->right->TYPE == PATCH_EMPTY))
+			black[i]->moveRight();
+		else if ((direction <= 2) && (black[i]->getPatch()->left) && (black[i]->getPatch()->left->TYPE == PATCH_EMPTY))
+			black[i]->moveLeft();
+		else if ((direction <= 3) && (black[i]->getPatch()->top) && (black[i]->getPatch()->top->TYPE == PATCH_EMPTY))
+			black[i]->moveUp();
+
+	}
 }
 
 void GameWorld::stepForward()
@@ -78,13 +121,38 @@ void GameWorld::stepForward()
 	if( held & KEY_UP)		ug->incY();
 	if( held & KEY_DOWN)	ug->decY();
 */
-	if( held & KEY_LEFT)	tester->moveLeft();
-	if( held & KEY_RIGHT)	tester->moveRight();
-	if( held & KEY_UP)		tester->moveUp();
-	if( held & KEY_DOWN)	tester->moveDown();
+	if( held & KEY_LEFT)
+	{
+		p->moveLeft();
+		automove = false;
+	}
+	if( held & KEY_RIGHT)
+	{
+		p->moveRight();
+		automove = false;
+	}
+	if( held & KEY_UP)
+	{
+		p->moveUp();
+		automove = false;
+	}
+	if( held & KEY_DOWN)
+	{
+		p->moveDown();
+		automove = false;
+	}
+
+	// Pressing the D-Pad cancels automove.
+	// automove is set by touching an empty spot.
+	if (automove)
+	{
+		p->move();
+	}
+	// add a new ant on press.
+	if(pressed & KEY_A) black.push_back(new Ant(0, 2, ug->getGrid()->getPatch(0,2)));
 
 	// TODO: this will be the player ant:
-	ug->shiftCenter(tester);
+	ug->shiftCenter(p->getPlayerAnt());
 
 	// no draw here, it is handled elsewhere so that things will be able
 	// to move forward if things start to lag.
@@ -111,6 +179,8 @@ int oldX, oldY;
 		oldY = touchXY.py;
 	}
 
+	// send everyone on their way.
+	stepAntsForward();
 }
 
 

@@ -9,8 +9,17 @@ struct Patch
 	Patch *right;
 	Patch *top;
 	Patch *bottom;
+	// I'm thinking of making this a long and having lots of flags in addition to
+	// just a TYPE, then having a bunch of macro's to convert TYPE into usable parts.
 	short TYPE;
 	bool picked;
+	// yeah, I want these in here, sorry memory.
+	short x;
+	short y;
+
+// something like this will be useful at some point, these could be used as a TYPE though.
+//	Ant* occupant?
+//	bool occupied?
 };
 
 /*

@@ -18,7 +18,9 @@
 #define UNDERGROUND_GRID_DRAW 7
 #define GRID_SIZE 13
 
-// Draw scale
+// Draw scale and animation between grid stuff.
+// ANIMATION_SIZE must be divisible by 2.
+#define ANIMATION_SIZE 20
 #define MODEL_SCALE 0.2
 #define MODEL_SCALE_INCREMENT 0.01
 // there is a built in vector: "GLvector" but it uses ints...

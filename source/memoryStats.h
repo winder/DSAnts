@@ -60,7 +60,8 @@ void *operator new(size_t sz)
 
 void operator delete(void *p) {
     u32 sz = reinterpret_cast<u32*>(p)[-2]; // retrieve size from memory
-    u32 id = reinterpret_cast<u32*>(p)[-1]; // retrieve id
+// this doesn't appear to be used and returns an annoying warning...
+//    u32 id = reinterpret_cast<u32*>(p)[-1]; // retrieve id
     if (*reinterpret_cast<u32*>(reinterpret_cast<u8*>(p)+NEXT4ALIGN(sz)) != GUARD_VALUE) // check against guard value
     {
 //        PrintStatusMessage("MALLOC OVERFLOW!\n");

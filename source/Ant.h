@@ -2,11 +2,14 @@
 #define ANT_H
 
 #include "Patch.h"
-#include "DirtDisk.h"
+#include "Grid.h"
 
 class Ant
 {
 	public:
+		Ant();
+		Ant(int inx, int iny, Patch* pat);
+
 		// the ant doesn't draw itself.  the world draws the ants.
 //		virtual void draw();
 

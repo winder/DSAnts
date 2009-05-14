@@ -1,14 +1,18 @@
-#include "DirtDisk.h"
+#include "Grid.h"
 
-DirtDisk::DirtDisk()
+Grid::Grid()
 {
-	int x,y,z;
+	int x,y;
 
 	// Create the objects.
 	for (x=0; x < WIDTH; x++)
 		for (y=0; y < DEPTH; y++)
 		{
 			dd[x][y] = new Patch();
+
+			dd[x][y]->x = x;
+			dd[x][y]->y = y;
+
 			// Unpassable patch at the deepest level.
 			if (y == DEPTH-1)
 				dd[x][y]->TYPE = PATCH_BARRIER;
@@ -16,9 +20,6 @@ DirtDisk::DirtDisk()
 			// have a coordinate to where on the surface the hole emerges.
 			else if ( y == 0 )
 				dd[x][y]->TYPE = PATCH_TOP;
-			// This was for making something to look at.
-//			else if (y%2 == 1)
-//				dd[x][y][z]->TYPE = PATCH_EMPTY;
 			// Everything else is dirt.
 			else
 				dd[x][y]->TYPE = PATCH_DIRT;
@@ -35,7 +36,7 @@ DirtDisk::DirtDisk()
 		}
 }
 
-void DirtDisk::moveRight(short &x)
+void Grid::moveRight(short &x)
 {
 	// Width roll-over
 	if ( x != WIDTH - 1 )
@@ -44,7 +45,7 @@ void DirtDisk::moveRight(short &x)
 		x = 0;
 }
 
-void DirtDisk::moveLeft(short &x)
+void Grid::moveLeft(short &x)
 {
 	// Width roll-over
 	if ( x >= 1 )
@@ -53,7 +54,7 @@ void DirtDisk::moveLeft(short &x)
 		x = WIDTH - 1;
 }
 
-bool DirtDisk::moveUp(short &y)
+bool Grid::moveUp(short &y)
 {
 	// SLICE and WIDTH don't change.
 	if ( y == 0 )
@@ -62,7 +63,7 @@ bool DirtDisk::moveUp(short &y)
 	return true;
 }
 
-bool DirtDisk::moveDown(short &y)
+bool Grid::moveDown(short &y)
 {
 	// SLICE and WIDTH don't change.
 	if ( y == DEPTH - 1 )
@@ -72,7 +73,7 @@ bool DirtDisk::moveDown(short &y)
 }
 
 // use the reference methods above to take a pointer and get the one left to it.
-Patch* DirtDisk::getRight(int x, int y)
+Patch* Grid::getRight(int x, int y)
 {
 	short w = x;
 	moveRight(w);
@@ -81,7 +82,7 @@ Patch* DirtDisk::getRight(int x, int y)
 	return dd[w][y];
 }
 
-Patch* DirtDisk::getLeft(int x, int y)
+Patch* Grid::getLeft(int x, int y)
 {
 	short w = x;
 	moveLeft(w);
@@ -89,14 +90,14 @@ Patch* DirtDisk::getLeft(int x, int y)
 	// Depth max/min doesn't change moving right/left
 	return dd[w][y];
 }
-Patch* DirtDisk::getTop(int x, int y)
+Patch* Grid::getTop(int x, int y)
 {
 	short d = y;
 	if (!moveUp(d)) return '\0';
 
 	return dd[x][d];
 }
-Patch* DirtDisk::getBottom(int x, int y)
+Patch* Grid::getBottom(int x, int y)
 {
 	short d = y;
 	if (!moveDown(d)) return '\0';
@@ -106,14 +107,14 @@ Patch* DirtDisk::getBottom(int x, int y)
 
 // This algorithm works, it does what its supposed to, but it doesn't make a
 // very convincing nest.
-void DirtDisk::generateNest(int size)
+void Grid::generateNest(int size)
 {
 	Patch *start = getPatch(0,1);
 
 	// dig down a little and set them as empty spot
-	start->TYPE = PATCH_EMPTY;
+	clear(start);
 	start = start->bottom;
-	start->TYPE = PATCH_EMPTY;
+	clear(start);
 
 	time_t t;
 	t = time(NULL);
@@ -123,10 +124,8 @@ void DirtDisk::generateNest(int size)
 	int x = 0;
 	while (x++ < size)
 	{
+		// move in a random direction.
 		direction = rand()%4;
-
-		// hard code direction = down.
-//		direction = 0;
 
 		// for every check afte the first use <=, in case the prior one
 		// failed due to existing patch.
@@ -156,13 +155,13 @@ void DirtDisk::generateNest(int size)
 		{
 			if (start->bottom && (start->bottom->TYPE == PATCH_EMPTY))
 				start = start->bottom;
-			else if (start->top && (start->top->TYPE == PATCH_EMPTY))
-				start = start->top;
+//			else if (start->top && (start->top->TYPE == PATCH_EMPTY))
+//				start = start->top;
 
 			x--;
 		}
 
-		start->TYPE = PATCH_EMPTY;
+		clear(start);
 	}
 /*
 	// Make a big cross for testing.
@@ -182,4 +181,13 @@ void DirtDisk::generateNest(int size)
 		start = start->left;
 	}
 */
+}
+
+void Grid::clear(Patch* p)
+{
+	if (p->TYPE == PATCH_DIRT)
+	{
+		p->TYPE = PATCH_EMPTY;
+		cleared.push_back(p);
+	}
 }
