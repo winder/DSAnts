@@ -3,6 +3,7 @@
 
 #include "Patch.h"
 #include "Grid.h"
+#include <stdio.h>
 
 class Ant
 {
@@ -24,13 +25,28 @@ class Ant
 
 		// move the ant.
 		// TODO: This could use more tweaking efficiency wise.
-		void moveRight();
-		void moveLeft();
-		void moveUp();
-		void moveDown();
+		// return value: true if tile changed.
+		bool moveRight();
+		bool moveLeft();
+		bool moveUp();
+		bool moveDown();
+
+		// This lets the ant move on its own accord, influenced by:
+		//		-feramone level of adjacent tiles
+		//		-current action
+		void move();
+		void wander();
+		void attack();
+		void forage();
+
+		void setAction(int a){ ACTION = a; }
+		int getAction(){ return ACTION; }
 
 		int getOffsetX(){ return offsetX; }
 		int getOffsetY(){ return offsetY; }
+
+		void setAI(bool inai){ ai = inai; }
+		bool getAI(){ return ai; }
 	private:
 		   //-----------------//
 		  // AI INFORMATION: //
@@ -38,10 +54,14 @@ class Ant
 		// True or false if the AI needs to intervene.
 		bool ai;
 		// ai will set these after deciding where the ant is heading.
+		// TODO: Dijkstra?
 		short dest_x, dest_y;
 		// Action the ai has decided the ant will perform, ie:
 		//	FORAGE, FIGHT, DEFEND, FOLLOW, ...?
 		int ACTION;
+		// save the direction between steps to prevent re-calculation.
+		int direction;
+		int directionOld; // ant wants to avoid turning around.
 
 		   //-----------------------//
 		  // LOCATION INFORMATION: //
@@ -55,6 +75,11 @@ class Ant
 		short offsetX;
 		short offsetY;
 		
+		// Status, health information.
+		int status;
+
+		// is the ant carrying something?
+		int carrying;
 };
 
 #endif

@@ -27,6 +27,9 @@ class Player
 		void moveLeft(){ p->moveLeft(); }
 		void moveRight(){ p->moveRight(); }
 
+		// If player has moved adjacent to a picked DIRT box, dig it.
+		void dig();
+
 		// auto movement:
 		void move();
 

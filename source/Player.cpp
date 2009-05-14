@@ -138,3 +138,16 @@ void Player::move()
 //	move();
 }
 
+void Player::dig()
+{
+	if( (p->getPatch()->right->TYPE == PATCH_DIRT) && p->getPatch()->right->picked )
+		p->getPatch()->right->TYPE = PATCH_EMPTY;
+	else if( (p->getPatch()->left->TYPE == PATCH_DIRT) && p->getPatch()->left->picked )
+		p->getPatch()->left->TYPE = PATCH_EMPTY;
+	// TOP could potentially be NULL (actually I don't think so.)
+	else if( (p->getPatch()->top) && (p->getPatch()->top->TYPE == PATCH_DIRT) && p->getPatch()->top->picked )
+		p->getPatch()->top->TYPE = PATCH_EMPTY;
+	// BOTTOM will not be NULL, it always has a barrier along the bottom.
+	else if( (p->getPatch()->bottom->TYPE == PATCH_DIRT) && p->getPatch()->bottom->picked )
+		p->getPatch()->bottom->TYPE = PATCH_EMPTY;
+}

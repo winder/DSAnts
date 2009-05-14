@@ -82,24 +82,11 @@ int GameWorld::getInput()
 
 void GameWorld::stepAntsForward()
 {
-	int direction;
 	// test, move each ant around randomly.
 	for (unsigned int i=0; i < black.size(); i++)
 	{
 		// AI for ant "black[i]->AImove()"
-		
-		// move in a random direction.
-		direction = rand()%4;
-
-		if ((direction == 0) && (black[i]->getPatch()->bottom) && (black[i]->getPatch()->bottom->TYPE == PATCH_EMPTY))
-			black[i]->moveDown();
-		else if ((direction <= 1) && (black[i]->getPatch()->right) && (black[i]->getPatch()->right->TYPE == PATCH_EMPTY))
-			black[i]->moveRight();
-		else if ((direction <= 2) && (black[i]->getPatch()->left) && (black[i]->getPatch()->left->TYPE == PATCH_EMPTY))
-			black[i]->moveLeft();
-		else if ((direction <= 3) && (black[i]->getPatch()->top) && (black[i]->getPatch()->top->TYPE == PATCH_EMPTY))
-			black[i]->moveUp();
-
+		black[i]->move();
 	}
 }
 
@@ -148,8 +135,14 @@ void GameWorld::stepForward()
 	{
 		p->move();
 	}
-	// add a new ant on press.
-	if(pressed & KEY_A) black.push_back(new Ant(0, 2, ug->getGrid()->getPatch(0,2)));
+
+	if(pressed & KEY_A)
+	{
+		// add a new ant on press.
+		Ant *t = new Ant(0, 2, ug->getGrid()->getPatch(0,2));
+		t->setAction( ANT_ACTION_WANDER );
+		black.push_back(t);
+	}
 
 	// TODO: this will be the player ant:
 	ug->shiftCenter(p->getPlayerAnt());
@@ -164,6 +157,7 @@ void GameWorld::stepForward()
 	curX = touchXY.px;
 	curY = touchXY.py;
 
+/*
 int oldX, oldY;
 	//reset x and y when user touches screen
 	if( pressed & KEY_TOUCH)  {
@@ -178,6 +172,11 @@ int oldX, oldY;
 		oldX = touchXY.px;
 		oldY = touchXY.py;
 	}
+*/
+	// If it is pressed, see if we can DIG IT.
+	if( pressed & KEY_TOUCH)
+		p->dig();
+
 
 	// send everyone on their way.
 	stepAntsForward();

@@ -24,10 +24,10 @@ Ant::Ant(int inx, int iny, Patch* pat)
 
 // TODO: get rid of the hard coded numbers so that I can tweak the ants speed without
 //       changing each one manually.
-void Ant::moveRight()
+bool Ant::moveRight()
 {
 	// don't move right if the ant is in the right spot isn't empty.
-	if ((offsetX >= 0) &&p->right->TYPE != PATCH_EMPTY) return;
+	if ((offsetX >= 0) &&p->right->TYPE != PATCH_EMPTY) return false;
 
 	// if Y is off center, the way is not empty, and we're well on our way to the next
 	// spot, move towards center Y.
@@ -43,13 +43,15 @@ void Ant::moveRight()
 		offsetX=-1 * (ANIMATION_SIZE / 2);
 		Grid::moveRight(x);
 		p = p->right;
+		return true;
 	}
+	return false;
 }
 
-void Ant::moveLeft()
+bool Ant::moveLeft()
 {
 	// if able to move right...
-	if ((offsetX <= 0) && p->left->TYPE != PATCH_EMPTY) return;
+	if ((offsetX <= 0) && p->left->TYPE != PATCH_EMPTY) return false;
 
 	// only move left if Y is centered.
 	if			((offsetX <= 0) && (offsetY > 0) && (p->left->top->TYPE != PATCH_EMPTY)) 		offsetY--;
@@ -61,17 +63,19 @@ void Ant::moveLeft()
 		offsetX=(ANIMATION_SIZE / 2);
 		Grid::moveLeft(x);
 		p = p->left;
+		return true;
 	}
+	return false;
 }
 
-void Ant::moveUp()
+bool Ant::moveUp()
 {
 	// no check if we're going opposite the way we're heading.
 //	if (offsetY < 0) offsetY++;
 
 	// TODO: This will need special handling to move the ant to the surface.
 //	if (p->top->TYPE == PATCH_TOP) return;
-	if ((offsetY >= 0) && p->top->TYPE != PATCH_EMPTY) return;
+	if ((offsetY >= 0) && p->top->TYPE != PATCH_EMPTY) return false;
 
 	// Prevent player from going in a weird direction if that way is blocked.
 	if 			((offsetY >= 0) && (offsetX > 0) && (p->top->right->TYPE != PATCH_EMPTY))	offsetX--;
@@ -83,15 +87,17 @@ void Ant::moveUp()
 		offsetY=-1 * (ANIMATION_SIZE / 2);
 		Grid::moveUp(y);
 		p = p->top;
+		return true;
 	}
+	return false;
 }
 
-void Ant::moveDown()
+bool Ant::moveDown()
 {
 	// no check if we're going opposite the way we're heading.
 //	if (offsetY > 0) offsetY--;
 
-	if ((offsetY <= 0) && p->bottom->TYPE != PATCH_EMPTY) return;
+	if ((offsetY <= 0) && p->bottom->TYPE != PATCH_EMPTY) return true;
 
 	// Prevent player from going in a weird direction if that way is blocked.
 	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom->right->TYPE != PATCH_EMPTY))	offsetX--;
@@ -104,96 +110,147 @@ void Ant::moveDown()
 		offsetY=(ANIMATION_SIZE / 2);
 		Grid::moveDown(y);
 		p = p->bottom;
+		return true;
 	}
+	return false;
 }
 
-/*
-// This stuff is clever and all, but it is too complicated, there is
-// noticable slowdown between the "nocheck" and other cases.
-// ALSO, it doesn't work quite right. (the -19 -> 1 part jumps)
-void Ant::moveRight()
+// This is the Ant's AI.
+// Each ant knows what direction its heading in,
+// it will head in that direction until a tile change
+// at which point it will keep going till in the center
+// of a tile, then call the AI function according to its
+// ACTION.
+void Ant::move()
 {
-	// no check if we're going opposite the way we're heading.
-	if (offsetX < 0) offsetX++;
-
-	// if able to move right...
-	if (p->right->TYPE != PATCH_EMPTY) return;
-
-	// Prevent player from going in a weird direction if that way is blocked.
-	if ((offsetY > 0) && (p->right->top->TYPE != PATCH_EMPTY)) offsetY--;
-	else if ((offsetY < 0) && (p->right->bottom->TYPE != PATCH_EMPTY)) offsetY++;
-	else
-		offsetX++;
-
-	if (offsetX >= 1)
+	// Run without checking, AI figured everything out until the tile changes.
+	if (!getAI())
 	{
-		offsetX=-19;
-		Grid::moveRight(x);
-		p = p->right;
+		if (direction == 0)
+			setAI(moveDown());
+		else if (direction == 1)
+			setAI(moveRight());
+		else if (direction == 2)
+			setAI(moveLeft());
+		else if (direction == 3)
+			setAI(moveUp());
+		// if couldn't move in desired direction, reset.  This shouldn't happen.
+		else
+		{
+			directionOld = direction;
+			direction = -1;
+			setAI(true);
+		}
+		return;
 	}
+
+	// if AI needs to be run, but it hasn't gotten to the center yet, keep moving.
+	if ((direction == 0) && (getOffsetY() != 0))
+	{
+		moveDown();
+		return;
+	}
+	else if ((direction == 1) && (getOffsetX() != 0))
+	{
+		moveRight();
+		return;
+	}
+	else if ((direction == 2) && (getOffsetX() != 0))
+	{
+		moveLeft();
+		return;
+	}
+	else if ((direction == 3) && (getOffsetY() != 0))
+	{
+		moveUp();
+		return;
+	}
+	
+
+	// if the tile changed, reset.
+	if (getAI())
+	{
+		directionOld = direction;
+		direction = -1;
+	}
+
+	// if the direction has not reset, exit.
+	if (direction != -1) return;
+
+	// DirectionOld to reverse dir.
+	if (directionOld == 0) directionOld = 3;
+	else if (directionOld == 1) directionOld = 2;
+	else if (directionOld == 2) directionOld = 1;
+	else if (directionOld == 3) directionOld = 0;
+
+	// If it gets here need to decide where to go.
+	// Select AI pattern based on ACTION.
+	if (ACTION == ANT_ACTION_WANDER)
+		wander();
+	else if (ACTION == ANT_ACTION_FORAGE)
+		forage();
+	else if (ACTION == ANT_ACTION_ATTACK)
+		attack();
 }
 
-void Ant::moveLeft()
+// 0. Do not turn around unless dead end or specified below.
+// 1. If enemy is within 2 blocks, move towards.
+// 2. if enemy is in block, mortal kombat.
+// 3. wander.
+void Ant::attack()
 {
-	// no check if we're going opposite the way we're heading.
-	if (offsetX > 0) offsetX--;
 
-	// if able to move right...
-	if (p->left->TYPE != PATCH_EMPTY) return;
-
-	// Prevent player from going in a weird direction if that way is blocked.
-	if ((offsetY > 0) && (p->left->top->TYPE != PATCH_EMPTY)) offsetY--;
-	else if ((offsetY < 0) && (p->left->bottom->TYPE != PATCH_EMPTY)) offsetY++;
-	else
-		offsetX--;
-	if (offsetX <= -1)
-	{
-		offsetX=19;
-		Grid::moveLeft(x);
-		p = p->left;
-	}
+	// if nothing to fight, wander.
+	wander();
 }
 
-void Ant::moveUp()
+// This one should work as follows:
+// 0. Do not turn around unless dead end or specified below.
+// 1. If in nest with food, drop food then leave.
+// 2. If outside, look for feramone, follow.
+// 3. If feramone dead end, random direction.
+// 4. If food, pick up and turn around.
+// 5. If carrying food follow feramone.
+void Ant::forage()
 {
-	// no check if we're going opposite the way we're heading.
-	if (offsetY < 0) offsetY++;
 
-	// TODO: This will need special handling to move the ant to the surface.
-//	if (p->top->TYPE == PATCH_TOP) return;
-	if (p->top->TYPE != PATCH_EMPTY) return;
-
-	// Prevent player from going in a weird direction if that way is blocked.
-	if ((offsetX > 0) && (p->top->right->TYPE != PATCH_EMPTY)) offsetX--;
-	else if ((offsetX < 0) && (p->top->left->TYPE != PATCH_EMPTY)) offsetX++;
-	else
-		offsetY++;
-	if (offsetY >= 1)
-	{
-		offsetY=-19;
-		Grid::moveUp(y);
-		p = p->top;
-	}
 }
 
-void Ant::moveDown()
+// This algorithm works remarkably well in tests. The first rule makes it follow
+// tunnels very well.
+// Rules:
+// 1. The ant will not turn around unless it hits a dead end.
+// 2. The ant will not stop.
+void Ant::wander()
 {
-	// no check if we're going opposite the way we're heading.
-	if (offsetY > 0) offsetY--;
+	// move about randomly.
+	direction = rand()%4;
+	if (direction == directionOld)
+		direction = (direction+1)%4;
 
-	if (p->bottom->TYPE != PATCH_EMPTY) return;
+	bool newDir = false;
 
-	// Prevent player from going in a weird direction if that way is blocked.
-	if ((offsetX > 0) && (p->bottom->right->TYPE != PATCH_EMPTY)) offsetX--;
-	else if ((offsetX < 0) && (p->bottom->left->TYPE != PATCH_EMPTY)) offsetX++;
-	else
-		offsetY--;
-
-	if (offsetY <= -1)
+	for (int four=0; !newDir; four++ )
 	{
-		offsetY=19;
-		Grid::moveDown(y);
-		p = p->bottom;
+		if ((direction == 0) && (direction != directionOld) && (getPatch()->bottom) && (getPatch()->bottom->TYPE == PATCH_EMPTY))
+			newDir = true;
+		else if ((direction == 1) && (direction != directionOld) && (getPatch()->right) && (getPatch()->right->TYPE == PATCH_EMPTY))
+			newDir = true;
+		else if ((direction == 2) && (direction != directionOld) && (getPatch()->left) && (getPatch()->left->TYPE == PATCH_EMPTY))
+			newDir = true;
+		else if ((direction == 3) && (direction != directionOld) && (getPatch()->top) && (getPatch()->top->TYPE == PATCH_EMPTY))
+			newDir = true;
+
+		if (!newDir)
+			direction = (direction+1)%4;
+
+		// dead end, forced to turn around.
+		if (four == 4)
+		{
+			direction = directionOld;
+			setAI(false);
+			return;
+		}
 	}
+	setAI(false);
 }
-*/

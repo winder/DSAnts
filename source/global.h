@@ -5,6 +5,14 @@
 #define WIDTH 60
 #define DEPTH 45
 
+// Ant ACTION's
+#define ANT_ACTION_WANDER 0
+#define ANT_ACTION_FORAGE 1
+#define ANT_ACTION_FOLLOW 2
+#define ANT_ACTION_ATTACK 3
+#define ANT_ACTION_IDLE 4
+#define ANT_ACTION_GOHOME 5
+
 // Patch TYPE values
 #define PATCH 0
 #define PATCH_DIRT 1
