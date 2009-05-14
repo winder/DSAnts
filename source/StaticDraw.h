@@ -14,6 +14,8 @@ class StaticDraw
 {
 	public:
 		StaticDraw(){ cache = false; }
+// for some reason it can't find MapDraw??
+// this code isn't used right now so commenting out.
 //		void draw(MapDraw* ug, short s, short w, short h);
 		void draw(Patch* p);
 		void Box(float x, float y, float z, float width, float height, float depth);

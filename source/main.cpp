@@ -101,7 +101,9 @@ int main()
 
 	//main loop
 	while (1) {
-//		gw->getInput();
+		// Tell the world to move forward one step.
+		// TODO: put this in VBlank override, so that even if
+		//			 drawing gets too slow the world will still move forward.
 		gw->stepForward();
 
 		// not needed?
@@ -109,6 +111,7 @@ int main()
 		glClearColor(0,0,0,0);
 		glClearDepth(0x7FFF);
 
+		// Place lights (this may move to the GameWorld at some point);
 		//light0.move(rx, ry, (v10)0.5);
 		//light1.move(rx*-1, ry*-1, (v10)-0.5);
 		light0.set();
@@ -139,6 +142,7 @@ int main()
 		//------------//
 		CPU_StartTest(0,0);
 
+		// draw the scene, this does the picking too.
 		gw->draw();
 
 		cpu_percent = CPU_EndTest();
@@ -153,11 +157,6 @@ int main()
 		// Clear console... no more of these crazy \x1b[2J codes
 		consoleClear();
 		printf("My variables:\n");
-//		printf("\nGrid X/Y = %i/%i", gw->getUG()->centerX, gw->getUG()->centerY);
-//		printf("\nTouching: (%i, %i)", touchXY.px, touchXY.py);
-//		printf("\nCamera location: (%f,", cam.getCamLocation().x);
-//		printf("\n                  %f,", cam.getCamLocation().y);
-//		printf("\n                  %f)", cam.getCamLocation().z);
 
 		printf("\n\nMemory Statistics:");
 		printf("\n\tTotal mem: %i", getMemUsed() + getMemFree());
@@ -170,6 +169,7 @@ int main()
 		PrintMemoryStatistics();
 		printf("\nVideo info: Vert Ram = %i", vertex_count);
 		printf("\n            Poly Count = %i", polygon_count);
+		gw->printDebugFiveLines();
 
 		// flush to the screen
 		glFlush(0);

@@ -2,17 +2,18 @@
 
 GameWorld::GameWorld()
 {
+	// start underground
+	STATE = GAMEWORLD_STATE_UNDERGROUND;
+
 	cam = new Camera();
 	cam->translateZinc(3.5);
 
 	ug = new Underground();
+	surf = new Surface();
 
 	tester = new Ant();
-//	tester->setXY(0, 2);
 	tester->setPatch( ug->getGrid()->getPatch(0,2) );
 	p = new Player(tester);
-
-	STATE = UNDERGROUND_S;
 }
 
 GameWorld::~GameWorld()
@@ -23,7 +24,7 @@ GameWorld::~GameWorld()
 void GameWorld::draw()
 {
 	// Draw the SCENE
-	if (STATE == UNDERGROUND_S)
+	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 	{
 			// Draw game field.
 			ug->draw();
@@ -38,26 +39,20 @@ void GameWorld::draw()
 
 			ug->drawAnt(p->getPlayerAnt());
 	}
-	else if (STATE == SURFACE_S)
+	else if (STATE == GAMEWORLD_STATE_SURFACE)
 	{
-		//surf->draw();
+		surf->draw();
 	}
 
 	// DO THE PICKING
-	if (STATE == UNDERGROUND_S)
-	{
-		// If the touch pad is being touched... see what its touching.
-		if( held & KEY_TOUCH)
-			pickPoint(curX, curY);
-	}
-	else if (STATE == SURFACE_S)
-	{
-	}
+	// If the touch pad is being touched... see what its touching.
+	if( held & KEY_TOUCH)
+		pickPoint(curX, curY);
 }
 
 void GameWorld::pickPoint(short x, short y)
 {
-	if (STATE == UNDERGROUND_S)
+	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 	{
 		if (ug->pickPoint(x, y, *cam))
 		{
@@ -69,9 +64,17 @@ void GameWorld::pickPoint(short x, short y)
 				automove = false;
 		}
 	}
-	else if (STATE == SURFACE_S)
+	else if (STATE == GAMEWORLD_STATE_SURFACE)
 	{
-		//surf->pickPoint();
+		if (surf->pickPoint(x, y, *cam))
+		{
+			picked = ug->getPicked();
+			p->setDestination(picked->x, picked->y);
+			if (picked->TYPE == PATCH_EMPTY)
+				automove = true;
+			else
+				automove = false;
+		}
 	}
 }
 
@@ -92,6 +95,16 @@ void GameWorld::stepAntsForward()
 
 void GameWorld::stepForward()
 {
+	// Manual swap from Surface to Underground?
+	if(pressed & KEY_X)
+	{
+		if (STATE == GAMEWORLD_STATE_SURFACE)
+			STATE = GAMEWORLD_STATE_UNDERGROUND;
+		else if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+			STATE = GAMEWORLD_STATE_SURFACE;
+	}
+
+
 	// GET INPUT and STORE IT
 	scanKeys();
 	held = keysHeld();
@@ -136,7 +149,9 @@ void GameWorld::stepForward()
 		p->move();
 	}
 
-	if(pressed & KEY_A)
+	// Hold A to spam ants,
+	// Press B to spawn 1 at a time.
+	if((held & KEY_A) || (pressed & KEY_B))
 	{
 		// add a new ant on press.
 		Ant *t = new Ant(ug->getGrid()->getPatch(0,2));
@@ -191,3 +206,22 @@ void GameWorld::setProjection()
 	else 
 		cam->Perspective();
 }
+
+//#ifdef __DEBUG_
+void GameWorld::printDebugFiveLines()
+{
+	// Interesting stats:
+	//    Number of ants
+	//    Map / Map coordinate
+	//		Spot touched
+	//		Player info
+	//		player automove?
+	printf("\nGAME WORLD");
+	printf("\nNum Ants, black(%i), red(%i)", black.size(), red.size());
+	printf("\nCurrent map: underground");
+	printf("\nMap Center: (%i, %i)", ug->getCenterX(), ug->getCenterY());
+	printf("\nTouch coord: (%i, %i)", curX, curY);
+
+
+}
+//#endif

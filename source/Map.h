@@ -47,11 +47,11 @@ class Map
 		bool moveCenterUp(){ return grid->moveUp(centerY); }
 		bool moveCenterDown(){ return grid->moveDown(centerY); }
 
-//TODO: fix this, commented out so that UndergroundDraw could access these...?
 	private:
 		Grid *grid;
 		short centerX, centerY;
-		float rotationX, rotationY;
+		// not sure what these were for.
+		//float rotationX, rotationY;
 };
 
 #endif

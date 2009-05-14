@@ -36,6 +36,16 @@ Grid::Grid()
 		}
 }
 
+// Makes everything empty.  Ant hills, barriers, etc need to be setup later.
+void Grid::setupSurface()
+{
+	// Connect the objects.
+	for (int x=0; x < WIDTH; x++)
+		for (int y=0; y < DEPTH; y++)
+		{
+			dd[x][y]->TYPE = PATCH_EMPTY;
+		}
+}
 void Grid::moveRight(short &x)
 {
 	// Width roll-over

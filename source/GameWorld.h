@@ -1,16 +1,17 @@
 #ifndef GAMEWORLD_H
 #define GAMEWORLD_H
 
-#define UNDERGROUND_S 1
-#define SURFACE_S 2
-
 #include "Underground.h"
-//#include "Surface.h"
+#include "Surface.h"
 #include <vector>
 #include "Ant.h"
 #include "Camera.h"
 #include "Input.h"
 #include "Player.h"
+
+//#ifdef __DEBUG_
+#include <stdio.h>
+//#endif
 
 // TODO: this class would make more sense as a "GameSquare" if I decide to go
 //			 the original SimAnt route and have multiple colonies spanning a grid.
@@ -29,6 +30,8 @@ class GameWorld
 		GameWorld();
 		~GameWorld();
 
+		void changeState(int st){ STATE = st; }
+
 		void draw();
 		void pickPoint(short x, short y);
 
@@ -40,24 +43,27 @@ class GameWorld
 		void decY(){ ug->decY(); }
 
 		Underground* getUG(){ return ug; }
+		//Surface* getSurface(){ return ug; }
 
 		// Get INPUT, everything else will use input as though
 		// it is up to date.
 		int getInput();
 
-		// Calls AI functions on each ant individually.
-		void stepAntsForward();
-
 		// Coordinates a step in the game.
 		void stepForward();
+		// lets each ant know they can move forward one step.
+		void stepAntsForward();
 
 		// Camera needs to set itself up.
 		void init(){	cam->init();
 									cam->translateZinc(3.5); }
-
 		void placeCamera(){ cam->render(); }
-
 		void setProjection();
+
+		
+		// #ifdef __DEBUG_
+		void printDebugFiveLines();
+		// #endif
 	private:
 		// store the picked patch.
 		Patch *picked;
@@ -67,9 +73,13 @@ class GameWorld
 		bool newInput;
 		Input *in;
 
+		// GAMEWORLD_STATE_SURFACE, GAMEWORLD_STATE_UNDERGROUND
 		short STATE;
+		// should use polymorphism so that I don't have to do everything twice with
+		// underground and surface.
+		//Map* curMap;
 		Underground *ug;
-		//Surface &surf;
+		Surface *surf;
 
 		Player *p;
 		Ant *tester;

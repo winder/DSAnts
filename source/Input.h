@@ -12,10 +12,10 @@ class Input
 		void processInput();
 		void processTouch();
 
-		int getTouchX(){ return touchx; }
-		int getTouchY(){ return touchy; }
-		int getDeltaX(){ return deltax; }
-		int getDeltaY(){ return deltay; }
+		int getTouchX(){ return touchXY.px; }
+		int getTouchY(){ return touchXY.py; }
+		int getTouchDeltaX(){ return deltax; }
+		int getTouchDeltaY(){ return deltay; }
 
 	private:
 		bool newInput;

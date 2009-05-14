@@ -15,6 +15,9 @@ class MapDraw: public Map
 	public:
 		MapDraw();
 
+		// this is an abstract class too.
+		void initGrid() = 0;
+
 		// Drawing functions.
 		Patch* draw();
 		void drawAnts(std::vector<Ant*> &black, std::vector<Ant*> &red);

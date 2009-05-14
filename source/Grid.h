@@ -17,7 +17,11 @@
 class Grid
 {
 	public:
+		// Default initializes Grid to underground.
 		Grid();
+
+		// Sets up the Patches for the surface.
+		void setupSurface();
 
 		// clamp the values just in case.
 		Patch* getPatch(short width, short depth)

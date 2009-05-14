@@ -34,6 +34,6 @@ void Input::processInput()
 {
 		//process input
 		scanKeys();
-		int held = keysHeld();
-		int pressed = keysDown();
+		held = keysHeld();
+		pressed = keysDown();
 }

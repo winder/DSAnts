@@ -29,8 +29,7 @@ class Underground: public MapDraw
 
 		void addAnt(Ant *a, int x, int y);
 
-//TODO: fix this, commented out so that UndergroundDraw could access these...?
-//	private:
+	private:
 		int tunnelSize;
 };
 

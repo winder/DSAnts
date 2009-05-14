@@ -1,7 +1,11 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-// Underground tile size
+// GameWorld states
+#define GAMEWORLD_STATE_UNDERGROUND 0
+#define GAMEWORLD_STATE_SURFACE 1
+
+// Map tile size
 #define WIDTH 60
 #define DEPTH 45
 
