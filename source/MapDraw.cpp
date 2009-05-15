@@ -252,6 +252,7 @@ Patch* MapDraw::draw()
 	return '\0';
 }
 
+// TODO: break each type of patch into its own method.
 void MapDraw::drawPatch(float x, float y, Patch *p)
 {
 	float s = boxSide;
@@ -326,10 +327,17 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		// If the spot isn't empty, this is a dormant hole...
 		// this will probably get confusing at some point, will need to always check
 		// if portal->TYPE is empty or not.
-		if (p->portal->TYPE != PATCH_EMPTY) return;
-		material(1,1,1);
+		//if (p->portal && p->portal->bottom && p->portal->bottom->TYPE != PATCH_EMPTY)
+		if (p->portal && WALKABLE(p->portal))
+		{
+			material(1,1,1);
+			drawRect(x, y, 0, s, s);
+			// special drawing for this now....
+			return;
+		}
+		// TODO: call the empty surface method.
+		material(31,31,31); // make it easier to see ants...
 		drawRect(x, y, 0, s, s);
-		// special drawing for this now....
 		return;
 	}
 	else if (p->TYPE == PATCH_BARRIER)

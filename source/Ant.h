@@ -26,6 +26,10 @@ class Ant
 		int getLocation(){ return location; }
 
 		// move the ant.
+		// If moving into a portal from any direction, need to handle it the same way.
+		// returns true if it needed to be handled and the move needed to be stopped.
+		bool handlePortal();
+
 		// TODO: This could use more tweaking efficiency wise.
 		// return value: true if tile changed.
 		bool moveRight();
@@ -77,6 +81,8 @@ class Ant
 
 		// The patch the ant is in, for convenient adjacentcy checks.
 		Patch *p;
+		// flag so that we don't go back and forth through a portal infinitly.
+		bool portaled;
 		// The offset within the patch
 		short offsetX;
 		short offsetY;

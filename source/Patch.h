@@ -3,6 +3,13 @@
 
 #include "global.h"
 
+
+// Simple generic functions:
+
+// Patch is walkable
+#define WALKABLE(X) ((X->TYPE == PATCH_EMPTY) || (X->TYPE == PATCH_ENTRANCE) || (X->TYPE == PATCH_TOP))
+
+
 struct Patch
 {
 	Patch *left;
@@ -13,6 +20,8 @@ struct Patch
 	// just a TYPE, then having a bunch of macro's to convert TYPE into usable parts.
 	short TYPE;
 	bool picked;
+	// this flag should be moved into a bit of TYPE eventually.
+	short location;
 	// yeah, I want these in here, sorry memory.
 	short x;
 	short y;

@@ -43,6 +43,10 @@ void GameWorld::linkSurfaceAntUnderground()
 
 		topleft->portal = surf->getGrid()->getPatch(randX, randY);
 		topleft->portal->TYPE = PATCH_ENTRANCE;
+
+		// make it two-way.
+		// NOTE: the surface points to just below the top level of the underground
+		topleft->portal->portal = topleft->bottom;
 		// move right
 		topleft = Grid::getRight( topleft );
 		// until we loop all the way around.
@@ -55,23 +59,28 @@ void GameWorld::draw()
 	// Draw the SCENE
 	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 	{
-			// Draw game field.
-			ug->draw();
-			//ug->drawAnts(black, red);
+		// if player is offscreen, center screen.
+		if (! ug->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
+			ug->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+		// Draw game field.
+		ug->draw();
+		//ug->drawAnts(black, red);
 
-			// draw the ants			
-			for (unsigned int i=0; i < black.size(); i++)
-				if ( black[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
-					ug->drawAnt(black[i]);
+		// draw the ants			
+		for (unsigned int i=0; i < black.size(); i++)
+			if ( black[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
+				ug->drawAnt(black[i]);
 
 //			for (unsigned int i=0; i < red.size(); i++)
 //				if ( red[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
 //					ug->drawAnt(red[i]);
 
-			ug->drawAnt(p->getPlayerAnt());
+		ug->drawAnt(p->getPlayerAnt());
 	}
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 	{
+		if (! surf->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
+			surf->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
 		surf->draw();
 		// draw the ants			
 		for (unsigned int i=0; i < black.size(); i++)

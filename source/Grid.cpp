@@ -12,6 +12,7 @@ Grid::Grid()
 
 			dd[x][y]->x = x;
 			dd[x][y]->y = y;
+			dd[x][y]->location = GAMEWORLD_STATE_UNDERGROUND;
 
 			// Unpassable patch at the deepest level.
 			if (y == DEPTH-1)
@@ -24,6 +25,7 @@ Grid::Grid()
 			else
 				dd[x][y]->TYPE = PATCH_DIRT;
 			}
+
 
 	// Connect the objects.
 	for (x=0; x < WIDTH; x++)
@@ -44,6 +46,7 @@ void Grid::setupSurface()
 		for (int y=0; y < DEPTH; y++)
 		{
 			dd[x][y]->TYPE = PATCH_EMPTY;
+			dd[x][y]->location = GAMEWORLD_STATE_SURFACE;
 		}
 }
 void Grid::moveRight(short &x)

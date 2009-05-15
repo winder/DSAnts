@@ -4,6 +4,7 @@ Ant::Ant()
 {
 	offsetX = 0;
 	offsetY = 0;
+	portaled = false;
 }
 
 Ant::Ant(Patch* pat, int loc)
@@ -14,7 +15,33 @@ Ant::Ant(Patch* pat, int loc)
 //	x=inx;
 //	y=iny;
 	p=pat;
+	portaled = false;
 }
+
+// Checks if there is a portal.  If there is, go through.
+bool Ant::handlePortal()
+{
+	// the portaled flag is supposed to stop it from flipping back and forth over and over again.
+	if (!p->portal)
+	{
+		portaled = false;
+		return false;
+	}
+
+	if (!portaled && p->portal && WALKABLE(p->portal))
+	{
+		p = p->portal;
+
+		offsetX=0;
+		offsetY=0;
+		portaled = true;
+		location = p->location;
+		return true;
+	}
+
+	return false;
+}
+
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.
 // center the offending piece if they arne't 0.
 // I added a couple tweaks:
@@ -27,13 +54,18 @@ Ant::Ant(Patch* pat, int loc)
 //       changing each one manually.
 bool Ant::moveRight()
 {
+	if (handlePortal()) return true;
+
 	// don't move right if the ant is in the right spot isn't empty.
-	if ((offsetX >= 0) &&p->right->TYPE != PATCH_EMPTY) return false;
+	//if ((offsetX >= 0) &&p->right->TYPE != PATCH_EMPTY) return false;
+	if ((offsetX >= 0) && !WALKABLE(p->right)) return false;
 
 	// if Y is off center, the way is not empty, and we're well on our way to the next
 	// spot, move towards center Y.
-	if 			((offsetX >= 0) && (offsetY > 0) && (p->right->top->TYPE != PATCH_EMPTY)) 		offsetY--;
-	else if ((offsetX >= 0) && (offsetY < 0) && (p->right->bottom->TYPE != PATCH_EMPTY))	offsetY++;
+	if 			((offsetX >= 0) && (offsetY > 0) && (p->right && !WALKABLE(p->right->top))) 		offsetY--;
+	else if ((offsetX >= 0) && (offsetY < 0) && (p->right && !WALKABLE(p->right->bottom)))	offsetY++;
+	//if 			((offsetX >= 0) && (offsetY > 0) && (p->right->top->TYPE != PATCH_EMPTY)) 		offsetY--;
+	//else if ((offsetX >= 0) && (offsetY < 0) && (p->right->bottom->TYPE != PATCH_EMPTY))	offsetY++;
 	// if all is well, move right.
 	else
 		offsetX++;
@@ -50,12 +82,17 @@ bool Ant::moveRight()
 
 bool Ant::moveLeft()
 {
+	if (handlePortal()) return true;
+
 	// if able to move right...
-	if ((offsetX <= 0) && p->left->TYPE != PATCH_EMPTY) return false;
+	if ((offsetX <= 0) && !WALKABLE(p->left)) return false;
+	//if ((offsetX <= 0) && p->left->TYPE != PATCH_EMPTY) return false;
 
 	// only move left if Y is centered.
-	if			((offsetX <= 0) && (offsetY > 0) && (p->left->top->TYPE != PATCH_EMPTY)) 		offsetY--;
-	else if ((offsetX <= 0) && (offsetY < 0) && (p->left->bottom->TYPE != PATCH_EMPTY)) offsetY++;
+	if			((offsetX <= 0) && (offsetY > 0) && (p->left && !WALKABLE(p->left->top))) 		offsetY--;
+	else if ((offsetX <= 0) && (offsetY < 0) && (p->left && !WALKABLE(p->left->bottom))) offsetY++;
+	//if			((offsetX <= 0) && (offsetY > 0) && (p->left->top->TYPE != PATCH_EMPTY)) 		offsetY--;
+	//else if ((offsetX <= 0) && (offsetY < 0) && (p->left->bottom->TYPE != PATCH_EMPTY)) offsetY++;
 	else
 		offsetX--;
 	if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
@@ -69,21 +106,19 @@ bool Ant::moveLeft()
 
 bool Ant::moveUp()
 {
+	if (handlePortal()) return true;
+
 	// no check if we're going opposite the way we're heading.
 //	if (offsetY < 0) offsetY++;
 
-	// TODO: This will need special handling to move the ant to the surface.
-	if (p->top->TYPE == PATCH_TOP){
-		// todo, portal detection in a seperate function called at the beginning of all move calls.
-		p = p->top->portal;
-		location = GAMEWORLD_STATE_SURFACE;
-		return true;
-	}
-	if ((offsetY >= 0) && p->top->TYPE != PATCH_EMPTY) return false;
+	//if ((offsetY >= 0) && p->top->TYPE != PATCH_EMPTY) return false;
+	if ((offsetY >= 0) && !WALKABLE(p->top)) return false;
 
 	// Prevent player from going in a weird direction if that way is blocked.
-	if 			((offsetY >= 0) && (offsetX > 0) && (p->top->right->TYPE != PATCH_EMPTY))	offsetX--;
-	else if ((offsetY >= 0) && (offsetX < 0) && (p->top->left->TYPE != PATCH_EMPTY))	offsetX++;
+	if 			((offsetY >= 0) && (offsetX > 0) && (p->top && !WALKABLE(p->top->right)))	offsetX--;
+	else if ((offsetY >= 0) && (offsetX < 0) && (p->top && !WALKABLE(p->top->left)))	offsetX++;
+	//if 			((offsetY >= 0) && (offsetX > 0) && (p->top->right->TYPE != PATCH_EMPTY))	offsetX--;
+	//else if ((offsetY >= 0) && (offsetX < 0) && (p->top->left->TYPE != PATCH_EMPTY))	offsetX++;
 	else
 		offsetY++;
 	if (offsetY >= (ANIMATION_SIZE / 2))
@@ -97,14 +132,19 @@ bool Ant::moveUp()
 
 bool Ant::moveDown()
 {
+	if (handlePortal()) return true;
+
 	// no check if we're going opposite the way we're heading.
 //	if (offsetY > 0) offsetY--;
 
-	if ((offsetY <= 0) && p->bottom->TYPE != PATCH_EMPTY) return true;
+	if ((offsetY <= 0) && !WALKABLE(p->bottom)) return true;
+	//if ((offsetY <= 0) && p->bottom->TYPE != PATCH_EMPTY) return true;
 
 	// Prevent player from going in a weird direction if that way is blocked.
-	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom->right->TYPE != PATCH_EMPTY))	offsetX--;
-	else if ((offsetY <= 0) && (offsetX < 0) && (p->bottom->left->TYPE != PATCH_EMPTY))		offsetX++;
+	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom && !WALKABLE(p->bottom->right)))	offsetX--;
+	else if ((offsetY <= 0) && (offsetX < 0) && (p->bottom && !WALKABLE(p->bottom->left)))		offsetX++;
+	//if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom->right->TYPE != PATCH_EMPTY))	offsetX--;
+	//else if ((offsetY <= 0) && (offsetX < 0) && (p->bottom->left->TYPE != PATCH_EMPTY))		offsetX++;
 	else
 		offsetY--;
 
