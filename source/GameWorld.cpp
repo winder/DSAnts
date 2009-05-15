@@ -62,9 +62,9 @@ void GameWorld::draw()
 		// if player is offscreen, center screen.
 		if (! ug->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
 			ug->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+
 		// Draw game field.
 		ug->draw();
-		//ug->drawAnts(black, red);
 
 		// draw the ants			
 		for (unsigned int i=0; i < black.size(); i++)
@@ -81,11 +81,14 @@ void GameWorld::draw()
 	{
 		if (! surf->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
 			surf->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+
+		// Draw the game field.
 		surf->draw();
+
 		// draw the ants			
 		for (unsigned int i=0; i < black.size(); i++)
 			if ( black[i]->getLocation() == GAMEWORLD_STATE_SURFACE)
-				ug->drawAnt(black[i]);
+				surf->drawAnt(black[i]);
 
 		surf->drawAnt(p->getPlayerAnt());
 	}
