@@ -215,6 +215,8 @@ void Grid::generateNest(int size)
 
 void Grid::clear(Patch* p)
 {
+	if (p == '\0') return;
+
 	if (p->TYPE == PATCH_DIRT)
 	{
 		p->TYPE = PATCH_EMPTY;

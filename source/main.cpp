@@ -1,7 +1,10 @@
 
 #include <nds.h>
 
+// stdio for printf
 #include <stdio.h>
+// stdlib for rand / srand
+#include <stdlib.h>
 #include "GameWorld.h"
 //#include "UndergroundDrawSphere.h"
 #include "Underground.h"
@@ -46,6 +49,11 @@ void drawXYZaxis()
 
 int main()
 {	
+	// set random seed.
+	time_t t;
+	t = time(NULL);
+	srand(t);
+
 	//UndergroundDrawGrid *ug = new UndergroundDrawGrid();
 	GameWorld *gw = new GameWorld();
 

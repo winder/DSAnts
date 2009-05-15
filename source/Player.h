@@ -28,7 +28,7 @@ class Player
 		void moveRight(){ p->moveRight(); }
 
 		// If player has moved adjacent to a picked DIRT box, dig it.
-		void dig();
+		Patch* dig();
 
 		// auto movement:
 		void move();

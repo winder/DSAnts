@@ -4,6 +4,7 @@
 // GameWorld states
 #define GAMEWORLD_STATE_UNDERGROUND 0
 #define GAMEWORLD_STATE_SURFACE 1
+#define GAMEWORLD_STATE_UNDERGROUND_ENEMY 2
 
 // Map tile size
 #define WIDTH 60
@@ -25,6 +26,8 @@
 #define PATCH_FOOD 4
 #define PATCH_EGG 5
 #define PATCH_TOP 6
+// entrance to underground (hill)
+#define PATCH_ENTRANCE 7
 
 // Draw distance.
 #define UNDERGROUND_GRID_DRAW 7

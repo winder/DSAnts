@@ -1,12 +1,12 @@
 #ifndef DIRTDISK_H
 #define DIRTDISK_H
 
-// stdlib for rand / srand
-#include <stdlib.h>
 
 //#include <nds.h>
 #include <time.h>
 #include <vector>
+// stdlib for rand / srand
+#include <stdlib.h>
 
 #include "global.h"
 #include "Patch.h"

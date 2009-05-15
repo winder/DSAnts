@@ -17,6 +17,9 @@ struct Patch
 	short x;
 	short y;
 
+	// Some patches have a 5th direction, where they portal to another map.
+	Patch *portal;
+
 // something like this will be useful at some point, these could be used as a TYPE though.
 //	Ant* occupant?
 //	bool occupied?

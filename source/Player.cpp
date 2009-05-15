@@ -138,16 +138,19 @@ void Player::move()
 //	move();
 }
 
-void Player::dig()
+// If it can dig, return the spot.
+Patch* Player::dig()
 {
 	if( (p->getPatch()->right->TYPE == PATCH_DIRT) && p->getPatch()->right->picked )
-		p->getPatch()->right->TYPE = PATCH_EMPTY;
+		return p->getPatch()->right;
 	else if( (p->getPatch()->left->TYPE == PATCH_DIRT) && p->getPatch()->left->picked )
-		p->getPatch()->left->TYPE = PATCH_EMPTY;
+		return p->getPatch()->left;
 	// TOP could potentially be NULL (actually I don't think so.)
 	else if( (p->getPatch()->top) && (p->getPatch()->top->TYPE == PATCH_DIRT) && p->getPatch()->top->picked )
-		p->getPatch()->top->TYPE = PATCH_EMPTY;
+		return p->getPatch()->top;
 	// BOTTOM will not be NULL, it always has a barrier along the bottom.
 	else if( (p->getPatch()->bottom->TYPE == PATCH_DIRT) && p->getPatch()->bottom->picked )
-		p->getPatch()->bottom->TYPE = PATCH_EMPTY;
+		return p->getPatch()->bottom;
+
+	return '\0';
 }

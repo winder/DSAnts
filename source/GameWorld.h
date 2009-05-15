@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "Input.h"
 #include "Player.h"
+// stdlib for rand / srand
+#include <stdlib.h>
 
 //#ifdef __DEBUG_
 #include <stdio.h>
@@ -30,6 +32,9 @@ class GameWorld
 		GameWorld();
 		~GameWorld();
 
+		// Link the surface with the underground.
+		void linkSurfaceAntUnderground();
+
 		void changeState(int st){ STATE = st; }
 
 		void draw();
@@ -43,7 +48,7 @@ class GameWorld
 		void decY(){ ug->decY(); }
 
 		Underground* getUG(){ return ug; }
-		//Surface* getSurface(){ return ug; }
+		Surface* getSurface(){ return surf; }
 
 		// Get INPUT, everything else will use input as though
 		// it is up to date.
@@ -56,7 +61,7 @@ class GameWorld
 
 		// Camera needs to set itself up.
 		void init(){	cam->init();
-									cam->translateZinc(3.5); }
+									cam->translateZinc(2.0); }
 		void placeCamera(){ cam->render(); }
 		void setProjection();
 

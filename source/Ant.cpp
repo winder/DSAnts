@@ -6,8 +6,9 @@ Ant::Ant()
 	offsetY = 0;
 }
 
-Ant::Ant(Patch* pat)
+Ant::Ant(Patch* pat, int loc)
 {
+	location = loc;
 	offsetX = 0;
 	offsetY = 0;
 //	x=inx;
@@ -72,7 +73,12 @@ bool Ant::moveUp()
 //	if (offsetY < 0) offsetY++;
 
 	// TODO: This will need special handling to move the ant to the surface.
-//	if (p->top->TYPE == PATCH_TOP) return;
+	if (p->top->TYPE == PATCH_TOP){
+		// todo, portal detection in a seperate function called at the beginning of all move calls.
+		p = p->top->portal;
+		location = GAMEWORLD_STATE_SURFACE;
+		return true;
+	}
 	if ((offsetY >= 0) && p->top->TYPE != PATCH_EMPTY) return false;
 
 	// Prevent player from going in a weird direction if that way is blocked.

@@ -11,14 +11,43 @@ GameWorld::GameWorld()
 	ug = new Underground();
 	surf = new Surface();
 
+	
 	tester = new Ant();
 	tester->setPatch( ug->getGrid()->getPatch(0,2) );
 	p = new Player(tester);
+
+
+	// This loops through The surface of the underground (both when I add the enemy underground)
+	// and links them to the surface.
+	linkSurfaceAntUnderground();
 }
 
 GameWorld::~GameWorld()
 {
 	delete ug;
+	delete surf;
+
+	// loop through "black" and "red" and delete 'em.
+}
+
+void GameWorld::linkSurfaceAntUnderground()
+{
+	int randX, randY;
+	// loop across the top layer of the underground, link to random areas of the surface.
+	// ug is the black ants, in the left side of the map.
+	Patch* topleft = ug->getGrid()->getPatch(0,0);
+	do
+	{
+		randX = rand() % (WIDTH / 2);
+		randY = rand() % DEPTH;
+
+		topleft->portal = surf->getGrid()->getPatch(randX, randY);
+		topleft->portal->TYPE = PATCH_ENTRANCE;
+		// move right
+		topleft = Grid::getRight( topleft );
+		// until we loop all the way around.
+	} while(topleft->x != 0);
+	
 }
 
 void GameWorld::draw()
@@ -32,16 +61,24 @@ void GameWorld::draw()
 
 			// draw the ants			
 			for (unsigned int i=0; i < black.size(); i++)
-				ug->drawAnt(black[i]);
+				if ( black[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
+					ug->drawAnt(black[i]);
 
 //			for (unsigned int i=0; i < red.size(); i++)
-//				ug->drawAnt(red[i]);
+//				if ( red[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
+//					ug->drawAnt(red[i]);
 
 			ug->drawAnt(p->getPlayerAnt());
 	}
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 	{
 		surf->draw();
+		// draw the ants			
+		for (unsigned int i=0; i < black.size(); i++)
+			if ( black[i]->getLocation() == GAMEWORLD_STATE_SURFACE)
+				ug->drawAnt(black[i]);
+
+		surf->drawAnt(p->getPlayerAnt());
 	}
 
 	// DO THE PICKING
@@ -95,6 +132,7 @@ void GameWorld::stepAntsForward()
 
 void GameWorld::stepForward()
 {
+/*
 	// Manual swap from Surface to Underground?
 	if(pressed & KEY_X)
 	{
@@ -103,7 +141,8 @@ void GameWorld::stepForward()
 		else if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 			STATE = GAMEWORLD_STATE_SURFACE;
 	}
-
+*/
+	STATE = p->getPlayerAnt()->getLocation();
 
 	// GET INPUT and STORE IT
 	scanKeys();
@@ -154,13 +193,16 @@ void GameWorld::stepForward()
 	if((held & KEY_A) || (pressed & KEY_B))
 	{
 		// add a new ant on press.
-		Ant *t = new Ant(ug->getGrid()->getPatch(0,2));
+		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
 		t->setAction( ANT_ACTION_WANDER );
 		black.push_back(t);
 	}
 
 	// TODO: this will be the player ant:
-	ug->shiftCenter(p->getPlayerAnt());
+	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+		ug->shiftCenter(p->getPlayerAnt());
+	else if (STATE == GAMEWORLD_STATE_SURFACE)
+		surf->shiftCenter(p->getPlayerAnt());
 
 	// no draw here, it is handled elsewhere so that things will be able
 	// to move forward if things start to lag.
@@ -190,7 +232,7 @@ int oldX, oldY;
 */
 	// If it is pressed, see if we can DIG IT.
 	if( pressed & KEY_TOUCH)
-		p->dig();
+		ug->getGrid()->clear(p->dig());
 
 
 	// send everyone on their way.

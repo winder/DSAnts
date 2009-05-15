@@ -321,6 +321,17 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		// special drawing for this now....
 		return;
 	}
+	else if (p->TYPE == PATCH_ENTRANCE)
+	{
+		// If the spot isn't empty, this is a dormant hole...
+		// this will probably get confusing at some point, will need to always check
+		// if portal->TYPE is empty or not.
+		if (p->portal->TYPE != PATCH_EMPTY) return;
+		material(1,1,1);
+		drawRect(x, y, 0, s, s);
+		// special drawing for this now....
+		return;
+	}
 	else if (p->TYPE == PATCH_BARRIER)
 	{
 		material(30,30,0);

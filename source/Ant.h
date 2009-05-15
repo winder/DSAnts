@@ -9,7 +9,7 @@ class Ant
 {
 	public:
 		Ant();
-		Ant(Patch* pat);
+		Ant(Patch* pat, int location);
 
 		// the ant doesn't draw itself.  the world draws the ants.
 //		virtual void draw();
@@ -22,6 +22,8 @@ class Ant
 
 		void setPatch(Patch* inp){ p = inp; }
 		Patch* getPatch(){ return p; }
+
+		int getLocation(){ return location; }
 
 		// move the ant.
 		// TODO: This could use more tweaking efficiency wise.
@@ -70,6 +72,8 @@ class Ant
 		// these are now stored in the Patch.
 //		short x;
 //		short y;
+		// UNDERGROUND, SURFACE, ENEMY_UNDERGROUND.
+		int location;
 
 		// The patch the ant is in, for convenient adjacentcy checks.
 		Patch *p;
