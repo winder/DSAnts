@@ -154,3 +154,21 @@ Patch* Player::dig()
 
 	return '\0';
 }
+
+void Player::printDebug()
+{
+	printf("\nPlayer loc: (%i, %i)",getPlayerAnt()->getPatch()->x, getPlayerAnt()->getPatch()->y); 
+	printf("\nPatch type: ");
+	int type = getPlayerAnt()->getPatch()->TYPE;
+	if ( type == PATCH_DIRT )
+		printf("PATCH_DIRT");
+	else if ( type == PATCH_EMPTY )
+		printf("PATCH_EMPTY");
+	else if ( type == PATCH_BARRIER )
+		printf("PATCH_BARRIER");
+	else if ( type == PATCH_TOP )
+		printf("PATCH_TOP");
+	else if ( type == PATCH_ENTRANCE )
+		printf("PATCH_ENTRANCE");
+
+}

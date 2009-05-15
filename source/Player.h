@@ -3,6 +3,9 @@
 
 #include "Ant.h"
 #include <math.h>
+//#ifdef __DEBUG_
+#include <stdio.h>
+//#endif
 
 // This class handles player interactions with the game world
 class Player
@@ -33,6 +36,9 @@ class Player
 		// auto movement:
 		void move();
 
+//#ifdef __DEBUG_
+		void printDebug();
+//#endif
 	private:
 		// The player is an ant.  This ant is the player.
 		Ant *p;

@@ -49,6 +49,17 @@ void Grid::setupSurface()
 			dd[x][y]->location = GAMEWORLD_STATE_SURFACE;
 		}
 }
+
+void Grid::loopY()
+{
+	int x = 0;
+	for(x=0; x < WIDTH;  x++)
+	{
+		dd[x][0] = dd[x][DEPTH-1];
+		dd[x][DEPTH-1] = dd[x][0];
+	}
+}
+
 void Grid::moveRight(short &x)
 {
 	// Width roll-over

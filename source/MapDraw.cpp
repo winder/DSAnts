@@ -5,6 +5,7 @@ MapDraw::MapDraw()
 	smoothScrollX = smoothScrollY = 0;
 	boxSide = 0.1;
 	picked = '\0';
+	pickMode = false;
 }
 
 
@@ -15,7 +16,6 @@ void MapDraw::incX()
 
 	if (smoothScrollX >= MODEL_SCALE)
 	{
-		//getGrid()->moveRight(centerX); 
 		moveCenterRight();
 		smoothScrollX = 0;
 	}
@@ -27,7 +27,6 @@ void MapDraw::decX()
 	smoothScrollX-=MODEL_SCALE_INCREMENT;	
 	if (smoothScrollX <= (-1*MODEL_SCALE))
 	{
-		//getGrid()->moveLeft(centerX);
 		moveCenterLeft();
 		smoothScrollX = 0;
 	}
@@ -37,11 +36,12 @@ void MapDraw::decX()
 // When drawing a grid, we don't want to pan too shallow.
 void MapDraw::incY()
 { 
-	if (getCenterY() <= 7) return;
+// not sure this is needed anymore
+//	if (getCenterY() <= 7) return;
 	smoothScrollY+=MODEL_SCALE_INCREMENT;
+
 	if (smoothScrollY >= MODEL_SCALE)
 	{
-		//getGrid()->moveUp(centerY);
 		moveCenterUp();
 		smoothScrollY = 0;
 	}
@@ -50,12 +50,11 @@ void MapDraw::incY()
 
 void MapDraw::decY()
 { 
-	if (getCenterY() == DEPTH-GRID_SIZE-1) return;
+//	if (getCenterY() == DEPTH-GRID_SIZE-1) return;
 
 	smoothScrollY-=MODEL_SCALE_INCREMENT;
 	if (smoothScrollY <= (-1*MODEL_SCALE))
 	{
-		//getGrid()->moveDown(centerY);
 		moveCenterDown();
 		smoothScrollY = 0;
 	}
@@ -294,7 +293,6 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	}
 	else if (p->TYPE == PATCH_EMPTY)
 	{
-//		material(5,5,5);
 		material(31,31,31); // make it easier to see ants...
 		// Check top, bottom, left, right and draw
 		// empty patch with paths that can link to
@@ -328,17 +326,20 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		// this will probably get confusing at some point, will need to always check
 		// if portal->TYPE is empty or not.
 		//if (p->portal && p->portal->bottom && p->portal->bottom->TYPE != PATCH_EMPTY)
-		if (p->portal && WALKABLE(p->portal))
+		if (WALKABLE(p->portal))
 		{
 			material(1,1,1);
 			drawRect(x, y, 0, s, s);
 			// special drawing for this now....
 			return;
 		}
+		else
+		{
 		// TODO: call the empty surface method.
-		material(31,31,31); // make it easier to see ants...
-		drawRect(x, y, 0, s, s);
-		return;
+			material(1,31,1); // make it easier to see ants...
+			drawRect(x, y, 0, s, s);
+			return;
+		}
 	}
 	else if (p->TYPE == PATCH_BARRIER)
 	{

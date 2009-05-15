@@ -10,6 +10,7 @@ GameWorld::GameWorld()
 
 	ug = new Underground();
 	surf = new Surface();
+	surf->getGrid()->loopY();
 
 	
 	tester = new Ant();
@@ -38,10 +39,14 @@ void GameWorld::linkSurfaceAntUnderground()
 	Patch* topleft = ug->getGrid()->getPatch(0,0);
 	do
 	{
-		randX = rand() % (WIDTH / 2);
-		randY = rand() % DEPTH;
+		// find random locations until we get one that hasn't already been picked.
+		do
+		{
+			randX = rand() % (WIDTH / 2);
+			randY = rand() % DEPTH;
+			topleft->portal = surf->getGrid()->getPatch(randX, randY);
+		}while (topleft->portal->TYPE == PATCH_ENTRANCE);
 
-		topleft->portal = surf->getGrid()->getPatch(randX, randY);
 		topleft->portal->TYPE = PATCH_ENTRANCE;
 
 		// make it two-way.
@@ -115,6 +120,7 @@ void GameWorld::pickPoint(short x, short y)
 	}
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 	{
+
 		if (surf->pickPoint(x, y, *cam))
 		{
 			picked = ug->getPicked();
@@ -210,7 +216,7 @@ void GameWorld::stepForward()
 		black.push_back(t);
 	}
 
-	// TODO: this will be the player ant:
+	// follow the player.
 	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 		ug->shiftCenter(p->getPlayerAnt());
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
@@ -272,9 +278,13 @@ void GameWorld::printDebugFiveLines()
 	//		player automove?
 	printf("\nGAME WORLD");
 	printf("\nNum Ants, black(%i), red(%i)", black.size(), red.size());
-	printf("\nCurrent map: underground");
+	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+		printf("\nCurrent map: underground");
+	else if (STATE == GAMEWORLD_STATE_SURFACE)
+		printf("\nCurrent map: surface");
 	printf("\nMap Center: (%i, %i)", ug->getCenterX(), ug->getCenterY());
-	printf("\nTouch coord: (%i, %i)", curX, curY);
+//	printf("\nTouch coord: (%i, %i)", curX, curY);
+	p->printDebug();
 
 
 }

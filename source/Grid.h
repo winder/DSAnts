@@ -23,6 +23,9 @@ class Grid
 		// Sets up the Patches for the surface.
 		void setupSurface();
 
+		// Make the grid loop on the Y axis.
+		void loopY();
+
 		// clamp the values just in case.
 		Patch* getPatch(short width, short depth)
 			{	if (width<0) width=0; if (depth<0) depth=0;
