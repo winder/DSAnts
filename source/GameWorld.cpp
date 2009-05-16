@@ -10,7 +10,7 @@ GameWorld::GameWorld()
 
 	ug = new Underground();
 	surf = new Surface();
-	surf->getGrid()->loopY();
+	surf->getGrid()->setLoopY();
 
 	
 	tester = new Ant();
@@ -65,8 +65,8 @@ void GameWorld::draw()
 	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 	{
 		// if player is offscreen, center screen.
-//		if (! ug->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
-//			ug->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+		if (! ug->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
+			ug->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
 
 		// Draw game field.
 		ug->draw();
@@ -84,8 +84,8 @@ void GameWorld::draw()
 	}
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 	{
-//		if (! surf->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
-//			surf->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+		if (! surf->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
+			surf->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
 
 		// Draw the game field.
 		surf->draw();

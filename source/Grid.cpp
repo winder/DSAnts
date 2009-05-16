@@ -50,7 +50,7 @@ void Grid::setupSurface()
 		}
 }
 
-void Grid::loopY()
+void Grid::setLoopY()
 {
 	int x = 0;
 	for(x=0; x < WIDTH;  x++)
@@ -58,6 +58,7 @@ void Grid::loopY()
 		dd[x][0]->top						= dd[x][DEPTH-1];
 		dd[x][DEPTH-1]->bottom	= dd[x][0];
 	}
+	loopY = true;
 }
 
 void Grid::moveRight(short &x)
@@ -83,8 +84,10 @@ bool Grid::moveUp(short &y)
 	// SLICE and WIDTH don't change.
 	if ( y != 0 )
 		y--;
-	else
+	else if (loopY)
 		y = DEPTH-1;
+	else
+		return false;
 
 	return true;
 }
@@ -94,8 +97,10 @@ bool Grid::moveDown(short &y)
 	// SLICE and WIDTH don't change.
 	if ( y != DEPTH - 1 )
 		y++;
-	else
+	else if (loopY)
 		y = 0;
+	else
+		return false;
 
 	return true;
 }

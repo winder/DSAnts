@@ -24,7 +24,7 @@ class Grid
 		void setupSurface();
 
 		// Make the grid loop on the Y axis.
-		void loopY();
+		void setLoopY();
 
 		// clamp the values just in case.
 		Patch* getPatch(short width, short depth)
@@ -32,10 +32,10 @@ class Grid
 				return dd[width%WIDTH][depth%DEPTH]; }
 
 		// move the x/y coord around.
-		static void moveRight(short &x);
-		static void moveLeft(short &x);
-		static bool moveUp(short &y);
-		static bool moveDown(short &y);
+		void moveRight(short &x);
+		void moveLeft(short &x);
+		bool moveUp(short &y);
+		bool moveDown(short &y);
 
 		// move the Patch around.
 		static Patch* getRight(Patch* p);
@@ -58,6 +58,9 @@ class Grid
 	private:
 		Patch* dd[WIDTH][DEPTH];
 
+		// Grids can optionally be set to loop.
+		bool loopX;
+		bool loopY;
 		// a list of cleared tiles.
 		std::vector<Patch*> cleared;
 };
