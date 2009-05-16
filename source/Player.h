@@ -2,13 +2,14 @@
 #define PLAYER_H
 
 #include "Ant.h"
+#include "Observer.h"
 #include <math.h>
 //#ifdef __DEBUG_
 #include <stdio.h>
 //#endif
 
 // This class handles player interactions with the game world
-class Player
+class Player: public Subject, public Observer
 {
 	public:
 		Player();
@@ -25,16 +26,36 @@ class Player
 		void setDestination(int x, int y);
 
 		// manual movement:
-		void moveUp(){ p->moveUp(); }
-		void moveDown(){ p->moveDown(); }
-		void moveLeft(){ p->moveLeft(); }
-		void moveRight(){ p->moveRight(); }
+		// If the player moves to the next tile notify observers.
+		void moveUp()
+			{
+				if (p->moveUp())
+					set_val(PLAYER_MOVE_UP);
+			}
+		void moveDown()
+			{
+				if (p->moveDown())
+					set_val(PLAYER_MOVE_DOWN);
+			}
+		void moveLeft()
+			{
+				if (p->moveLeft())
+					set_val(PLAYER_MOVE_LEFT);
+			}
+		void moveRight()
+			{
+				if (p->moveRight())
+					set_val(PLAYER_MOVE_RIGHT);
+			}
 
 		// If player has moved adjacent to a picked DIRT box, dig it.
 		Patch* dig();
 
 		// auto movement:
 		void move();
+
+		// the observer method.
+		void update(int value);
 
 //#ifdef __DEBUG_
 		void printDebug();

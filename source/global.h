@@ -44,4 +44,21 @@ typedef struct {
 	float x, y, z, d;
 } VectorF;
 
+
+
+// Observer states:
+#define PLAYER_MOVE_UP		0
+#define PLAYER_MOVE_DOWN	1
+#define PLAYER_MOVE_RIGHT	2
+#define PLAYER_MOVE_LEFT	3
+
+#define PLAYER_HELD_LEFT	4
+#define PLAYER_HELD_RIGHT	5
+#define PLAYER_HELD_UP		6
+#define PLAYER_HELD_DOWN	7
+
+#define PLAYER_PRESSED_LEFT		4
+#define PLAYER_PRESSED_RIGHT	5
+#define PLAYER_PRESSED_UP			6
+#define PLAYER_PRESSED_DOWN		7
 #endif

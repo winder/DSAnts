@@ -155,6 +155,21 @@ Patch* Player::dig()
 	return '\0';
 }
 
+// the observer method.
+void Player::update(int value)
+{
+//		moveLeft();
+	if (value == PLAYER_HELD_LEFT)
+		moveLeft();
+	else if (value == PLAYER_HELD_RIGHT)
+		moveRight();
+	else if (value == PLAYER_HELD_UP)
+		moveUp();
+	else if (value == PLAYER_HELD_DOWN)
+		moveDown();
+}
+
+
 void Player::printDebug()
 {
 	printf("\nPlayer loc: (%i, %i)",getPlayerAnt()->getPatch()->x, getPlayerAnt()->getPatch()->y); 

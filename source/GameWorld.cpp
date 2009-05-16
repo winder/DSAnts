@@ -17,6 +17,10 @@ GameWorld::GameWorld()
 	tester->setPatch( ug->getGrid()->getPatch(0,2) );
 	p = new Player(tester);
 
+	// Attach the GameWorld to watching the player.
+	p->attach(this);
+	// attack p to the game world.
+	attach(p);
 
 	// This loops through The surface of the underground (both when I add the enemy underground)
 	// and links them to the surface.
@@ -178,24 +182,29 @@ void GameWorld::stepForward()
 	if( held & KEY_UP)		ug->incY();
 	if( held & KEY_DOWN)	ug->decY();
 */
+	// TODO: all these observer calls go into the Input class when I get that setup.
 	if( held & KEY_LEFT)
 	{
-		p->moveLeft();
+		//p->moveLeft();
+		set_val(PLAYER_HELD_LEFT);
 		automove = false;
 	}
 	if( held & KEY_RIGHT)
 	{
-		p->moveRight();
+		//p->moveRight();
+		set_val(PLAYER_HELD_RIGHT);
 		automove = false;
 	}
 	if( held & KEY_UP)
 	{
-		p->moveUp();
+		//p->moveUp();
+		set_val(PLAYER_HELD_UP);
 		automove = false;
 	}
 	if( held & KEY_DOWN)
 	{
-		p->moveDown();
+		//p->moveDown();
+		set_val(PLAYER_HELD_DOWN);
 		automove = false;
 	}
 
@@ -217,6 +226,8 @@ void GameWorld::stepForward()
 	}
 
 	// follow the player.
+	// This needs to be done every frame rather than on player move event,
+	// otherwise the panning isn't smooth.
 	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 		ug->shiftCenter(p->getPlayerAnt());
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
@@ -265,6 +276,27 @@ void GameWorld::setProjection()
 		cam->Ortho();
 	else 
 		cam->Perspective();
+}
+
+void GameWorld::update(int value)
+{
+/*
+	// TODO: implement this throught the whole shebang.
+	MapDraw* curMap;
+	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+		curMap = ug;
+	else if (STATE == GAMEWORLD_STATE_SURFACE)
+		curMap = surf;
+
+	if (!curMap) return;	
+
+	if ((value == PLAYER_MOVE_UP) ||
+			(value == PLAYER_MOVE_DOWN) ||
+			(value == PLAYER_MOVE_RIGHT) ||
+			(value == PLAYER_MOVE_LEFT))
+				curMap->shiftCenter(p->getPlayerAnt());
+
+*/
 }
 
 //#ifdef __DEBUG_

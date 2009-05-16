@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Input.h"
 #include "Player.h"
+#include "Observer.h"
 // stdlib for rand / srand
 #include <stdlib.h>
 
@@ -26,7 +27,7 @@
 //			Underground / Surface world information.
 //			Creature (black/red ants, spiders, pill bugs, etc) information.
 //			Object (Food, eggs, rocks, etc) information.
-class GameWorld
+class GameWorld: public Observer, public Subject
 {
 	public:
 		GameWorld();
@@ -64,6 +65,7 @@ class GameWorld
 									cam->translateZinc(2.0); }
 
 		// have the camera look at the player!
+		// TODO: this is an interesting concept, but it needs some work to... work.
 /*
 		void placeCamera(){
 						cam->render(
@@ -75,6 +77,9 @@ class GameWorld
 		void placeCamera(){ cam->render(); }
 		void setProjection();
 
+
+		// Event handling: Observer implementation:
+		virtual void update(int value);
 		
 		// #ifdef __DEBUG_
 		void printDebugFiveLines();
