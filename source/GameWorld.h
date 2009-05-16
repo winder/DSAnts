@@ -62,6 +62,16 @@ class GameWorld
 		// Camera needs to set itself up.
 		void init(){	cam->init();
 									cam->translateZinc(2.0); }
+
+		// have the camera look at the player!
+/*
+		void placeCamera(){
+						cam->render(
+									ug->positionX(
+											p->getPlayerAnt()->getX()) + p->getPlayerAnt()->getOffsetX()*MODEL_SCALE_INCREMENT ,
+									ug->positionY(
+											p->getPlayerAnt()->getY()) + p->getPlayerAnt()->getOffsetY()*MODEL_SCALE_INCREMENT		); }
+*/
 		void placeCamera(){ cam->render(); }
 		void setProjection();
 

@@ -60,3 +60,10 @@ void Camera::render()
 						0.0, 0.0, 0.0,															 // Look at origin
 						0.0, 1.0, 0.0);															 // Up
 }
+
+void Camera::render(float x, float y)
+{
+	gluLookAt(translation.x, translation.y, translation.z, // Cam position.
+						x  , y  , 0.0,															 // Look at origin
+						0.0, 1.0, 0.0);															 // Up
+}
