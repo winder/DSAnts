@@ -55,8 +55,8 @@ void Grid::loopY()
 	int x = 0;
 	for(x=0; x < WIDTH;  x++)
 	{
-		dd[x][0] = dd[x][DEPTH-1];
-		dd[x][DEPTH-1] = dd[x][0];
+		dd[x][0]->top						= dd[x][DEPTH-1];
+		dd[x][DEPTH-1]->bottom	= dd[x][0];
 	}
 }
 
@@ -81,18 +81,22 @@ void Grid::moveLeft(short &x)
 bool Grid::moveUp(short &y)
 {
 	// SLICE and WIDTH don't change.
-	if ( y == 0 )
-		return false;
-	y--;
+	if ( y != 0 )
+		y--;
+	else
+		y = DEPTH-1;
+
 	return true;
 }
 
 bool Grid::moveDown(short &y)
 {
 	// SLICE and WIDTH don't change.
-	if ( y == DEPTH - 1 )
-		return false;
-	y++;
+	if ( y != DEPTH - 1 )
+		y++;
+	else
+		y = 0;
+
 	return true;
 }
 

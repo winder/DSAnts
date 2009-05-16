@@ -106,11 +106,25 @@ bool MapDraw::isVisible(short x, short y)
 	if ((x<0) || (y < 0) || (y>=WIDTH) || (x>=WIDTH))
 		return false;
 
-	// Out of visible Y values.
-	if (	(y > (getCenterY()+GRID_SIZE)) ||
-				(y < (getCenterY()-GRID_SIZE)) )
+	float pos = positionY( y );
+	if (fabs(pos) > (MODEL_SCALE * 10))
 		return false;
 
+	pos = positionX( x );
+	if (fabs(pos) > (MODEL_SCALE * 10))
+		return false;
+
+/*
+	// Out of visible Y values.  Simple case.
+	if (	(y < (getCenterY()+GRID_SIZE)) ||
+				(y > (getCenterY()-GRID_SIZE)) )
+		return true;
+	else if ( ((DEPTH-1) < (getCenterY()+GRID_SIZE)) &&
+				(y < ((getCenterY()+GRID_SIZE)%DEPTH)))
+		return true;
+	else if ( ((getCenterY()-GRID_SIZE) < 0) &&
+				(y > (getCenterY()-GRID_SIZE+DEPTH)))
+		return true;
 	// To get here, y value is good.
 
 	// Basic case
@@ -128,19 +142,23 @@ bool MapDraw::isVisible(short x, short y)
 
 	// if none of those then...
 	return false;
+*/
+
+	return true;
 }
 
 // This is complicated because there's a circular array...
 float MapDraw::positionX(short x)
 {
+	// normal bounds.
 	if (	(x < (getCenterX()+GRID_SIZE)) &&
 				(x > (getCenterX()-GRID_SIZE)))
 		return ((getCenterX() - x + 1) * -1) * MODEL_SCALE;
-
+	// over bounds.
 	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) &&
 				(x < ((getCenterX()+GRID_SIZE)%WIDTH)))
 		return ((getCenterX() - (x+WIDTH) + 1) * -1) * MODEL_SCALE;
-
+	// below bounds.
 	else if (	((getCenterX()-GRID_SIZE) < 0) &&
 						(x > (getCenterX()-GRID_SIZE+WIDTH)))
 		return ((getCenterX() - (x-WIDTH) + 1) * -1) * MODEL_SCALE;
@@ -151,7 +169,23 @@ float MapDraw::positionX(short x)
 }
 float MapDraw::positionY(short y)
 {
-	return (getCenterY() - y) * MODEL_SCALE;
+//	return (getCenterY() - y) * MODEL_SCALE;
+
+	// normal bounds.
+	if ( ( y < (getCenterY()+GRID_SIZE)) &&
+			 ( y > (getCenterY()-GRID_SIZE)))
+		return ((getCenterY() - y)) * MODEL_SCALE;
+	// over bounds.
+	else if ( ((DEPTH-1) < (getCenterY() + GRID_SIZE)) &&
+						( y < ((getCenterY() + GRID_SIZE)%DEPTH)))
+		return ((getCenterY() - (y+DEPTH)) * MODEL_SCALE);
+	// below bounds.
+	else if (	((getCenterY()-GRID_SIZE) < 0) &&
+						(y > (getCenterY()-GRID_SIZE+DEPTH)))
+		return (getCenterY() - (y-DEPTH))*MODEL_SCALE;
+
+	//TODO: throw exception?
+	return 1215;
 }
 
 // Shift the center if the player is too far to the side of the map.
@@ -209,12 +243,12 @@ Patch* MapDraw::draw()
 	// Shift from the center to the bottomLeft.
 	// shift left a bunch of times.
 	for (temp=0; (bottomLeft && (temp < GRID_SIZE)) ; temp++)
-		bottomLeft = bottomLeft->left;
+		bottomLeft = Grid::getLeft(bottomLeft);
 
 	// shift up a bunch of times or until we hit the surface.
 //	for (temp=GRID_SIZE; ((bottomLeft) && (bottomLeft->bottom) && (temp < GRID_SIZE)); temp++)
-	for (temp=0; ((bottomLeft) && (bottomLeft->bottom) && (temp < GRID_SIZE)); temp++)
-		bottomLeft = bottomLeft->bottom;
+	for (temp=0; ((bottomLeft) && (Grid::getDown(bottomLeft)) && (temp < GRID_SIZE)); temp++)
+		bottomLeft = Grid::getDown(bottomLeft);
 
 	tp=bottomLeft;
 
@@ -243,7 +277,7 @@ Patch* MapDraw::draw()
 				}
 		}
 		if (bottomLeft)
-			bottomLeft = bottomLeft->top;
+			bottomLeft = Grid::getUp(bottomLeft);
 	}
 
 	// Finished drawing.

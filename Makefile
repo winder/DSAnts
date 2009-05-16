@@ -104,7 +104,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).nds $(TARGET).arm9 $(TARGET).ds.gba
+	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).arm9 $(TARGET).ds.gba
 
 #---------------------------------------------------------------------------------
 findline:
