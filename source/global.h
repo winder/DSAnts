@@ -40,7 +40,7 @@ PATCH_ENTRANCE
 
 // Draw distance.
 #define UNDERGROUND_GRID_DRAW 7
-#define GRID_SIZE 13
+#define GRID_SIZE 10
 
 // Draw scale and animation between grid stuff.
 // ANIMATION_SIZE must be divisible by 2.

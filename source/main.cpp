@@ -122,11 +122,8 @@ int main()
 		glLoadIdentity();
 		gw->setProjection();
 
-		//change cull mode
-//		if( gw->getInput() )
-//			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
-//		else
-			glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
+		// enable culling.
+		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 
 		// Set the current matrix to be the model matrix
 		glMatrixMode(GL_MODELVIEW);

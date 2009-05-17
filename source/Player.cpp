@@ -9,6 +9,12 @@ Player::Player(Ant* inp)
 	p = inp;
 }
 
+Player::~Player()
+{
+	// this should always be passed in to the player...
+	delete p;
+}
+
 void Player::setDestination(int x, int y)
 {
 	// reset stuck flag

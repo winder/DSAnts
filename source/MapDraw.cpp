@@ -102,16 +102,18 @@ bool MapDraw::pickPoint(int x, int y, Camera &cam)
 // WOW there's gotta be something better than this...
 bool MapDraw::isVisible(short x, short y)
 {
+// Come on Owen, you have their X / Y.
+
 	// out of array bounds.
 	if ((x<0) || (y < 0) || (y>=WIDTH) || (x>=WIDTH))
 		return false;
 
 	float pos = positionY( y );
-	if (fabs(pos) > (MODEL_SCALE * 10))
+	if (fabs(pos) > GRID_SIZE)
 		return false;
 
 	pos = positionX( x );
-	if (fabs(pos) > (MODEL_SCALE * 10))
+	if (fabs(pos) > GRID_SIZE)
 		return false;
 
 /*
@@ -153,15 +155,15 @@ float MapDraw::positionX(short x)
 	// normal bounds.
 	if (	(x < (getCenterX()+GRID_SIZE)) &&
 				(x > (getCenterX()-GRID_SIZE)))
-		return ((getCenterX() - x + 1) * -1) * MODEL_SCALE;
+		return ((getCenterX() - x + 1) * -1);
 	// over bounds.
 	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) &&
 				(x < ((getCenterX()+GRID_SIZE)%WIDTH)))
-		return ((getCenterX() - (x+WIDTH) + 1) * -1) * MODEL_SCALE;
+		return ((getCenterX() - (x+WIDTH) + 1) * -1);
 	// below bounds.
 	else if (	((getCenterX()-GRID_SIZE) < 0) &&
 						(x > (getCenterX()-GRID_SIZE+WIDTH)))
-		return ((getCenterX() - (x-WIDTH) + 1) * -1) * MODEL_SCALE;
+		return ((getCenterX() - (x-WIDTH) + 1) * -1);
 
 
 	//TODO: throw exception?
@@ -174,15 +176,15 @@ float MapDraw::positionY(short y)
 	// normal bounds.
 	if ( ( y < (getCenterY()+GRID_SIZE)) &&
 			 ( y > (getCenterY()-GRID_SIZE)))
-		return ((getCenterY() - y)) * MODEL_SCALE;
+		return ((getCenterY() - y));
 	// over bounds.
 	else if ( ((DEPTH-1) < (getCenterY() + GRID_SIZE)) &&
 						( y < ((getCenterY() + GRID_SIZE)%DEPTH)))
-		return ((getCenterY() - (y+DEPTH)) * MODEL_SCALE);
+		return ((getCenterY() - (y+DEPTH)));
 	// below bounds.
 	else if (	((getCenterY()-GRID_SIZE) < 0) &&
 						(y > (getCenterY()-GRID_SIZE+DEPTH)))
-		return (getCenterY() - (y-DEPTH))*MODEL_SCALE;
+		return (getCenterY() - (y-DEPTH));
 
 	//TODO: throw exception?
 	return 1215;
@@ -193,36 +195,37 @@ void MapDraw::shiftCenter(Ant *p)
 {
 	float pos = positionY(p->getY());
 
-	// if the ant is 5 boxes away from the center, start trying to follow it.
-	if (pos < (-1*(MODEL_SCALE * 5)) )
+	// if the ant is GRID_SIZE/3 boxes away from the center, start trying to follow it.
+	if (pos < (-1* (GRID_SIZE / 3)) )
 		decY();
-	else if (pos > (MODEL_SCALE * 5)) 
+	else if (pos > (GRID_SIZE / 3)) 
 		incY();
 
 	pos = positionX(p->getX());
-	if (pos < (-1 *(MODEL_SCALE * 5)))
+	if (pos < (-1 * (GRID_SIZE / 3)))
 		decX();
-	else if (pos > (MODEL_SCALE * 5)) 
+	else if (pos > (GRID_SIZE / 3)) 
 		incX();
 }
 
-void MapDraw::drawAnt(Ant* a)
+bool MapDraw::drawAnt(Ant* a)
 {
 		material(3,3,3);
 	// exit early if not visible.
 	if (! isVisible(a->getX(), a->getY()))
-		return;
+		return false;
 
-	// can easily find X/Y location by finding offset from center.
-	// Then of course, add the offset for smoothly moving between 2 squares.
-	float x = positionX(a->getX()) + (a->getOffsetX()*MODEL_SCALE_INCREMENT);
-	float y = positionY(a->getY()) + (a->getOffsetY()*MODEL_SCALE_INCREMENT);
+	// find X/Y location by finding offset from center.
+	// Then add the offset for smoothly moving between 2 squares.
+	float x = (positionX(a->getX())*MODEL_SCALE) + (a->getOffsetX()*MODEL_SCALE_INCREMENT);
+	float y = (positionY(a->getY())*MODEL_SCALE) + (a->getOffsetY()*MODEL_SCALE_INCREMENT);
 
 	// draw at x, y.
 
 	// slightly off the background to get rid of overlaping.
 	// TODO: going to need to put this in the center when I get a real model.
 	drawBox(x-smoothScrollX, y-smoothScrollY, 0.01, MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+	return true;
 }
 Patch* MapDraw::draw()
 {

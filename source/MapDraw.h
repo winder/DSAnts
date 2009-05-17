@@ -21,7 +21,7 @@ class MapDraw: public Map
 		// Drawing functions.
 		Patch* draw();
 		void drawAnts(std::vector<Ant*> &black, std::vector<Ant*> &red);
-		void drawAnt(Ant* a);
+		bool drawAnt(Ant* a);
 		void drawPatch(float x, float y, Patch *p);
 		void drawBox(float x, float y, float z, float width, float height, float depth);
 		void drawRect(float x, float y, float z, float width, float height);

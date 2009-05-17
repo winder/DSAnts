@@ -97,12 +97,15 @@ class GameWorld: public Observer, public Subject
 		short STATE;
 		// should use polymorphism so that I don't have to do everything twice with
 		// underground and surface.
-		//Map* curMap;
+		MapDraw* curMap;
 		Underground *ug;
 		Surface *surf;
 
 		Player *p;
-		Ant *tester;
+		// in most cases this will be true, but there may be cases where
+		// I want to follow something else (another ant, spider, etc).
+		bool followingPlayer;
+
 		std::vector<Ant*> black;
 		std::vector<Ant*> red;
 

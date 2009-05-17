@@ -2,8 +2,7 @@
 
 GameWorld::GameWorld()
 {
-	// start underground
-	STATE = GAMEWORLD_STATE_UNDERGROUND;
+	followingPlayer = true;
 
 	in = new Input();
 
@@ -14,16 +13,20 @@ GameWorld::GameWorld()
 	surf = new Surface();
 	surf->getGrid()->setLoopY();
 
+	// start underground
+	STATE = GAMEWORLD_STATE_UNDERGROUND;
+	curMap = ug;
+
 	// init picking variables
 	picked = '\0';
 	doPick = false;
 	
 	// Create player.
-	tester = new Ant();
-	tester->setPatch( ug->getGrid()->getPatch(0,2) );
-	p = new Player(tester);
+	Ant *tmp = new Ant();
+	tmp->setPatch( ug->getGrid()->getPatch(0,2) );
+	p = new Player(tmp);
 
-	// SETUP OBSERVER PATTERN:
+	// SETUP OBSERVERs:
 
 	// Observing Player: GameWorld.
 	p->attach(this);
@@ -45,8 +48,15 @@ GameWorld::~GameWorld()
 {
 	delete ug;
 	delete surf;
+	delete p;
+	delete in;
+	delete cam;
 
 	// loop through "black" and "red" and delete 'em.
+	for (unsigned int i=0; i < black.size(); i++)
+		delete black[i];
+	for (unsigned int i=0; i < red.size(); i++)
+		delete red[i];
 }
 
 void GameWorld::linkSurfaceAntUnderground()
@@ -79,42 +89,25 @@ void GameWorld::linkSurfaceAntUnderground()
 
 void GameWorld::draw()
 {
-	// Draw the SCENE
-	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
-	{
-		// if player is offscreen, center screen.
-		if (! ug->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
-			ug->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+	int numAnts = 0;
+	// if player is offscreen, center screen.
+	if (! curMap->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
+		curMap->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
 
-		// Draw game field.
-		ug->draw();
+	// Draw game field.
+	curMap->draw();
 
-		// draw the ants			
-		for (unsigned int i=0; i < black.size(); i++)
-			if ( black[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
-				ug->drawAnt(black[i]);
+	// draw the ants			
+	for (unsigned int i=0; (numAnts < 500) && (i < black.size()); i++)
+		if ( black[i]->getLocation() == STATE )
+			if (curMap->drawAnt(black[i]))
+				numAnts++;
 
-//			for (unsigned int i=0; i < red.size(); i++)
-//				if ( red[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
-//					ug->drawAnt(red[i]);
+//		for (unsigned int i=0; i < red.size(); i++)
+//			if ( red[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
+//				ug->drawAnt(red[i]);
 
-		ug->drawAnt(p->getPlayerAnt());
-	}
-	else if (STATE == GAMEWORLD_STATE_SURFACE)
-	{
-		if (! surf->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
-			surf->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
-
-		// Draw the game field.
-		surf->draw();
-
-		// draw the ants			
-		for (unsigned int i=0; i < black.size(); i++)
-			if ( black[i]->getLocation() == GAMEWORLD_STATE_SURFACE)
-				surf->drawAnt(black[i]);
-
-		surf->drawAnt(p->getPlayerAnt());
-	}
+	curMap->drawAnt(p->getPlayerAnt());
 
 	// DO THE PICKING
 	// If the touch pad is being touched... see what its touching.
@@ -127,30 +120,14 @@ void GameWorld::draw()
 
 void GameWorld::pickPoint(short x, short y)
 {
-	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+	if (curMap->pickPoint(x, y, *cam))
 	{
-		if (ug->pickPoint(x, y, *cam))
-		{
-			picked = ug->getPicked();
-			p->setDestination(picked->x, picked->y);
-			if (picked->TYPE == PATCH_EMPTY)
-				automove = true;
-			else
-				automove = false;
-		}
-	}
-	else if (STATE == GAMEWORLD_STATE_SURFACE)
-	{
-
-		if (surf->pickPoint(x, y, *cam))
-		{
-			picked = ug->getPicked();
-			p->setDestination(picked->x, picked->y);
-			if (picked->TYPE == PATCH_EMPTY)
-				automove = true;
-			else
-				automove = false;
-		}
+		picked = curMap->getPicked();
+		p->setDestination(picked->x, picked->y);
+		if (WALKABLE(picked))
+			automove = true;
+		else
+			automove = false;
 	}
 }
 
@@ -171,18 +148,29 @@ void GameWorld::stepAntsForward()
 
 void GameWorld::stepForward()
 {
-	STATE = p->getPlayerAnt()->getLocation();
+	// The "Player" doesn't keep track of its location, so I can't do this through observer.
+	if (STATE != p->getPlayerAnt()->getLocation())
+	{
+		STATE = p->getPlayerAnt()->getLocation();
+		if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+			curMap = ug;
+		else if (STATE == GAMEWORLD_STATE_SURFACE)
+			curMap = surf;
+		//else if (STATE == GAMEWORLD_STATE_ENEMY_UNDERGROUND)
+		//	curMap = eug;
+	}
 
-	// follow the player.
+	// The map needs to follow the player.
 	// This needs to be done every frame rather than on player move event,
-	// otherwise the panning isn't smooth.
-	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
-		ug->shiftCenter(p->getPlayerAnt());
-	else if (STATE == GAMEWORLD_STATE_SURFACE)
-		surf->shiftCenter(p->getPlayerAnt());
+	// otherwise panning is jerky.
+	if (followingPlayer)
+		curMap->shiftCenter(p->getPlayerAnt());
 
-
+	// process user input.
 	in->process();
+
+	// send everyone on their way.
+	stepAntsForward();
 
 /*
 	if( held & KEY_LEFT)
@@ -244,13 +232,9 @@ void GameWorld::stepForward()
 //		oldY = touchXY.py;
 //	}
 
-	// If it is pressed, see if we can DIG IT.
-	if( pressed & KEY_TOUCH)
-		ug->getGrid()->clear(p->dig());
 
 */
-	// send everyone on their way.
-	stepAntsForward();
+
 }
 
 
@@ -266,10 +250,14 @@ void GameWorld::setProjection()
 void GameWorld::update(int value)
 {
 	if (value == PLAYER_TOUCH_TOUCHPAD)
+	{
+		// If it is pressed, see if we can DIG IT.
+		ug->getGrid()->clear(p->dig());
 		doPick = true;
+	}
 
 	// Hold A to spawn ants,
-	if(value == PLAYER_HELD_B)
+	else if(value == PLAYER_HELD_B)
 	{
 		// add a new ant on press.
 		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);

@@ -15,6 +15,8 @@ class Player: public Subject, public Observer
 		Player();
 		Player(Ant *ip);
 
+		~Player();
+
 		// this will probably only be called from GameWorld, the player ant will need
 		// to be removed from whatever list it was taken out of to prevent duplicate drawings.
 		// (Or maybe a flag in the ant for if its a player, like setting the AI bool to false)
