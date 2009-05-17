@@ -224,7 +224,40 @@ bool MapDraw::drawAnt(Ant* a)
 
 	// slightly off the background to get rid of overlaping.
 	// TODO: going to need to put this in the center when I get a real model.
-	drawBox(x-smoothScrollX, y-smoothScrollY, 0.01, MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+	glPushMatrix();
+	// if X has no influence, facing right or left.
+	// convert facing direction to measurement of 90 degrees ((-20:20) * 2.25).
+	// (angle is -32768 to 32767) 
+	float xInfluence = ((a->getFacingX() * 2.25f));
+	// default facing up.
+	float yInfluence = ((a->getFacingY() * 2.25f));
+
+	float rotation = 0;
+//	if ( xInfluence == 0 )
+//		rotation = a->getFacingY() * 4.5 - 90;
+//	else if ( yInfluence == 0 )
+//		rotation = a->getFacingX() * 4.5;
+	// pointing top-left
+	if (( a->getFacingX() <= 0 ) && (a->getFacingY() >= 0))
+		rotation = (-135) - (yInfluence+xInfluence);
+	// pointing down-left
+	else if (( a->getFacingX() <= 0 ) && (a->getFacingY() <= 0))
+		rotation = (-225) - (yInfluence-xInfluence);
+	// pointing top-right
+	else if (( a->getFacingX() > 0 ) && (a->getFacingY() >= 0))
+		rotation = (-45) + (yInfluence-xInfluence);
+
+	// pointing down-right
+	else if (( a->getFacingX() > 0 ) && (a->getFacingY() <= 0))
+		rotation = (-315) + (yInfluence+xInfluence);
+
+	// translate to the center point.
+	glTranslatef(x-smoothScrollX, y-smoothScrollY, 0.01);
+	// rotate so the ant faces in the correct direction.
+	glRotatef( rotation			, 0, 0, 1);
+	drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE);
+	//drawBox(x-smoothScrollX, y-smoothScrollY, 0.01, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE);
+	glPopMatrix(1);
 	return true;
 }
 Patch* MapDraw::draw()
@@ -417,7 +450,8 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 }
 void MapDraw::drawBox(float x, float y, float z, float width, float height, float depth)
 {
-
+	drawCenteredBox(x,y,z,width,height,depth);
+	return;
 	//z face
 	glNormal3f(0,0,1);
 	glVertex3f(x	,y	,z);
@@ -461,6 +495,57 @@ void MapDraw::drawBox(float x, float y, float z, float width, float height, floa
 	glVertex3f(x 	,y+height,z+depth);
 }
 
+void MapDraw::drawCenteredBox(float x, float y, float z, float width, float height, float depth)
+{
+	float w2 = width * 0.5;
+	float h2 = height * 0.5;
+
+//	glBegin(GL_QUADS);
+	//z  face
+	glNormal3f(0,0,1);
+	glVertex3f(x-w2,y-h2,z);
+	glVertex3f(x+w2,y-h2,z);
+	glVertex3f(x+w2,y+h2,z);
+	glVertex3f(x-w2,y+h2,z);
+
+	//z + depth face
+	glNormal3f(0,0,-1);
+	glVertex3f(x-w2,y-h2,z+depth);
+	glVertex3f(x-w2,y+h2,z+depth);
+	glVertex3f(x+w2,y+h2,z+depth);
+	glVertex3f(x+w2,y-h2,z+depth);
+
+	//x  face
+	glNormal3f(1,0,0);
+	glVertex3f(x-w2,y-h2,z);
+	glVertex3f(x-w2,y+h2,z);
+	glVertex3f(x-w2,y+h2,z+depth);
+	glVertex3f(x-w2,y-h2,z+depth);
+
+	//x + width face
+	glNormal3f(-1,0,0);
+	glVertex3f(x+w2,y-h2,z);
+	glVertex3f(x+w2,y-h2,z+depth);
+	glVertex3f(x+w2,y+h2,z+depth);
+	glVertex3f(x+w2,y+h2,z);
+
+	//y  face
+	glNormal3f(0,-1,0);
+	glVertex3f(x-w2,y-h2,z);
+	glVertex3f(x-w2,y-h2,z+depth);
+	glVertex3f(x+w2,y-h2,z+depth);
+	glVertex3f(x+w2,y-h2,z);
+
+	//y  + height face
+	glNormal3f(0,1,0);
+	glVertex3f(x-w2,y+h2,z);
+	glVertex3f(x+w2,y+h2,z);
+	glVertex3f(x+w2,y+h2,z+depth);
+	glVertex3f(x-w2,y+h2,z+depth);
+
+//	glEnd();
+}
+
 void MapDraw::material(int r, int g, int b)
 {
 // This seems to work alright.
@@ -472,11 +557,21 @@ void MapDraw::material(int r, int g, int b)
 
 void MapDraw::drawRect(float x, float y, float z, float width, float height)
 {
+//	glNormal3f(0,0,-1);
+//	glVertex3f(x	,y	,z);
+//	glVertex3f(x	,y+height,z);
+//	glVertex3f(x+width,y+height,z);
+//	glVertex3f(x+width,y	,z);
+
+	float w2 = width * 0.5;
+	float h2 = height * 0.5;
+
+	//z+ face
 	glNormal3f(0,0,-1);
-	glVertex3f(x	,y	,z);
-	glVertex3f(x	,y+height,z);
-	glVertex3f(x+width,y+height,z);
-	glVertex3f(x+width,y	,z);
+	glVertex3f(x-w2,y-h2,z);
+	glVertex3f(x-w2,y+h2,z);
+	glVertex3f(x+w2,y+h2,z);
+	glVertex3f(x+w2,y-h2,z);
 }
 
 void MapDraw::startCheck()

@@ -24,6 +24,7 @@ class MapDraw: public Map
 		bool drawAnt(Ant* a);
 		void drawPatch(float x, float y, Patch *p);
 		void drawBox(float x, float y, float z, float width, float height, float depth);
+		void drawCenteredBox(float x, float y, float z, float width, float height, float depth);
 		void drawRect(float x, float y, float z, float width, float height);
 
 		// This function does picking to find out where in the grid the touch occurred.

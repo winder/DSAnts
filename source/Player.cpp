@@ -190,5 +190,6 @@ void Player::printDebug()
 		printf("PATCH_TOP");
 	else if ( type == PATCH_ENTRANCE )
 		printf("PATCH_ENTRANCE");
+	printf("\nFacing: x=%i, y=%i", getPlayerAnt()->getFacingX(), getPlayerAnt()->getFacingY());
 
 }

@@ -36,6 +36,7 @@ class Ant
 		bool moveLeft();
 		bool moveUp();
 		bool moveDown();
+		
 
 		// This lets the ant move on its own accord, influenced by:
 		//		-feramone level of adjacent tiles
@@ -53,7 +54,16 @@ class Ant
 
 		void setAI(bool inai){ ai = inai; }
 		bool getAI(){ return ai; }
+
+		short getFacingX(){ return directionX; }
+		short getFacingY(){ return directionY; }
 	private:
+		// these are used to change offsetX / offsetY and keep the direction correct.
+		void incrementOffsetX();
+		void decrementOffsetX();
+		void incrementOffsetY();
+		void decrementOffsetY();
+		void clampDirections();
 		   //-----------------//
 		  // AI INFORMATION: //
 		 //-----------------//
@@ -86,6 +96,9 @@ class Ant
 		// The offset within the patch
 		short offsetX;
 		short offsetY;
+		// These are needed so that the ant faces in the right direction.
+		short directionX;
+		short directionY;
 		
 		// Status, health information.
 		int status;

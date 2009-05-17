@@ -4,6 +4,8 @@ Ant::Ant()
 {
 	offsetX = 0;
 	offsetY = 0;
+	directionX = 0;
+	directionY = 20;
 	portaled = false;
 }
 
@@ -12,6 +14,8 @@ Ant::Ant(Patch* pat, int loc)
 	location = loc;
 	offsetX = 0;
 	offsetY = 0;
+	directionX = 0;
+	directionY = 20;
 	p=pat;
 	portaled = false;
 }
@@ -59,10 +63,10 @@ bool Ant::moveRight()
 
 	// if Y is off center, the way is not empty, and we're well on our way to the next
 	// spot, move towards center Y.
-	if 			((offsetX >= 0) && (offsetY > 0) && (p->right && !WALKABLE(p->right->top))) 		offsetY--;
-	else if ((offsetX >= 0) && (offsetY < 0) && (p->right && !WALKABLE(p->right->bottom)))	offsetY++;
+	if 			((offsetX >= 0) && (offsetY > 0) && (p->right && !WALKABLE(p->right->top))) 		decrementOffsetY();
+	else if ((offsetX >= 0) && (offsetY < 0) && (p->right && !WALKABLE(p->right->bottom)))	incrementOffsetY();
 	else
-		offsetX++;
+		incrementOffsetX();
 
 	// if we are half way towards the next way, swap to the next one.
 	if (offsetX >= (ANIMATION_SIZE / 2))
@@ -82,10 +86,10 @@ bool Ant::moveLeft()
 	if ((offsetX <= 0) && !WALKABLE(p->left)) return false;
 
 	// only move left if Y is centered.
-	if			((offsetX <= 0) && (offsetY > 0) && (p->left && !WALKABLE(p->left->top))) 		offsetY--;
-	else if ((offsetX <= 0) && (offsetY < 0) && (p->left && !WALKABLE(p->left->bottom))) offsetY++;
+	if			((offsetX <= 0) && (offsetY > 0) && (p->left && !WALKABLE(p->left->top))) 		decrementOffsetY();
+	else if ((offsetX <= 0) && (offsetY < 0) && (p->left && !WALKABLE(p->left->bottom))) incrementOffsetY();
 	else
-		offsetX--;
+		decrementOffsetX();
 	if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
 	{
 		offsetX=(ANIMATION_SIZE / 2);
@@ -102,10 +106,10 @@ bool Ant::moveUp()
 	if ((offsetY >= 0) && !WALKABLE(p->top)) return false;
 
 	// Prevent player from going in a weird direction if that way is blocked.
-	if 			((offsetY >= 0) && (offsetX > 0) && (p->top && !WALKABLE(p->top->right)))	offsetX--;
-	else if ((offsetY >= 0) && (offsetX < 0) && (p->top && !WALKABLE(p->top->left)))	offsetX++;
+	if 			((offsetY >= 0) && (offsetX > 0) && (p->top && !WALKABLE(p->top->right)))	decrementOffsetX();
+	else if ((offsetY >= 0) && (offsetX < 0) && (p->top && !WALKABLE(p->top->left)))	incrementOffsetX();
 	else
-		offsetY++;
+		incrementOffsetY();
 	if (offsetY >= (ANIMATION_SIZE / 2))
 	{
 		offsetY=-1 * (ANIMATION_SIZE / 2);
@@ -122,10 +126,10 @@ bool Ant::moveDown()
 	if ((offsetY <= 0) && !WALKABLE(p->bottom)) return true;
 
 	// Prevent player from going in a weird direction if that way is blocked.
-	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom && !WALKABLE(p->bottom->right)))	offsetX--;
-	else if ((offsetY <= 0) && (offsetX < 0) && (p->bottom && !WALKABLE(p->bottom->left)))		offsetX++;
+	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom && !WALKABLE(p->bottom->right)))	decrementOffsetX();
+	else if ((offsetY <= 0) && (offsetX < 0) && (p->bottom && !WALKABLE(p->bottom->left)))		incrementOffsetX();
 	else
-		offsetY--;
+		decrementOffsetY();
 
 	if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
 	{
@@ -273,4 +277,75 @@ void Ant::wander()
 		}
 	}
 	setAI(false);
+}
+
+void Ant::clampDirections()
+{
+	if (directionX > 20)
+		directionX = 20;
+	else if (directionX < -20)
+		directionX = -20;
+
+	if (directionY > 20)
+		directionY = 20;
+	else if (directionY < -20)
+		directionY = -20;
+}
+
+void Ant::incrementOffsetX()
+{
+	offsetX++;
+
+	if ( directionX < 20 )
+		directionX+=3;
+
+	// center Y
+	if ( directionY < 0 )
+		directionY++;
+	else if (directionY > 0)
+		directionY--;
+
+	clampDirections();
+}
+void Ant::decrementOffsetX()
+{
+	offsetX--;
+	if ( directionX > -20 )
+		directionX-=3;
+
+	// center Y
+	if ( directionY < 0 )
+		directionY++;
+	else if (directionY > 0)
+		directionY--;
+
+	clampDirections();
+}
+void Ant::incrementOffsetY()
+{
+	offsetY++;
+	if ( directionY < 20 )
+		directionY+=3;
+
+	// center X
+	if ( directionX < 0 )
+		directionX++;
+	else if (directionX > 0)
+		directionX--;
+
+	clampDirections();
+}
+void Ant::decrementOffsetY()
+{
+	offsetY--;
+	if ( directionY > -20 )
+		directionY-=3;
+
+	// center X
+	if ( directionX < 0 )
+		directionX++;
+	else if (directionX > 0)
+		directionX--;
+
+	clampDirections();
 }
