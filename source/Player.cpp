@@ -158,7 +158,6 @@ Patch* Player::dig()
 // the observer method.
 void Player::update(int value)
 {
-//		moveLeft();
 	if (value == PLAYER_HELD_LEFT)
 		moveLeft();
 	else if (value == PLAYER_HELD_RIGHT)

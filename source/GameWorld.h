@@ -86,11 +86,11 @@ class GameWorld: public Observer, public Subject
 		// #endif
 	private:
 		// store the picked patch.
+		bool doPick;
 		Patch *picked;
 		bool automove;
 
 		// cache for if the input is new.
-		bool newInput;
 		Input *in;
 
 		// GAMEWORLD_STATE_SURFACE, GAMEWORLD_STATE_UNDERGROUND

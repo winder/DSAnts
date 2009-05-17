@@ -2,9 +2,10 @@
 #define CAMERA_H
 
 #include <nds.h>
+#include "Observer.h"
 #include "global.h"
 
-class Camera
+class Camera: public Observer
 {
 	public:
 		Camera();
@@ -43,6 +44,7 @@ class Camera
 		void render(float x, float y);
 		VectorF getCamLocation(){ return translation; }
 
+		void update(int value);
 	private:
 		VectorF location;
 		VectorF lookAt;

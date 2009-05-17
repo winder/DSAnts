@@ -2,34 +2,36 @@
 #define INPUT_H
 
 #include <nds.h>
-#include "Camera.h"
+#include "Observer.h"
+#include "global.h"
+//#include "Camera.h"
 
-class Input
+class Input: public Subject
 {
 	public:
 		int getHeld();
 		int getPressed();
-		void processInput();
-		void processTouch();
+		void process();
+//		void processInput();
+//		void processTouch();
 
 		int getTouchX(){ return touchXY.px; }
 		int getTouchY(){ return touchXY.py; }
-		int getTouchDeltaX(){ return deltax; }
-		int getTouchDeltaY(){ return deltay; }
+//		int getTouchDeltaX(){ return deltax; }
+//		int getTouchDeltaY(){ return deltay; }
 
 	private:
 		bool newInput;
 
+		// current touch x/y
 		touchPosition touchXY;
 		int held;
 		int pressed;
 
-		// current point of cursor
-		int touchx, touchy;
 		// spot where first touched the screen
-		int oldx, oldy;
+		//int oldx, oldy;
 		// if dragging cursor, this is the difference between old and new;
-		int deltax, deltay;
+		//int deltax, deltay;
 };
 
 

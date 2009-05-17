@@ -67,3 +67,12 @@ void Camera::render(float x, float y)
 						x  , y  , 0.0,															 // Look at origin
 						0.0, 1.0, 0.0);															 // Up
 }
+
+void Camera::update(int value)
+{
+	if (value == PLAYER_HELD_SHOULDER_R)
+		translateZinc(0.5);
+	if (value == PLAYER_HELD_SHOULDER_L)
+		translateZinc(-0.5);
+
+}

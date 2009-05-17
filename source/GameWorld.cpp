@@ -5,6 +5,8 @@ GameWorld::GameWorld()
 	// start underground
 	STATE = GAMEWORLD_STATE_UNDERGROUND;
 
+	in = new Input();
+
 	cam = new Camera();
 	cam->translateZinc(3.5);
 
@@ -12,15 +14,27 @@ GameWorld::GameWorld()
 	surf = new Surface();
 	surf->getGrid()->setLoopY();
 
+	// init picking variables
+	picked = '\0';
+	doPick = false;
 	
+	// Create player.
 	tester = new Ant();
 	tester->setPatch( ug->getGrid()->getPatch(0,2) );
 	p = new Player(tester);
 
-	// Attach the GameWorld to watching the player.
+	// SETUP OBSERVER PATTERN:
+
+	// Observing Player: GameWorld.
 	p->attach(this);
-	// attack p to the game world.
+
+	// Observing GameWorld: Player.
 	attach(p);
+
+	// Observing Input: Player, GameWorld.
+	in->attach(p);
+	in->attach(this);
+	in->attach(cam);
 
 	// This loops through The surface of the underground (both when I add the enemy underground)
 	// and links them to the surface.
@@ -104,8 +118,11 @@ void GameWorld::draw()
 
 	// DO THE PICKING
 	// If the touch pad is being touched... see what its touching.
-	if( held & KEY_TOUCH)
-		pickPoint(curX, curY);
+	if (doPick)
+	{
+		pickPoint(in->getTouchX(), in->getTouchY());
+		doPick = false;
+	}
 }
 
 void GameWorld::pickPoint(short x, short y)
@@ -154,35 +171,20 @@ void GameWorld::stepAntsForward()
 
 void GameWorld::stepForward()
 {
-/*
-	// Manual swap from Surface to Underground?
-	if(pressed & KEY_X)
-	{
-		if (STATE == GAMEWORLD_STATE_SURFACE)
-			STATE = GAMEWORLD_STATE_UNDERGROUND;
-		else if (STATE == GAMEWORLD_STATE_UNDERGROUND)
-			STATE = GAMEWORLD_STATE_SURFACE;
-	}
-*/
 	STATE = p->getPlayerAnt()->getLocation();
 
-	// GET INPUT and STORE IT
-	scanKeys();
-	held = keysHeld();
-	pressed = keysDown();
+	// follow the player.
+	// This needs to be done every frame rather than on player move event,
+	// otherwise the panning isn't smooth.
+	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+		ug->shiftCenter(p->getPlayerAnt());
+	else if (STATE == GAMEWORLD_STATE_SURFACE)
+		surf->shiftCenter(p->getPlayerAnt());
 
-	// Camera zoom with triggers
-	if( held & KEY_R) cam->translateZinc(0.5);
-	if( held & KEY_L) cam->translateZinc(-0.5);
 
-	// move the player
-/* // Move map:
-	if( held & KEY_LEFT)	ug->decX();
-	if( held & KEY_RIGHT)	ug->incX();
-	if( held & KEY_UP)		ug->incY();
-	if( held & KEY_DOWN)	ug->decY();
-*/
-	// TODO: all these observer calls go into the Input class when I get that setup.
+	in->process();
+
+/*
 	if( held & KEY_LEFT)
 	{
 		//p->moveLeft();
@@ -215,24 +217,6 @@ void GameWorld::stepForward()
 		p->move();
 	}
 
-	// Hold A to spam ants,
-	// Press B to spawn 1 at a time.
-	if((held & KEY_A) || (pressed & KEY_B))
-	{
-		// add a new ant on press.
-		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
-		t->setAction( ANT_ACTION_WANDER );
-		black.push_back(t);
-	}
-
-	// follow the player.
-	// This needs to be done every frame rather than on player move event,
-	// otherwise the panning isn't smooth.
-	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
-		ug->shiftCenter(p->getPlayerAnt());
-	else if (STATE == GAMEWORLD_STATE_SURFACE)
-		surf->shiftCenter(p->getPlayerAnt());
-
 	// no draw here, it is handled elsewhere so that things will be able
 	// to move forward if things start to lag.
 
@@ -243,27 +227,28 @@ void GameWorld::stepForward()
 	curX = touchXY.px;
 	curY = touchXY.py;
 
-/*
-int oldX, oldY;
-	//reset x and y when user touches screen
-	if( pressed & KEY_TOUCH)  {
-		oldX = touchXY.px;
-		oldY = touchXY.py;
-	}
+
+
+//int oldX, oldY;
+//	//reset x and y when user touches screen
+//	if( pressed & KEY_TOUCH)  {
+//		oldX = touchXY.px;
+//		oldY = touchXY.py;
+//	}
 
 	//if user drags then grab the delta
-	if( held & KEY_TOUCH) {
-		touchY += touchXY.px - oldX; 
-		touchX += touchXY.py - oldY;
-		oldX = touchXY.px;
-		oldY = touchXY.py;
-	}
-*/
+//	if( held & KEY_TOUCH) {
+//		touchY += touchXY.px - oldX; 
+//		touchX += touchXY.py - oldY;
+//		oldX = touchXY.px;
+//		oldY = touchXY.py;
+//	}
+
 	// If it is pressed, see if we can DIG IT.
 	if( pressed & KEY_TOUCH)
 		ug->getGrid()->clear(p->dig());
 
-
+*/
 	// send everyone on their way.
 	stepAntsForward();
 }
@@ -272,34 +257,28 @@ int oldX, oldY;
 void GameWorld::setProjection()
 {
 	//change ortho vs perspective
-	if(held & KEY_B)
-		cam->Ortho();
-	else 
+//	if(held & KEY_B)
+//		cam->Ortho();
+//	else 
 		cam->Perspective();
 }
 
 void GameWorld::update(int value)
 {
-/*
-	// TODO: implement this throught the whole shebang.
-	MapDraw* curMap;
-	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
-		curMap = ug;
-	else if (STATE == GAMEWORLD_STATE_SURFACE)
-		curMap = surf;
+	if (value == PLAYER_TOUCH_TOUCHPAD)
+		doPick = true;
 
-	if (!curMap) return;	
-
-	if ((value == PLAYER_MOVE_UP) ||
-			(value == PLAYER_MOVE_DOWN) ||
-			(value == PLAYER_MOVE_RIGHT) ||
-			(value == PLAYER_MOVE_LEFT))
-				curMap->shiftCenter(p->getPlayerAnt());
-
-*/
+	// Hold A to spawn ants,
+	if(value == PLAYER_HELD_B)
+	{
+		// add a new ant on press.
+		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+		t->setAction( ANT_ACTION_WANDER );
+		black.push_back(t);
+	}
 }
 
-//#ifdef __DEBUG_
+//#ifdef __DEBUG
 void GameWorld::printDebugFiveLines()
 {
 	// Interesting stats:

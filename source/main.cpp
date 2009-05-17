@@ -1,4 +1,3 @@
-
 #include <nds.h>
 
 // stdio for printf
@@ -20,36 +19,29 @@
 //      if I get to the point where things are too complicated
 //      to draw, things still feel like they move in real time.
 
-void drawXYZaxis()
-{
-	glBegin(GL_QUADS);
 
-	// X axis.
-	glColor3f(1,1,0);
-	glVertex3f(-20.0f, 0.01f, 0.01f);
-	glVertex3f(20.0f, 0.01f, 0.01f);
-	glVertex3f(20.0f, -0.01f, -0.01f);
-	glVertex3f(-20.0f, -0.01f, -0.01f);
+// FPS calculation.
+int frameCounter=0;
+int loopCounter=0;
+int elapsedFrames=0;
+int frameold=0;
 
-	// Y axis.
-	glColor3f(0,1,1);
-	glVertex3f(0.01f, -20.0f, 0.01f);
-	glVertex3f(0.01f, 20.0f, 0.01f);
-	glVertex3f(-0.01f, 20.0f, -0.01f);
-	glVertex3f(-0.01f, -20.0f, -0.01f);
-	glEnd();
-
-	// Y axis.
-	glColor3f(1,1,1);
-	glVertex3f(0.01f, 0.01f, -20.0f);
-	glVertex3f(0.01f, 0.01f, 20.0f);
-	glVertex3f(-0.01f, -0.01f, 20.0f);
-	glVertex3f(-0.01f, -0.1f, -20.0f);
+void vBlank(void){
+   ++elapsedFrames;
+   ++frameCounter;
+      
+   if (frameCounter>=60){
+      frameold=loopCounter;
+      frameCounter=0;
+      loopCounter=0;
+   }
 }
 
 int main()
 {	
-	// set random seed.
+	// Set vBlank callback.
+	irqSet(IRQ_VBLANK,vBlank);
+
 	time_t t;
 	t = time(NULL);
 	srand(t);
@@ -155,6 +147,7 @@ int main()
 
 		cpu_percent = CPU_EndTest();
 
+    loopCounter++; 
 		swiWaitForVBlank();
 
 		while (GFX_STATUS & (1<<27)); // wait until the geometry engine is not busy
@@ -178,6 +171,8 @@ int main()
 		printf("\nVideo info: Vert Ram = %i", vertex_count);
 		printf("\n            Poly Count = %i", polygon_count);
 		gw->printDebugFiveLines();
+
+		printf("\n FPS: %i", frameold);
 
 		// flush to the screen
 		glFlush(0);
