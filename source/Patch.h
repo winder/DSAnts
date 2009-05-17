@@ -7,7 +7,9 @@
 // Simple generic functions:
 
 // Patch is walkable
-#define WALKABLE(X) ((X->TYPE == PATCH_EMPTY) || (X->TYPE == PATCH_ENTRANCE) || (X->TYPE == PATCH_TOP))
+#define WALKABLE(X) ((X->TYPE == PATCH_EMPTY) || (X->TYPE == PATCH_ENTRANCE) || (X->TYPE == PATCH_TOP) || (X->TYPE == PATCH_FOOD))
+#define OBJECT(X) ((X->TYPE == PATCH_FOOD))
+#define EMPTY(X) ((X->TYPE == PATCH_EMPTY))
 
 
 struct Patch

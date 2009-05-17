@@ -223,7 +223,6 @@ bool MapDraw::drawAnt(Ant* a)
 	// draw at x, y.
 
 	// slightly off the background to get rid of overlaping.
-	// TODO: going to need to put this in the center when I get a real model.
 	glPushMatrix();
 	// if X has no influence, facing right or left.
 	// convert facing direction to measurement of 90 degrees ((-20:20) * 2.25).
@@ -233,30 +232,38 @@ bool MapDraw::drawAnt(Ant* a)
 	float yInfluence = ((a->getFacingY() * 2.25f));
 
 	float rotation = 0;
-//	if ( xInfluence == 0 )
-//		rotation = a->getFacingY() * 4.5 - 90;
-//	else if ( yInfluence == 0 )
-//		rotation = a->getFacingX() * 4.5;
+
+	// this nonsense sets the ants rotation to face the direction its walking.
+	// TODO: figure out how to convert this to glRotatef32i.
 	// pointing top-left
 	if (( a->getFacingX() <= 0 ) && (a->getFacingY() >= 0))
-		rotation = (-135) - (yInfluence+xInfluence);
+		rotation = (-315) - (yInfluence+xInfluence);
 	// pointing down-left
 	else if (( a->getFacingX() <= 0 ) && (a->getFacingY() <= 0))
 		rotation = (-225) - (yInfluence-xInfluence);
 	// pointing top-right
 	else if (( a->getFacingX() > 0 ) && (a->getFacingY() >= 0))
 		rotation = (-45) + (yInfluence-xInfluence);
-
 	// pointing down-right
 	else if (( a->getFacingX() > 0 ) && (a->getFacingY() <= 0))
-		rotation = (-315) + (yInfluence+xInfluence);
+		rotation = (-135) + (yInfluence+xInfluence);
 
 	// translate to the center point.
 	glTranslatef(x-smoothScrollX, y-smoothScrollY, 0.01);
 	// rotate so the ant faces in the correct direction.
 	glRotatef( rotation			, 0, 0, 1);
-	drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE);
-	//drawBox(x-smoothScrollX, y-smoothScrollY, 0.01, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE);
+	drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE*0.4);
+
+
+	// Check if the ant is carrying anything.  If it is, draw it..
+	if (a->getCarrying())
+	{
+		glTranslatef(0,MODEL_SCALE*0.50, MODEL_SCALE*0.1);
+
+		// TODO: different types of objects: drawObject (scaled down if being carried).
+		material(3,25,3);
+		drawBox(0, 0, 0, MODEL_SCALE*.5, MODEL_SCALE*0.5, MODEL_SCALE*0.5);
+	}
 	glPopMatrix(1);
 	return true;
 }
@@ -328,6 +335,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	// make it take up all the space.
 	s = MODEL_SCALE;
 
+
 	// WARNING: this optomization makes it so picking only works from one side of the X/Y plane.
 	// (when cam location z > 0)
 	if (pickMode)
@@ -336,13 +344,20 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		// if in pick mode, draw a simple rectangle simply for identifying the location.
 		return;
 	}
-	else if (p->picked)
+
+/*// this is getting in the way for now.
+	// If this box is also picked, make a visible highlight in addition to whatever is below..
+	if (p->picked)
 	{
+		// TODO: set alpha level
 		// if the box was picked, identify it by coloring red..
-		material(31,1,1);
+		material(31,31,1);
+		drawBox(x, y, 0.1, s, s, 0.1);
 	}
+*/
+
 // glColor can't work with glNormal, so use materials.
-	else if (p->TYPE == PATCH_DIRT)
+	if (p->TYPE == PATCH_DIRT)
 	{ // brown.
 		material(19,10,5);
 		// Draw filled dirt.
@@ -360,6 +375,10 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 			drawRect(x, y, s, s, s);
 			return;
 		}
+
+		// Otherwise we need to do a whole cube
+		drawBox(x, y, 0, s, s, s);
+		return;
 	}
 	else if (p->TYPE == PATCH_EMPTY)
 	{
@@ -430,9 +449,9 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		material(1,31,10); // Greenish
 		drawRect(x, y, 0, s, s);
 		material(5,5,28); // Bluish
-		drawRect(x, y+s, 0, s, 1);
-		drawRect(x, y+(s*2), 0, s, 1);
-		drawRect(x, y+(s*3), 0, s, 1);
+		drawRect(x, y+MODEL_SCALE, 0, s, s);
+//		drawRect(x, y+(s*2), 0, s, 1);
+//		drawRect(x, y+(s*3), 0, s, 1);
 
 		// special drawing for this now...
 		return;
@@ -441,12 +460,12 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	{
 		// if its unidentified, draw a random red box.
 		material(31,1,1);
-		drawBox(x, y, 0, s, s, s);
+		//drawBox(x, y, 0, s, s, s);
 	}
 
 	// for now, draw a box upon completion. each clause above will return early
 	// if it does its business.
-	drawBox(x, y, 0, s, s, s);
+	drawBox(x, y, 0, s*0.5, s*0.5, s*0.5);
 }
 void MapDraw::drawBox(float x, float y, float z, float width, float height, float depth)
 {

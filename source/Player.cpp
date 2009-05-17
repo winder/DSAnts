@@ -161,6 +161,30 @@ Patch* Player::dig()
 	return '\0';
 }
 
+void Player::pickUp()
+{
+	if( (OBJECT(p->getPatch()->right)) && p->getPatch()->right->picked )
+		getPlayerAnt()->pickup(p->getPatch()->right);
+	else if( (OBJECT(p->getPatch()->left)) && p->getPatch()->left->picked )
+		getPlayerAnt()->pickup(p->getPatch()->left);
+	else if( (p->getPatch()->top) && (OBJECT(p->getPatch()->top)) && p->getPatch()->top->picked )
+		getPlayerAnt()->pickup(p->getPatch()->top);
+	else if( (OBJECT(p->getPatch()->bottom)) && p->getPatch()->bottom->picked )
+		getPlayerAnt()->pickup(p->getPatch()->bottom);
+}
+
+void Player::drop()
+{
+	if( (EMPTY(p->getPatch()->right)) && p->getPatch()->right->picked )
+		getPlayerAnt()->drop(p->getPatch()->right);
+	else if( (EMPTY(p->getPatch()->left)) && p->getPatch()->left->picked )
+		getPlayerAnt()->drop(p->getPatch()->left);
+	else if( (p->getPatch()->top) && (EMPTY(p->getPatch()->top)) && p->getPatch()->top->picked )
+		getPlayerAnt()->drop(p->getPatch()->top);
+	else if( (EMPTY(p->getPatch()->bottom)) && p->getPatch()->bottom->picked )
+		getPlayerAnt()->drop(p->getPatch()->bottom);
+}
+
 // the observer method.
 void Player::update(int value)
 {

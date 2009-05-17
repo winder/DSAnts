@@ -7,6 +7,11 @@ Ant::Ant()
 	directionX = 0;
 	directionY = 20;
 	portaled = false;
+	carrying = 0;
+	ai = true;
+	ACTION=0;
+	direction=-1;
+	directionOld=-1;
 }
 
 Ant::Ant(Patch* pat, int loc)
@@ -18,6 +23,11 @@ Ant::Ant(Patch* pat, int loc)
 	directionY = 20;
 	p=pat;
 	portaled = false;
+	carrying = 0;
+	ai = true;
+	ACTION=0;
+	direction=-1;
+	directionOld=-1;
 }
 
 // Checks if there is a portal.  If there is, go through.

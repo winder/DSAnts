@@ -22,6 +22,7 @@ class Input: public Subject
 
 	private:
 		bool newInput;
+		bool touchReleaseSent;
 
 		// current touch x/y
 		touchPosition touchXY;

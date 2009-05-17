@@ -57,6 +57,25 @@ class Ant
 
 		short getFacingX(){ return directionX; }
 		short getFacingY(){ return directionY; }
+
+		int getCarrying(){ return carrying; }
+		void setCarrying(int x){ carrying = x; }
+		void pickup(Patch *p)
+			{
+				if (OBJECT(p))
+				{
+					carrying = p->TYPE;
+					p->TYPE = PATCH_EMPTY;
+				}
+			}
+		void drop(Patch *p)
+			{
+				if (EMPTY(p))
+				{
+					p->TYPE = carrying;
+					carrying = '\0';
+				}
+			}
 	private:
 		// these are used to change offsetX / offsetY and keep the direction correct.
 		void incrementOffsetX();

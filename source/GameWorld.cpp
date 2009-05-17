@@ -24,6 +24,7 @@ GameWorld::GameWorld()
 	// Create player.
 	Ant *tmp = new Ant();
 	tmp->setPatch( ug->getGrid()->getPatch(0,2) );
+	tmp->setCarrying(PATCH_FOOD);	
 	p = new Player(tmp);
 
 	// SETUP OBSERVERs:
@@ -123,11 +124,15 @@ void GameWorld::pickPoint(short x, short y)
 	if (curMap->pickPoint(x, y, *cam))
 	{
 		picked = curMap->getPicked();
-		p->setDestination(picked->x, picked->y);
-		if (WALKABLE(picked))
-			automove = true;
-		else
-			automove = false;
+		// Disabling automove for now.
+		//p->setDestination(picked->x, picked->y);
+		//if (WALKABLE(picked))
+		//	automove = true;
+		//else
+		//	automove = false;
+
+		// update intself
+		update(PLAYER_PICKED_SOMETHING);
 	}
 }
 
@@ -249,12 +254,33 @@ void GameWorld::setProjection()
 
 void GameWorld::update(int value)
 {
-	if (value == PLAYER_TOUCH_TOUCHPAD)
-	{
-		// If it is pressed, see if we can DIG IT.
-		ug->getGrid()->clear(p->dig());
+	// TODO: do follow cursor on hold?
+
+	// do picking on PRESS
+	if (value == PLAYER_PRESSED_TOUCHPAD)
 		doPick = true;
+	else if (value == PLAYER_PICKED_SOMETHING)
+	{
+		// If it is dirt, see if we can DIG IT.
+		if (picked->TYPE == PATCH_DIRT)
+			ug->getGrid()->clear(p->dig());
+		// If your carrying something, and the spot is empty, drop.
+		else if (EMPTY(picked) && p->getPlayerAnt()->getCarrying())
+		{
+			p->drop();
+		}
+		// if it is an object, see if we can PICK IT.
+		else if (OBJECT(picked))
+		{
+			p->pickUp();
+		}
 	}
+	else if (value == PLAYER_RELEASED_TOUCHPAD)
+	{
+		if (picked)
+			picked->picked = false;
+	}
+
 
 	// Hold A to spawn ants,
 	else if(value == PLAYER_HELD_B)

@@ -61,7 +61,13 @@ enum Player_Actions
 	PLAYER_MOVE_UP,
 	PLAYER_MOVE_DOWN,
 	PLAYER_MOVE_RIGHT,
-	PLAYER_MOVE_LEFT
+	PLAYER_MOVE_LEFT,
+
+	// note: this does not actually originate from the player,
+	//       and is not an observer message.  But conceptually it
+	//       is from the player, and the GameWorld notifies itself
+	//       through its update message.
+	PLAYER_PICKED_SOMETHING
 };
 
 enum Input_Types
@@ -76,7 +82,9 @@ enum Input_Types
 	PLAYER_PRESSED_UP,
 	PLAYER_PRESSED_DOWN,
 	// TOUCHPAD
-	PLAYER_TOUCH_TOUCHPAD,
+	PLAYER_PRESSED_TOUCHPAD,
+	PLAYER_HELD_TOUCHPAD,
+	PLAYER_RELEASED_TOUCHPAD,
 	// BUTTONS
 	PLAYER_HELD_A,
 	PLAYER_HELD_B,

@@ -60,7 +60,21 @@ void Input::process()
 
 	// TOUCH-PAD
 	if( held & KEY_TOUCH)
-		set_val(PLAYER_TOUCH_TOUCHPAD);
+	{
+		set_val(PLAYER_HELD_TOUCHPAD);
+		touchReleaseSent = false;
+	}
+	if( pressed & KEY_TOUCH)
+	{
+		set_val(PLAYER_PRESSED_TOUCHPAD);
+		touchReleaseSent = false;
+	}
+
+	if( !(held & KEY_TOUCH) && !(pressed & KEY_TOUCH) && !touchReleaseSent)
+	{
+		set_val(PLAYER_RELEASED_TOUCHPAD);
+		touchReleaseSent = true;
+	}
 
 	// BUTTONS
 	if( held & KEY_A )

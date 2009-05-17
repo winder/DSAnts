@@ -50,8 +50,10 @@ class Player: public Subject, public Observer
 					set_val(PLAYER_MOVE_RIGHT);
 			}
 
-		// If player has moved adjacent to a picked DIRT box, dig it.
+		// Player interaction with the world: dig dirt, pickup objects, drop objects.
 		Patch* dig();
+		void pickUp();
+		void drop();
 
 		// auto movement:
 		void move();
