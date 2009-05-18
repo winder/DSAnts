@@ -50,6 +50,8 @@ class MapDraw: public Map
 		virtual void incY(); 
 		virtual void decY(); 
 
+		void begin(){ glBegin(GL_QUADS); }
+		void end(){ glEnd(); }
 	private:
 		void material(int r, int g, int b);
 

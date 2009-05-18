@@ -85,6 +85,7 @@ class GameWorld: public Observer, public Subject
 		void printDebugFiveLines();
 		// #endif
 	private:
+		int numAnts;
 		// store the picked patch.
 		bool doPick;
 		Patch *picked;

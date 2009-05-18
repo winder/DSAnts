@@ -44,6 +44,7 @@ void vBlank(void){
 
 int main()
 {	
+
 	// Set vBlank callback.
 	irqSet(IRQ_VBLANK,vBlank);
 
@@ -110,8 +111,61 @@ int main()
 	int polygon_count;
 	int vertex_count;
 
+
+
+
+
+
+  int textureID;
+
+  float rotateX = 0.0;
+  float rotateY = 0.0;
+
+  //set mode 0, enable BG0 and set it to 3D
+  videoSetMode(MODE_0_3D);
+
+  // initialize gl
+  glInit();
+
+  //enable textures
+  glEnable(GL_TEXTURE_2D);
+
+  // enable antialiasing
+  glEnable(GL_ANTIALIAS);
+
+  // setup the rear plane
+  glClearColor(0,0,0,31); // BG must be opaque for AA to work
+  glClearPolyID(63); // BG must have a unique polygon ID for AA to work
+  glClearDepth(0x7FFF);
+
+  //this should work the same as the normal gl call
+  glViewport(0,0,255,191);
+
+  vramSetBankA(VRAM_A_TEXTURE);
+
+  glGenTextures(1, &textureID);
+  glBindTexture(0, textureID);
+  glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)texture_bin);
+
+
+  //any floating point gl call is being converted to fixed prior to being implemented
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(70, 256.0 / 192.0, 0.1, 40);
+
+  gluLookAt(  0.0, 0.0, 1.0,    //camera possition 
+        0.0, 0.0, 0.0,    //look at
+        0.0, 1.0, 0.0);   //up  
+
+
+
+
+
+
 	//main loop
 	while (1) {
+
+
 		// Tell the world to move forward one step.
 		// TODO: put this in VBlank override, so that even if
 		//			 drawing gets too slow the world will still move forward.
@@ -136,7 +190,6 @@ int main()
 		// enable culling.
 		//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
-//		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_ID(1));
 
 		// Set the current matrix to be the model matrix
 		glMatrixMode(GL_MODELVIEW);
@@ -152,38 +205,60 @@ int main()
 		//------------//
 		CPU_StartTest(0,0);
 
-//    glBindTexture(0, textureID);
 		// draw the scene, this does the picking too.
 		gw->draw();
-/*
+
+		cpu_percent = CPU_EndTest();
+
+
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    //move it away from the camera
+    glTranslate3f32(0, 0, floattof32(-1));
+
     glMaterialf(GL_AMBIENT, RGB15(16,16,16));
     glMaterialf(GL_DIFFUSE, RGB15(16,16,16));
     glMaterialf(GL_SPECULAR, BIT(15) | RGB15(8,8,8));
     glMaterialf(GL_EMISSION, RGB15(16,16,16));
-*/
-/*
+
+    //ds uses a table for shinyness..this generates a half-ass one
+//    glMaterialShinyness();
+
+    //not a real gl function and will likely change
+    glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK);
+
+    glBindTexture(0, textureID);
+
     //draw the obj
     glBegin(GL_QUAD);
-      glNormal(NORMAL_PACK(0,inttov10(1),0));
+      glNormal(NORMAL_PACK(0,inttov10(-1),0));
 
       GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
-      glVertex3v16(floattov16(-0.5),  floattov16(-0.5), 0 );
+      glVertex3v16(floattov16(-5.5),  floattov16(-5.5), 0 );
 
       GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
-      glVertex3v16(floattov16(0.5), floattov16(-0.5), 0 );
+      glVertex3v16(floattov16(5.5), floattov16(-5.5), 0 );
 
       GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
-      glVertex3v16(floattov16(0.5), floattov16(0.5), 0 );
+      glVertex3v16(floattov16(5.5), floattov16(5.5), 0 );
 
       GFX_TEX_COORD = (TEXTURE_PACK(0,0));
-      glVertex3v16(floattov16(-0.5),  floattov16(0.5), 0 );
+      glVertex3v16(floattov16(-5.5),  floattov16(5.5), 0 );
 
     glEnd();
-*/
+
+    glPopMatrix(1);
+
+    glFlush(0);
+
+    swiWaitForVBlank();
 
 
-		cpu_percent = CPU_EndTest();
 
+
+/*
     loopCounter++; 
 		swiWaitForVBlank();
 
@@ -213,7 +288,7 @@ int main()
 
 		// flush to the screen
 		glFlush(0);
-
+*/
 	}
 
 	return 0;

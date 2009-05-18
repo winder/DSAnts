@@ -116,36 +116,6 @@ bool MapDraw::isVisible(short x, short y)
 	if (fabs(pos) > (GRID_SIZE-2))
 		return false;
 
-/*
-	// Out of visible Y values.  Simple case.
-	if (	(y < (getCenterY()+GRID_SIZE)) ||
-				(y > (getCenterY()-GRID_SIZE)) )
-		return true;
-	else if ( ((DEPTH-1) < (getCenterY()+GRID_SIZE)) &&
-				(y < ((getCenterY()+GRID_SIZE)%DEPTH)))
-		return true;
-	else if ( ((getCenterY()-GRID_SIZE) < 0) &&
-				(y > (getCenterY()-GRID_SIZE+DEPTH)))
-		return true;
-	// To get here, y value is good.
-
-	// Basic case
-	if (	(x < (getCenterX()+GRID_SIZE)) &&
-				(x > (getCenterX()-GRID_SIZE)))
-		return true;
-
-	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) &&
-				(x < ((getCenterX()+GRID_SIZE)%WIDTH)))
-		return true;
-
-	else if (	((getCenterX()-GRID_SIZE) < 0) &&
-						(x > (getCenterX()-GRID_SIZE+WIDTH)))
-		return true;
-
-	// if none of those then...
-	return false;
-*/
-
 	return true;
 }
 
@@ -153,16 +123,13 @@ bool MapDraw::isVisible(short x, short y)
 float MapDraw::positionX(short x)
 {
 	// normal bounds.
-	if (	(x < (getCenterX()+GRID_SIZE)) &&
-				(x > (getCenterX()-GRID_SIZE)))
+	if (	(x < (getCenterX()+GRID_SIZE)) && (x > (getCenterX()-GRID_SIZE)))
 		return ((getCenterX() - x + 1) * -1);
 	// over bounds.
-	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) &&
-				(x < ((getCenterX()+GRID_SIZE)%WIDTH)))
+	else if (	((WIDTH-1) < (getCenterX()+GRID_SIZE)) && (x < ((getCenterX()+GRID_SIZE)%WIDTH)))
 		return ((getCenterX() - (x+WIDTH) + 1) * -1);
 	// below bounds.
-	else if (	((getCenterX()-GRID_SIZE) < 0) &&
-						(x > (getCenterX()-GRID_SIZE+WIDTH)))
+	else if (	((getCenterX()-GRID_SIZE) < 0) && (x > (getCenterX()-GRID_SIZE+WIDTH)))
 		return ((getCenterX() - (x-WIDTH) + 1) * -1);
 
 
@@ -174,16 +141,13 @@ float MapDraw::positionY(short y)
 //	return (getCenterY() - y) * MODEL_SCALE;
 
 	// normal bounds.
-	if ( ( y < (getCenterY()+GRID_SIZE)) &&
-			 ( y > (getCenterY()-GRID_SIZE)))
+	if ( ( y < (getCenterY()+GRID_SIZE)) && ( y > (getCenterY()-GRID_SIZE)))
 		return ((getCenterY() - y));
 	// over bounds.
-	else if ( ((DEPTH-1) < (getCenterY() + GRID_SIZE)) &&
-						( y < ((getCenterY() + GRID_SIZE)%DEPTH)))
+	else if ( ((DEPTH-1) < (getCenterY() + GRID_SIZE)) && ( y < ((getCenterY() + GRID_SIZE)%DEPTH)))
 		return ((getCenterY() - (y+DEPTH)));
 	// below bounds.
-	else if (	((getCenterY()-GRID_SIZE) < 0) &&
-						(y > (getCenterY()-GRID_SIZE+DEPTH)))
+	else if (	((getCenterY()-GRID_SIZE) < 0) && (y > (getCenterY()-GRID_SIZE+DEPTH)))
 		return (getCenterY() - (y-DEPTH));
 
 	//TODO: throw exception?
@@ -254,7 +218,7 @@ bool MapDraw::drawAnt(Ant* a, bool animate)
 		rotation = (-135) + (yInfluence+xInfluence);
 
 	// translate to the center point.
-	glTranslatef(x-smoothScrollX, y-smoothScrollY, 0.01);
+	glTranslatef(x, y, 0.01);
 	// rotate so the ant faces in the correct direction.
 	glRotatef( rotation			, 0, 0, 1);
 	//drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE*0.4);
@@ -276,9 +240,9 @@ bool MapDraw::drawAnt(Ant* a, bool animate)
 Patch* MapDraw::draw()
 {
 
-	// TODO: don't use MODEL_SCALE and smoothScrollX/Y,
-	// dropping these in at the beginning would let me use less floating point math.
-//	glTranslatef(smoothScrollX, smoothScrollY, 0);
+	// Adding this saves me several hundred additions / subtractions.  Cool beans.
+	glTranslatef(smoothScrollX*-1, smoothScrollY*-1, 0);
+	// TODO: Fit this one in too so I don't have to to all the MODEL_SCALE multiplications.
 //	glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
 
 	int x,y, temp;
@@ -302,7 +266,7 @@ Patch* MapDraw::draw()
 	tp=bottomLeft;
 
 	// Setup for drawing.
-	glBegin(GL_QUADS);
+//	glBegin(GL_QUADS);
 
 	for (y=GRID_SIZE*-1; (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
 	{
@@ -317,11 +281,11 @@ Patch* MapDraw::draw()
 			// up tile alignment.
 			// OK, well if x and y get too big I get weird graphical issues with boxes wrapping
 			// around the screen, so lets keep things small for now...
-			drawPatch(x*MODEL_SCALE-smoothScrollX, y*MODEL_SCALE-smoothScrollY, tp);
+			drawPatch(x*MODEL_SCALE, y*MODEL_SCALE, tp);
 			if (pickMode)
 				if (endCheck())
 				{
-					glEnd();
+					//glEnd();
 					return tp;
 				}
 		}
@@ -330,7 +294,7 @@ Patch* MapDraw::draw()
 	}
 
 	// Finished drawing.
-	glEnd();
+	//glEnd();
 	return '\0';
 }
 
@@ -525,7 +489,6 @@ void MapDraw::drawCenteredBox(float x, float y, float z, float width, float heig
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 
-//	glBegin(GL_QUADS);
 	//z  face
 	glNormal3f(0,0,1);
 	glVertex3f(x-w2,y-h2,z);
@@ -568,7 +531,6 @@ void MapDraw::drawCenteredBox(float x, float y, float z, float width, float heig
 	glVertex3f(x+w2,y+h2,z+depth);
 	glVertex3f(x+w2,y+h2,z);
 
-//	glEnd();
 }
 
 void MapDraw::material(int r, int g, int b)

@@ -90,16 +90,17 @@ void GameWorld::linkSurfaceAntUnderground()
 
 void GameWorld::draw()
 {
-	int numAnts = 0;
+	numAnts = 0;
 	// if player is offscreen, center screen.
 	if (! curMap->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
 		curMap->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
 
+	curMap->begin();
 	// Draw game field.
 	curMap->draw();
 
 	// draw the ants			
-	for (unsigned int i=0; (numAnts < 75) && (i < black.size()); i++)
+	for (unsigned int i=0; (numAnts < 80) && (i < black.size()); i++)
 		if ( black[i]->getLocation() == STATE )
 			if (curMap->drawAnt(black[i], true))
 				numAnts++;
@@ -110,6 +111,7 @@ void GameWorld::draw()
 
 	curMap->drawAnt(p->getPlayerAnt(), true);
 
+	curMap->end();
 	// DO THE PICKING
 	// If the touch pad is being touched... see what its touching.
 	if (doPick)
@@ -308,6 +310,7 @@ void GameWorld::printDebugFiveLines()
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 		printf("\nCurrent map: surface");
 	printf("\nMap Center: (%i, %i)", ug->getCenterX(), ug->getCenterY());
+	printf("\nNUM ANTS BEING DRAWN: %i", numAnts);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
 	p->printDebug();
 
