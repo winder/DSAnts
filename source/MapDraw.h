@@ -10,6 +10,8 @@
 // need this for picking.
 #include <nds/arm9/postest.h>
 
+extern int textureID;
+
 class MapDraw: public Map
 {
 	public:
@@ -21,7 +23,7 @@ class MapDraw: public Map
 		// Drawing functions.
 		Patch* draw();
 		void drawAnts(std::vector<Ant*> &black, std::vector<Ant*> &red);
-		bool drawAnt(Ant* a);
+		bool drawAnt(Ant* a, bool animate);
 		void drawPatch(float x, float y, Patch *p);
 		void drawBox(float x, float y, float z, float width, float height, float depth);
 		void drawCenteredBox(float x, float y, float z, float width, float height, float depth);

@@ -109,11 +109,11 @@ bool MapDraw::isVisible(short x, short y)
 		return false;
 
 	float pos = positionY( y );
-	if (fabs(pos) > GRID_SIZE)
+	if (fabs(pos) > (GRID_SIZE-2))
 		return false;
 
 	pos = positionX( x );
-	if (fabs(pos) > GRID_SIZE)
+	if (fabs(pos) > (GRID_SIZE-2))
 		return false;
 
 /*
@@ -208,7 +208,7 @@ void MapDraw::shiftCenter(Ant *p)
 		incX();
 }
 
-bool MapDraw::drawAnt(Ant* a)
+bool MapDraw::drawAnt(Ant* a, bool animate)
 {
 		material(3,3,3);
 	// exit early if not visible.
@@ -220,6 +220,11 @@ bool MapDraw::drawAnt(Ant* a)
 	float x = (positionX(a->getX())*MODEL_SCALE) + (a->getOffsetX()*MODEL_SCALE_INCREMENT);
 	float y = (positionY(a->getY())*MODEL_SCALE) + (a->getOffsetY()*MODEL_SCALE_INCREMENT);
 
+	if (!animate)
+	{
+		drawRect(x, y, MODEL_SCALE*0.2, MODEL_SCALE*.4, MODEL_SCALE*0.9);
+		return true;
+	}
 	// draw at x, y.
 
 	// slightly off the background to get rid of overlaping.
@@ -252,7 +257,8 @@ bool MapDraw::drawAnt(Ant* a)
 	glTranslatef(x-smoothScrollX, y-smoothScrollY, 0.01);
 	// rotate so the ant faces in the correct direction.
 	glRotatef( rotation			, 0, 0, 1);
-	drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE*0.4);
+	//drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE*0.4);
+	drawRect(0, 0, MODEL_SCALE*0.2, MODEL_SCALE*.4, MODEL_SCALE*0.9);
 
 
 	// Check if the ant is carrying anything.  If it is, draw it..
@@ -450,8 +456,8 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		drawRect(x, y, 0, s, s);
 		material(5,5,28); // Bluish
 		drawRect(x, y+MODEL_SCALE, 0, s, s);
-//		drawRect(x, y+(s*2), 0, s, 1);
-//		drawRect(x, y+(s*3), 0, s, 1);
+		drawRect(x, y+2*MODEL_SCALE, 0, s, s);
+		drawRect(x, y+2*MODEL_SCALE, 0, s, s);
 
 		// special drawing for this now...
 		return;
@@ -523,44 +529,44 @@ void MapDraw::drawCenteredBox(float x, float y, float z, float width, float heig
 	//z  face
 	glNormal3f(0,0,1);
 	glVertex3f(x-w2,y-h2,z);
-	glVertex3f(x+w2,y-h2,z);
-	glVertex3f(x+w2,y+h2,z);
 	glVertex3f(x-w2,y+h2,z);
+	glVertex3f(x+w2,y+h2,z);
+	glVertex3f(x+w2,y-h2,z);
 
 	//z + depth face
 	glNormal3f(0,0,-1);
 	glVertex3f(x-w2,y-h2,z+depth);
-	glVertex3f(x-w2,y+h2,z+depth);
-	glVertex3f(x+w2,y+h2,z+depth);
 	glVertex3f(x+w2,y-h2,z+depth);
+	glVertex3f(x+w2,y+h2,z+depth);
+	glVertex3f(x-w2,y+h2,z+depth);
 
 	//x  face
 	glNormal3f(1,0,0);
 	glVertex3f(x-w2,y-h2,z);
-	glVertex3f(x-w2,y+h2,z);
-	glVertex3f(x-w2,y+h2,z+depth);
 	glVertex3f(x-w2,y-h2,z+depth);
+	glVertex3f(x-w2,y+h2,z+depth);
+	glVertex3f(x-w2,y+h2,z);
 
 	//x + width face
 	glNormal3f(-1,0,0);
 	glVertex3f(x+w2,y-h2,z);
-	glVertex3f(x+w2,y-h2,z+depth);
-	glVertex3f(x+w2,y+h2,z+depth);
 	glVertex3f(x+w2,y+h2,z);
+	glVertex3f(x+w2,y+h2,z+depth);
+	glVertex3f(x+w2,y-h2,z+depth);
 
 	//y  face
 	glNormal3f(0,-1,0);
 	glVertex3f(x-w2,y-h2,z);
-	glVertex3f(x-w2,y-h2,z+depth);
-	glVertex3f(x+w2,y-h2,z+depth);
 	glVertex3f(x+w2,y-h2,z);
+	glVertex3f(x+w2,y-h2,z+depth);
+	glVertex3f(x-w2,y-h2,z+depth);
 
 	//y  + height face
 	glNormal3f(0,1,0);
 	glVertex3f(x-w2,y+h2,z);
-	glVertex3f(x+w2,y+h2,z);
-	glVertex3f(x+w2,y+h2,z+depth);
 	glVertex3f(x-w2,y+h2,z+depth);
+	glVertex3f(x+w2,y+h2,z+depth);
+	glVertex3f(x+w2,y+h2,z);
 
 //	glEnd();
 }
@@ -572,6 +578,11 @@ void MapDraw::material(int r, int g, int b)
 	glMaterialf(GL_AMBIENT, RGB15(4, 4, 5));
 	glMaterialf(GL_SPECULAR, RGB15(0, 0, 0)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
 	glMaterialf(GL_EMISSION, RGB15(0, 0, 0));
+
+  //ds uses a table for shinyness..this generates a half-ass one
+	// NOTE: do not use this, at least not here, it slows shit down a lot.
+//  glMaterialShinyness();
+
 }
 
 void MapDraw::drawRect(float x, float y, float z, float width, float height)
@@ -585,12 +596,26 @@ void MapDraw::drawRect(float x, float y, float z, float width, float height)
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 
-	//z+ face
+/*
+//z+ face
+	glNormal3f(0,0,-1);
+
+	glBindTexture(0, textureID);
+  GFX_TEX_COORD = TEXTURE_PACK(0, inttot16(128));
+	glVertex3v16(floattov16(x-w2),floattov16(y-h2),floattov16(z));
+  GFX_TEX_COORD = TEXTURE_PACK(inttot16(128),inttot16(128));
+	glVertex3v16(floattov16(x-w2),floattov16(y+h2),floattov16(z));
+  GFX_TEX_COORD = TEXTURE_PACK(inttot16(128), 0);
+	glVertex3v16(floattov16(x+w2),floattov16(y+h2),floattov16(z));
+  GFX_TEX_COORD = TEXTURE_PACK(0,0);
+	glVertex3v16(floattov16(x+w2),floattov16(y-h2),floattov16(z));
+
+*/
 	glNormal3f(0,0,-1);
 	glVertex3f(x-w2,y-h2,z);
-	glVertex3f(x-w2,y+h2,z);
-	glVertex3f(x+w2,y+h2,z);
 	glVertex3f(x+w2,y-h2,z);
+	glVertex3f(x+w2,y+h2,z);
+	glVertex3f(x-w2,y+h2,z);
 }
 
 void MapDraw::startCheck()

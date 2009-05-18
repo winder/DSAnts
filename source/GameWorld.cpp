@@ -99,16 +99,16 @@ void GameWorld::draw()
 	curMap->draw();
 
 	// draw the ants			
-	for (unsigned int i=0; (numAnts < 500) && (i < black.size()); i++)
+	for (unsigned int i=0; (numAnts < 75) && (i < black.size()); i++)
 		if ( black[i]->getLocation() == STATE )
-			if (curMap->drawAnt(black[i]))
+			if (curMap->drawAnt(black[i], true))
 				numAnts++;
 
 //		for (unsigned int i=0; i < red.size(); i++)
 //			if ( red[i]->getLocation() == GAMEWORLD_STATE_UNDERGROUND )
 //				ug->drawAnt(red[i]);
 
-	curMap->drawAnt(p->getPlayerAnt());
+	curMap->drawAnt(p->getPlayerAnt(), true);
 
 	// DO THE PICKING
 	// If the touch pad is being touched... see what its touching.

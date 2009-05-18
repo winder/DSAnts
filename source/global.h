@@ -4,9 +4,12 @@
 // TODO: I should be using "enum { FIRST, SECOND, THIRD, ... };"
 //			 or "enum { WIDTH=45, DEPTH=50 };"
 // GameWorld states
-#define GAMEWORLD_STATE_UNDERGROUND 0
-#define GAMEWORLD_STATE_SURFACE 1
-#define GAMEWORLD_STATE_UNDERGROUND_ENEMY 2
+enum Maps
+{
+	GAMEWORLD_STATE_UNDERGROUND,
+	GAMEWORLD_STATE_SURFACE,
+	GAMEWORLD_STATE_UNDERGROUND_ENEMY
+};
 
 // Map tile size
 #define WIDTH 60
@@ -15,27 +18,36 @@
 // Ant ACTION's
 enum Ant_AI
 {
-ANT_ACTION_WANDER,
-ANT_ACTION_FORAGE,
-ANT_ACTION_FOLLOW,
-ANT_ACTION_ATTACK,
-ANT_ACTION_IDLE,
-ANT_ACTION_GOHOME
+	ANT_ACTION_WANDER,
+	ANT_ACTION_FORAGE,
+	ANT_ACTION_FOLLOW,
+	ANT_ACTION_ATTACK,
+	ANT_ACTION_IDLE,
+	ANT_ACTION_GOHOME
 };
 
 
 // Patch TYPE values
 enum PATCH_types
 {
-PATCH,
-PATCH_DIRT,
-PATCH_EMPTY,
-PATCH_BARRIER,
-PATCH_FOOD,
-PATCH_EGG,
-PATCH_TOP,
-// entrance to underground (hill)
-PATCH_ENTRANCE
+	PATCH,
+	PATCH_DIRT,
+	PATCH_EMPTY,
+	PATCH_BARRIER,
+	PATCH_FOOD,
+	PATCH_FOOD2,
+	PATCH_FOOD3,
+	PATCH_FOOD4,
+	PATCH_FOOD5,
+	PATCH_FOOD6,
+	PATCH_FOOD7,
+	PATCH_FOOD8,
+	PATCH_FOOD9,
+	PATCH_FOOD10, // food stacks.
+	PATCH_EGG,
+	PATCH_TOP,
+	// entrance to underground (hill)
+	PATCH_ENTRANCE
 };
 
 // Draw distance.
@@ -53,8 +65,6 @@ typedef struct {
 	float x, y, z, d;
 } VectorF;
 
-
-
 // Observer states:
 enum Player_Actions
 {
@@ -70,6 +80,7 @@ enum Player_Actions
 	PLAYER_PICKED_SOMETHING
 };
 
+// These are the physical inputs sent out from the Input class.
 enum Input_Types
 {
 	// D-PAD.
@@ -84,6 +95,7 @@ enum Input_Types
 	// TOUCHPAD
 	PLAYER_PRESSED_TOUCHPAD,
 	PLAYER_HELD_TOUCHPAD,
+		// this one isn't from hardware, but I detect it manually from the Input class.
 	PLAYER_RELEASED_TOUCHPAD,
 	// BUTTONS
 	PLAYER_HELD_A,

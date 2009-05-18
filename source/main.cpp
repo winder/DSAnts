@@ -14,11 +14,16 @@
 #include "cpu_usage.h"
 #include "Lighting.h"
 
+//#include "dirt_img_bin.h"
+#include "texture_bin.h"
+
 //TODO: setup the function that implements the VBlank handling
 //      put a GameWorld->step() call in there.  That way even
 //      if I get to the point where things are too complicated
 //      to draw, things still feel like they move in real time.
 
+
+  int textureID;
 
 // FPS calculation.
 int frameCounter=0;
@@ -60,11 +65,17 @@ int main()
 	// Exception handler.
 	defaultExceptionHandler();
 
-	// I threw this in here for testing.
-	// enable edge outlining, this will be used to show which object is selected
-	glEnable(GL_OUTLINE);
-	//set the first outline color to white
-	glSetOutlineColor(0,RGB15(31,31,31));
+  //set mode 0, enable BG0 and set it to 3D
+  videoSetMode(MODE_0_3D);
+	glInit();
+  //enable textures
+  glEnable(GL_TEXTURE_2D);
+
+  vramSetBankA(VRAM_A_TEXTURE);
+  glGenTextures(1, &textureID);
+  glBindTexture(0, textureID);
+ // glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)dirt_img_bin);
+  glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)texture_bin);
 
 	// Camera needs to be initialized.
 	gw->init();
@@ -123,7 +134,9 @@ int main()
 		gw->setProjection();
 
 		// enable culling.
-		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
+		//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
+		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
+//		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_ID(1));
 
 		// Set the current matrix to be the model matrix
 		glMatrixMode(GL_MODELVIEW);
@@ -139,8 +152,35 @@ int main()
 		//------------//
 		CPU_StartTest(0,0);
 
+//    glBindTexture(0, textureID);
 		// draw the scene, this does the picking too.
 		gw->draw();
+/*
+    glMaterialf(GL_AMBIENT, RGB15(16,16,16));
+    glMaterialf(GL_DIFFUSE, RGB15(16,16,16));
+    glMaterialf(GL_SPECULAR, BIT(15) | RGB15(8,8,8));
+    glMaterialf(GL_EMISSION, RGB15(16,16,16));
+*/
+/*
+    //draw the obj
+    glBegin(GL_QUAD);
+      glNormal(NORMAL_PACK(0,inttov10(1),0));
+
+      GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+      glVertex3v16(floattov16(-0.5),  floattov16(-0.5), 0 );
+
+      GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+      glVertex3v16(floattov16(0.5), floattov16(-0.5), 0 );
+
+      GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+      glVertex3v16(floattov16(0.5), floattov16(0.5), 0 );
+
+      GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+      glVertex3v16(floattov16(-0.5),  floattov16(0.5), 0 );
+
+    glEnd();
+*/
+
 
 		cpu_percent = CPU_EndTest();
 

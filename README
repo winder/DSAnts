@@ -31,9 +31,9 @@ Development process, Asterisk indicates complete:
 		- Touch, dijkstra
 
 3. Create surface world
-	- Link to underground
-	- Obstacles (Rocks, pits, shoe)
-	- Food
+*	- Link to underground
+*	- Objects (Rocks, Food)
+	-	Object spawns.
 
 4. A.I. / Enemy base.
 	- Ant action AI's:
@@ -47,7 +47,7 @@ Development process, Asterisk indicates complete:
 		-more interesting?
 
 5. Gameplay
-	- Enemies (Pincer pit, spider, food)
+	- Enemies (Pincer pit, spider, foot, lawnmower)
 	- Queen
 	- Egg / Hatch system
 	- Food / Eating system
