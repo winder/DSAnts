@@ -7,7 +7,7 @@ GameWorld::GameWorld()
 	in = new Input();
 
 	cam = new Camera();
-	cam->translateZinc(3.5);
+	//cam->translateZinc(2.2);
 
 	ug = new Underground();
 	surf = new Surface();
@@ -311,8 +311,9 @@ void GameWorld::printDebugFiveLines()
 		printf("\nCurrent map: surface");
 	printf("\nMap Center: (%i, %i)", ug->getCenterX(), ug->getCenterY());
 	printf("\nNUM ANTS BEING DRAWN: %i", numAnts);
+	printf("\nCamera distance: %f", cam->getCamLocation().z);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
-	p->printDebug();
+//	p->printDebug();
 
 
 }

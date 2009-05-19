@@ -14,8 +14,8 @@
 #include "cpu_usage.h"
 #include "Lighting.h"
 
-//#include "dirt_img_bin.h"
-#include "texture_bin.h"
+#include "dirt_one_img_bin.h"
+//#include "texture_bin.h"
 
 //TODO: setup the function that implements the VBlank handling
 //      put a GameWorld->step() call in there.  That way even
@@ -23,7 +23,6 @@
 //      to draw, things still feel like they move in real time.
 
 
-  int textureID;
 
 // FPS calculation.
 int frameCounter=0;
@@ -68,15 +67,6 @@ int main()
 
   //set mode 0, enable BG0 and set it to 3D
   videoSetMode(MODE_0_3D);
-	glInit();
-  //enable textures
-  glEnable(GL_TEXTURE_2D);
-
-  vramSetBankA(VRAM_A_TEXTURE);
-  glGenTextures(1, &textureID);
-  glBindTexture(0, textureID);
- // glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)dirt_img_bin);
-  glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)texture_bin);
 
 	// Camera needs to be initialized.
 	gw->init();
@@ -117,21 +107,14 @@ int main()
 
 
   int textureID;
-
-  float rotateX = 0.0;
-  float rotateY = 0.0;
-
-  //set mode 0, enable BG0 and set it to 3D
-  videoSetMode(MODE_0_3D);
-
   // initialize gl
   glInit();
 
   //enable textures
-  glEnable(GL_TEXTURE_2D);
+//  glEnable(GL_TEXTURE_2D);
 
   // enable antialiasing
-  glEnable(GL_ANTIALIAS);
+//  glEnable(GL_ANTIALIAS);
 
   // setup the rear plane
   glClearColor(0,0,0,31); // BG must be opaque for AA to work
@@ -145,21 +128,8 @@ int main()
 
   glGenTextures(1, &textureID);
   glBindTexture(0, textureID);
-  glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)texture_bin);
-
-
-  //any floating point gl call is being converted to fixed prior to being implemented
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(70, 256.0 / 192.0, 0.1, 40);
-
-  gluLookAt(  0.0, 0.0, 1.0,    //camera possition 
-        0.0, 0.0, 0.0,    //look at
-        0.0, 1.0, 0.0);   //up  
-
-
-
-
+  glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)dirt_one_img_bin);
+  //glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)texture_bin);
 
 
 	//main loop
@@ -216,12 +186,16 @@ int main()
     glPushMatrix();
 
     //move it away from the camera
-    glTranslate3f32(0, 0, floattof32(-1));
-
+/*
     glMaterialf(GL_AMBIENT, RGB15(16,16,16));
     glMaterialf(GL_DIFFUSE, RGB15(16,16,16));
     glMaterialf(GL_SPECULAR, BIT(15) | RGB15(8,8,8));
     glMaterialf(GL_EMISSION, RGB15(16,16,16));
+*/
+	glMaterialf(GL_DIFFUSE, RGB15(1, 11, 31) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
+	glMaterialf(GL_AMBIENT, RGB15(15, 15, 15));
+	glMaterialf(GL_SPECULAR, RGB15(15, 15, 15)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
+	glMaterialf(GL_EMISSION, RGB15(25, 25, 25));
 
     //ds uses a table for shinyness..this generates a half-ass one
 //    glMaterialShinyness();
@@ -230,7 +204,7 @@ int main()
     glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK);
 
     glBindTexture(0, textureID);
-
+/*
     //draw the obj
     glBegin(GL_QUAD);
       glNormal(NORMAL_PACK(0,inttov10(-1),0));
@@ -248,7 +222,7 @@ int main()
       glVertex3v16(floattov16(-5.5),  floattov16(5.5), 0 );
 
     glEnd();
-
+*/
     glPopMatrix(1);
 
     glFlush(0);
@@ -258,9 +232,8 @@ int main()
 
 
 
-/*
     loopCounter++; 
-		swiWaitForVBlank();
+
 
 		while (GFX_STATUS & (1<<27)); // wait until the geometry engine is not busy
 
@@ -287,8 +260,7 @@ int main()
 		printf("\n FPS: %i", frameold);
 
 		// flush to the screen
-		glFlush(0);
-*/
+
 	}
 
 	return 0;
