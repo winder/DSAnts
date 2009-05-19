@@ -6,7 +6,11 @@
 #include "Patch.h"
 #include "Camera.h"
 #include <vector>
+#include "TextureManager.h"
 
+
+// Textures:
+#include "dirt_one_img_bin.h"
 // need this for picking.
 #include <nds/arm9/postest.h>
 
@@ -19,6 +23,18 @@ class MapDraw: public Map
 
 		// this is an abstract class too.
 		void initGrid() = 0;
+
+		//---------------//
+		// TEXTURE STUFF //
+		//---------------//
+		// Loads the textures.
+		void initTextures();
+		// in case of shared textures.
+		// TODO: remove "setTextures" and "getTextures" ?
+		// because of "setTextures" and "getTextures" this object may or may not own the texture.
+		void setTextures(TextureManager* t){ tm = t; }
+		TextureManager* getTextures(){ return tm; }
+		void destroyTextures();
 
 		// Drawing functions.
 		Patch* draw();
@@ -77,6 +93,8 @@ class MapDraw: public Map
 		bool pickMode;
 		// Storage for picking.
 		Patch *picked;
+
+		TextureManager *tm;
 };
 
 #endif

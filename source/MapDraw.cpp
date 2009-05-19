@@ -9,6 +9,20 @@ MapDraw::MapDraw()
 }
 
 
+void MapDraw::initTextures()
+{
+	TextureManager *tm = new TextureManager();
+	tm->load( 0, (u8*)dirt_one_img_bin );
+	tm->bind( );
+}
+
+// TODO: textures for one level loaded at a time.
+void MapDraw::destroyTextures()
+{
+	// texture manager unloads everything upon destruction.
+	delete tm;
+}
+
 // increment a scene shift some amount before scrolling the tiles.
 void MapDraw::incX()
 {

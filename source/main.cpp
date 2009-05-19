@@ -67,7 +67,7 @@ int main()
   videoSetMode(MODE_0_3D);
 
 	// Camera needs to be initialized.
-	gw->init();
+	gw->initCam();
 
 	//---------------------//
 	// INITIALIZE LIGHTING //
@@ -121,11 +121,12 @@ int main()
 
   vramSetBankA(VRAM_A_TEXTURE);
 
-	TextureManager *tex = new TextureManager();
-	tex->load( (u8*)dirt_one_img_bin );
-	tex->bind( 0 );
+	// Init textures
+	gw->initTex();
+//	TextureManager *tex = new TextureManager();
+//	tex->load( 0, (u8*)dirt_one_img_bin );
+//	tex->bind(  );
 
-float redlight = 0.01;
 	//main loop
 	while (1) {
 		// Tell the world to move forward one step.

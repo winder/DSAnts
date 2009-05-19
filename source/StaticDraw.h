@@ -4,7 +4,12 @@
 #include <nds.h>
 #include <math.h>
 #include "MapDraw.h"
+#include "TextureManager.h"
 #include "global.h"
+
+//#ifdef __DEBUG
+#include <stdio.h>
+//#endif
 
 typedef struct{
 	float x,y,z;
@@ -13,21 +18,19 @@ typedef struct{
 class StaticDraw
 {
 	public:
-		StaticDraw(){ cache = false; }
-// for some reason it can't find MapDraw??
-// this code isn't used right now so commenting out.
-//		void draw(MapDraw* ug, short s, short w, short h);
-		void draw(Patch* p);
-		void Box(float x, float y, float z, float width, float height, float depth);
-		void Sphere(float x, float y, float z, float radius);
+		//void draw(Patch* p);
 		static float d2r(float degrees){
         const double conversion = 3.1416f/180.0f;
         return degrees * conversion; }
 
-	private:
-		verts v[7][7];
+		// Moved over from MapDraw:
+		// Cubes
+		static void drawBox(float x, float y, float z, float width, float height, float depth);
+		static void drawBox(float x, float y, float z, float width, float height, float depth, TextureManager *tm);
 
-		bool cache;
+		// Squares
+		static void drawRect(float x, float y, float z, float width, float height);
+		static void drawRect(float x, float y, float z, float width, float height, TextureManager *tm);
 };
 
 #endif

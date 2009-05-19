@@ -7,12 +7,16 @@ class TextureManager
 {
 	public:
 		TextureManager();
+		~TextureManager();
 
-		void load( u8* image );
-		void bind( int texBank );
+		void load( int texBank, u8* image );
+		void bind( );
+
+		void setTexture();
 
 	private:
 		int textureID;
+		int callNum;
 };
 
 #endif
