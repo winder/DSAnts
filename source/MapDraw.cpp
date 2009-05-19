@@ -540,66 +540,66 @@ void MapDraw::drawTextureCenteredBox(float x, float y, float z, float width, flo
 
 	//z  face
 	glNormal3f(0,0,1);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x-w2,y+h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z);
 	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x+w2,y-h2,z);
 
 	//z + depth face
 	glNormal3f(0,0,-1);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x+w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z+depth);
 	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x-w2,y+h2,z+depth);
 
 	//x  face
 	glNormal3f(1,0,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x-w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x-w2,y+h2,z+depth);
 	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x-w2,y+h2,z);
 
 	//x + width face
 	glNormal3f(-1,0,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x+w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x+w2,y+h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z+depth);
 	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x+w2,y-h2,z+depth);
 
 	//y  face
 	glNormal3f(0,-1,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x+w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y-h2,z+depth);
 	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x-w2,y-h2,z+depth);
 
 	//y  + height face
 	glNormal3f(0,1,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y+h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x-w2,y+h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z+depth);
 	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x+w2,y+h2,z);
@@ -610,9 +610,9 @@ void MapDraw::material(int r, int g, int b)
 {
 // This seems to work alright.
 	glMaterialf(GL_DIFFUSE, RGB15(r, g, b) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
-	glMaterialf(GL_AMBIENT, RGB15(4, 4, 5));
+	glMaterialf(GL_AMBIENT, RGB15(r, g, b));
 	glMaterialf(GL_SPECULAR, RGB15(0, 0, 0)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
-	glMaterialf(GL_EMISSION, RGB15(10, 10, 10));
+	glMaterialf(GL_EMISSION, RGB15(31, 31, 31));
 
   //ds uses a table for shinyness..this generates a half-ass one
 	// NOTE: do not use this, at least not here, it slows shit down a lot.
@@ -626,19 +626,21 @@ void MapDraw::drawTextureRect(float x, float y, float z, float width, float heig
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 
+//TODO: fix this.
 	glNormal3f(0,0,-1);
-  GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65), inttot16(5)));
 	glVertex3f(x-w2,y-h2,z);
-  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65),inttot16(5)));
 	glVertex3f(x+w2,y-h2,z);
-  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65), inttot16(5)));
 	glVertex3f(x+w2,y+h2,z);
-  GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65),inttot16(5)));
 	glVertex3f(x-w2,y+h2,z);
 }
 
 void MapDraw::drawRect(float x, float y, float z, float width, float height)
 {
+	drawTextureRect(x,y,z,width,height);
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 

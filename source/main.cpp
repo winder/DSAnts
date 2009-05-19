@@ -78,14 +78,12 @@ int main()
 	light0.setLight(0);
 	// From cam perspective lights up: RIGHT, TOP, FRONT planes
 	light0.move(0.7f, 0.5f, 0.8f);
-	light0.color(31, 1, 1);
 	light0.color(31, 31, 31);
 	light0.enable();
 	Lighting light1;
 	light1.setLight(1);
 	// From cam perspective lights up: LEFT, BOTTOM, REAR planes
 	light1.move(-0.7f, -0.2f, -0.8f);
-	light1.color(1, 1, 31);
 	light1.color(31, 31, 31);
 	light1.enable();
 	glClearColor(0,0,0,0);
@@ -111,7 +109,7 @@ int main()
   glInit();
 
   //enable textures
-//  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_TEXTURE_2D);
 
   // enable antialiasing
 //  glEnable(GL_ANTIALIAS);
@@ -129,9 +127,9 @@ int main()
   glGenTextures(1, &textureID);
   glBindTexture(0, textureID);
   glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)dirt_one_img_bin);
-  //glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)texture_bin);
 
 
+  glBindTexture(0, textureID);
 	//main loop
 	while (1) {
 
@@ -185,44 +183,9 @@ int main()
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
-    //move it away from the camera
-/*
-    glMaterialf(GL_AMBIENT, RGB15(16,16,16));
-    glMaterialf(GL_DIFFUSE, RGB15(16,16,16));
-    glMaterialf(GL_SPECULAR, BIT(15) | RGB15(8,8,8));
-    glMaterialf(GL_EMISSION, RGB15(16,16,16));
-*/
-	glMaterialf(GL_DIFFUSE, RGB15(1, 11, 31) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
-	glMaterialf(GL_AMBIENT, RGB15(15, 15, 15));
-	glMaterialf(GL_SPECULAR, RGB15(15, 15, 15)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
-	glMaterialf(GL_EMISSION, RGB15(25, 25, 25));
 
-    //ds uses a table for shinyness..this generates a half-ass one
-//    glMaterialShinyness();
 
-    //not a real gl function and will likely change
-    glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK);
 
-    glBindTexture(0, textureID);
-/*
-    //draw the obj
-    glBegin(GL_QUAD);
-      glNormal(NORMAL_PACK(0,inttov10(-1),0));
-
-      GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
-      glVertex3v16(floattov16(-5.5),  floattov16(-5.5), 0 );
-
-      GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
-      glVertex3v16(floattov16(5.5), floattov16(-5.5), 0 );
-
-      GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
-      glVertex3v16(floattov16(5.5), floattov16(5.5), 0 );
-
-      GFX_TEX_COORD = (TEXTURE_PACK(0,0));
-      glVertex3v16(floattov16(-5.5),  floattov16(5.5), 0 );
-
-    glEnd();
-*/
     glPopMatrix(1);
 
     glFlush(0);
