@@ -13,6 +13,7 @@
 #include "memoryStats.h"
 #include "cpu_usage.h"
 #include "Lighting.h"
+#include "TextureManager.h"
 
 #include "dirt_one_img_bin.h"
 //#include "texture_bin.h"
@@ -21,8 +22,6 @@
 //      put a GameWorld->step() call in there.  That way even
 //      if I get to the point where things are too complicated
 //      to draw, things still feel like they move in real time.
-
-
 
 // FPS calculation.
 int frameCounter=0;
@@ -47,9 +46,8 @@ int main()
 	// Set vBlank callback.
 	irqSet(IRQ_VBLANK,vBlank);
 
-	time_t t;
-	t = time(NULL);
-	srand(t);
+	// seed rand.
+	srand(time(NULL));
 
 	//UndergroundDrawGrid *ug = new UndergroundDrawGrid();
 	GameWorld *gw = new GameWorld();
@@ -77,15 +75,20 @@ int main()
 	Lighting light0;
 	light0.setLight(0);
 	// From cam perspective lights up: RIGHT, TOP, FRONT planes
-	light0.move(0.7f, 0.5f, 0.8f);
-	light0.color(31, 31, 31);
+//	light0.move(0.7f, 0.5f, 0.8f);
+	light0.move(0.5f, -0.5f, 1.0f);
+//	light0.move(1.0f, 1.0f, 1.0f);
+	light0.color(19, 19, 19);
 	light0.enable();
+
+// Light 1, not needed anymore (can't be used, rather)
 	Lighting light1;
 	light1.setLight(1);
-	// From cam perspective lights up: LEFT, BOTTOM, REAR planes
-	light1.move(-0.7f, -0.2f, -0.8f);
-	light1.color(31, 31, 31);
+	light1.move(-0.7f, -0.2f, 0.8f);
+//	light1.move(-1.0f, -1.0f, -1.0f);
+	light1.color(11, 11, 11);
 	light1.enable();
+	light1.disable();
 	glClearColor(0,0,0,0);
 	glClearDepth(0x7FFF);
 
@@ -99,12 +102,6 @@ int main()
 	int polygon_count;
 	int vertex_count;
 
-
-
-
-
-
-  int textureID;
   // initialize gl
   glInit();
 
@@ -124,16 +121,13 @@ int main()
 
   vramSetBankA(VRAM_A_TEXTURE);
 
-  glGenTextures(1, &textureID);
-  glBindTexture(0, textureID);
-  glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128 , TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, (u8*)dirt_one_img_bin);
+	TextureManager *tex = new TextureManager();
+	tex->load( (u8*)dirt_one_img_bin );
+	tex->bind( 0 );
 
-
-  glBindTexture(0, textureID);
+float redlight = 0.01;
 	//main loop
 	while (1) {
-
-
 		// Tell the world to move forward one step.
 		// TODO: put this in VBlank override, so that even if
 		//			 drawing gets too slow the world will still move forward.
@@ -156,7 +150,6 @@ int main()
 		gw->setProjection();
 
 		// enable culling.
-		//glPolyFmt(POLY_ALPHA(31) | POLY_CULL_FRONT | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 		glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK | light0.getPolyFmtFlag() | light1.getPolyFmtFlag()  | POLY_ID(1));
 
 		// Set the current matrix to be the model matrix
@@ -172,31 +165,17 @@ int main()
 		// DRAW SCENE //
 		//------------//
 		CPU_StartTest(0,0);
-
 		// draw the scene, this does the picking too.
 		gw->draw();
-
 		cpu_percent = CPU_EndTest();
-
-
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-
-
-
-
-    glPopMatrix(1);
 
     glFlush(0);
 
+		// Wait for next frame before doing any more.
     swiWaitForVBlank();
 
-
-
-
+		// count the frame.
     loopCounter++; 
-
 
 		while (GFX_STATUS & (1<<27)); // wait until the geometry engine is not busy
 

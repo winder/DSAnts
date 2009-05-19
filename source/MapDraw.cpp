@@ -329,7 +329,8 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 // glColor can't work with glNormal, so use materials.
 	if (p->TYPE == PATCH_DIRT)
 	{ // brown.
-		material(0,0,0);
+		// texture "brightness"
+		material(31,31,31);
 		// Draw filled dirt.
 
 		// if it is completely enclosed.... only draw the front.
@@ -609,10 +610,11 @@ void MapDraw::drawTextureCenteredBox(float x, float y, float z, float width, flo
 void MapDraw::material(int r, int g, int b)
 {
 // This seems to work alright.
-	glMaterialf(GL_DIFFUSE, RGB15(r, g, b) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
+	//glMaterialf(GL_DIFFUSE, RGB15(r, g, b) | BIT(15)); /// Bit 15 enables the diffuse color to act like being set with glColor(), only with lighting support. When not using lighting, this is going to be the default color, just like being set with glColor().
+	glMaterialf(GL_DIFFUSE, RGB15(r, g, b));
 	glMaterialf(GL_AMBIENT, RGB15(r, g, b));
-	glMaterialf(GL_SPECULAR, RGB15(0, 0, 0)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
-	glMaterialf(GL_EMISSION, RGB15(31, 31, 31));
+	glMaterialf(GL_SPECULAR, RGB15(20, 20, 20)| BIT(15)); /// Bit 15 would have to be set here to enable a custom specularity table, instead of the default linear one.
+	glMaterialf(GL_EMISSION, RGB15(0, 0, 0));
 
   //ds uses a table for shinyness..this generates a half-ass one
 	// NOTE: do not use this, at least not here, it slows shit down a lot.
@@ -626,9 +628,9 @@ void MapDraw::drawTextureRect(float x, float y, float z, float width, float heig
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 
-//TODO: fix this.
+	//z + depth face
 	glNormal3f(0,0,-1);
-  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65), inttot16(5)));
+	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65), inttot16(5)));
 	glVertex3f(x-w2,y-h2,z);
   GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65),inttot16(5)));
 	glVertex3f(x+w2,y-h2,z);
@@ -644,7 +646,7 @@ void MapDraw::drawRect(float x, float y, float z, float width, float height)
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 
-	glNormal3f(0,0,-1);
+	glNormal3f(0,0,1);
 	glVertex3f(x-w2,y-h2,z);
 	glVertex3f(x+w2,y-h2,z);
 	glVertex3f(x+w2,y+h2,z);
