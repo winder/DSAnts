@@ -24,6 +24,7 @@ GameWorld::GameWorld()
 	// Create player.
 	Ant *tmp = new Ant();
 	tmp->setPatch( ug->getGrid()->getPatch(0,2) );
+	tmp->setLocation( STATE );
 	tmp->setCarrying(PATCH_FOOD);	
 	p = new Player(tmp);
 
@@ -310,12 +311,14 @@ void GameWorld::printDebugFiveLines()
 		printf("\nCurrent map: underground");
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 		printf("\nCurrent map: surface");
-	printf("\nMap Stats: <UG> <Surf>");
-	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
-	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
-	printf("\nMap Center: (%i, %i)", ug->getCenterX(), ug->getCenterY());
+	else
+		printf("\nCurrent map: unknown");
+//	printf("\nMap Stats: <UG> <Surf>");
+//	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
+//	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
+	printf("\nMap Center: (%i, %i)", curMap->getCenterX(), curMap->getCenterY());
 	printf("\nNUM ANTS BEING DRAWN: %i", numAnts);
-	printf("\nCamera distance: %f", cam->getCamLocation().z);
+//	printf("\nCamera distance: %f", cam->getCamLocation().z);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
 	p->printDebug();
 

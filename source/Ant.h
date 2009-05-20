@@ -24,6 +24,7 @@ class Ant
 		Patch* getPatch(){ return p; }
 
 		int getLocation(){ return location; }
+		void setLocation(int l){ location = l; }
 
 		// move the ant.
 		// If moving into a portal from any direction, need to handle it the same way.
