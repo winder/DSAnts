@@ -121,11 +121,11 @@ int main()
 
   vramSetBankA(VRAM_A_TEXTURE);
 
+	TextureManager *tex = new TextureManager();
+	tex->load( 0, (u8*)dirt_one_img_bin );
+	tex->bind(  );
 	// Init textures
-	gw->initTex();
-//	TextureManager *tex = new TextureManager();
-//	tex->load( 0, (u8*)dirt_one_img_bin );
-//	tex->bind(  );
+	gw->initTex(tex);
 
 	//main loop
 	while (1) {

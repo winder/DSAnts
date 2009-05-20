@@ -45,9 +45,9 @@ void TextureManager::setTexture()
 
 	{
 		if (callNum == 0)
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(64)));
+			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(63)));
 		else if (callNum == 1)
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(64)));
+			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(63)));
 		else if (callNum == 2)
 			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(0)));
 		else if (callNum == 3)

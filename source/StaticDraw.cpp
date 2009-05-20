@@ -64,92 +64,92 @@ void StaticDraw::drawBox(float x, float y, float z, float width, float height, f
 
 	//z  face
 	glNormal3f(0,0,1);
-//	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z);
-//	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x-w2,y+h2,z);
-//	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z);
-//	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x+w2,y-h2,z);
 
 	//z + depth face
 	glNormal3f(0,0,-1);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x+w2,y-h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x-w2,y+h2,z+depth);
 
 	//x  face
 	glNormal3f(1,0,0);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x-w2,y-h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x-w2,y+h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x-w2,y+h2,z);
 
 	//x + width face
 	glNormal3f(-1,0,0);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x+w2,y-h2,z);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x+w2,y+h2,z);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x+w2,y-h2,z+depth);
 
 	//y  face
 	glNormal3f(0,-1,0);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y-h2,z);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x+w2,y-h2,z);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y-h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x-w2,y-h2,z+depth);
 
 	//y  + height face
 	glNormal3f(0,1,0);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 	glVertex3f(x-w2,y+h2,z);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 	glVertex3f(x-w2,y+h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
 	glVertex3f(x+w2,y+h2,z+depth);
-	//tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(0,0));
 	glVertex3f(x+w2,y+h2,z);
 
 }
@@ -168,17 +168,17 @@ void StaticDraw::drawRect(float x, float y, float z, float width, float height, 
 
 	//z + depth face
 	glNormal3f(0,0,-1);
-//	tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(64)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(64)));
 	glVertex3f(x-w2,y-h2,z);
-//	tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(64)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(64)));
 	glVertex3f(x+w2,y-h2,z);
-//	tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(0)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(0)));
 	glVertex3f(x+w2,y+h2,z);
-//	tm->setTexture();
-			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(0)));
+	tm->setTexture();
+//GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(0)));
 	glVertex3f(x-w2,y+h2,z);
 }
 
