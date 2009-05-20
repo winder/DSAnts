@@ -63,8 +63,11 @@ class GameWorld: public Observer, public Subject
 		// Camera needs to set itself up.
 		void initCam(){	cam->init();
 									cam->translateZinc(2.0); }
-		void initTex(TextureManager* tex){	ug->setTextures(tex);
-																				surf->setTextures(tex); }
+		void initTex()
+			{//	ug->setTextures(tex);
+				// surf->setTextures(tex); }
+				ug->initTextures();
+				surf->setTextures( ug->getTextures() ); }
 //										surf->setTextures( ug->getTextures() ); }
 
 		// have the camera look at the player!

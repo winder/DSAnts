@@ -15,8 +15,8 @@ MapDraw::MapDraw()
 
 void MapDraw::initTextures()
 {
-//	TextureManager *tm = new TextureManager();
-//	tm->load( 0, (u8*)dirt_one_img_bin );
+	tm = new TextureManager();
+	tm->load( 0, (u8*)dirt_one_img_bin );
 	tm->bind( );
 }
 
