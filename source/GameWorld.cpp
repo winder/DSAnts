@@ -25,7 +25,7 @@ GameWorld::GameWorld()
 	Ant *tmp = new Ant();
 	tmp->setPatch( ug->getGrid()->getPatch(0,2) );
 	tmp->setLocation( STATE );
-	tmp->setCarrying(PATCH_FOOD);	
+	tmp->setCarrying(PATCH_FOOD1);	
 	p = new Player(tmp);
 
 	// SETUP OBSERVERs:

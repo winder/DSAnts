@@ -13,7 +13,7 @@
 #define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || (X == PATCH_TOP) || FOODi(X))
 
 #define FOOD(X) FOODi(X->TYPE)
-#define FOODi(X) ((X == PATCH_FOOD) ||(X == PATCH_FOOD2) ||(X == PATCH_FOOD3) ||(X == PATCH_FOOD4) ||\
+#define FOODi(X) ((X == PATCH_FOOD1) ||(X == PATCH_FOOD2) ||(X == PATCH_FOOD3) ||(X == PATCH_FOOD4) ||\
 (X == PATCH_FOOD5) ||(X == PATCH_FOOD6) ||(X == PATCH_FOOD7) ||(X == PATCH_FOOD8) ||(X == PATCH_FOOD9) ||(X == PATCH_FOOD10)) 
 
 #define OBJECT(X) OBJECTi(X->TYPE)
