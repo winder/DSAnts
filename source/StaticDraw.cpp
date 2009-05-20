@@ -51,93 +51,88 @@ void StaticDraw::drawBox(float x, float y, float z, float width, float height, f
 
 void StaticDraw::drawBox(float x, float y, float z, float width, float height, float depth, TextureManager* tm)
 {
+//TODO: um.. why doesn't this work?
 	// if this was called with a null texture, draw w/o texture.
 //	if (tm == '\0')
 //	{
 //		drawBox(x,y,z,width,height,depth);
 //		return;
 //	}
-//printf("BLAH");
 
-  glBindTexture(0,0);
-//	tm->bind();
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 
 	//z  face
 	glNormal3f(0,0,1);
-	//tm->setTexture();
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z);
-	//tm->setTexture();
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z);
-	//tm->setTexture();
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z);
-	//tm->setTexture();
-	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z);
 
 	//z + depth face
 	glNormal3f(0,0,-1);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z+depth);
 
 	//x  face
 	glNormal3f(1,0,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z);
 
 	//x + width face
 	glNormal3f(-1,0,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z+depth);
 
 	//y  face
 	glNormal3f(0,-1,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z+depth);
 
 	//y  + height face
 	glNormal3f(0,1,0);
-	GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z+depth);
-	GFX_TEX_COORD = (TEXTURE_PACK(0,0));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z);
 
 }
 
 void StaticDraw::drawRect(float x, float y, float z, float width, float height, TextureManager *tm)
 {
+//TODO: um.. why doesn't this work?
 	// if this was called with a null texture, draw w/o texture.
 //	if (tm == '\0')
 //	{
@@ -149,19 +144,18 @@ void StaticDraw::drawRect(float x, float y, float z, float width, float height, 
 
 	//z + depth face
 	glNormal3f(0,0,-1);
-	GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65), inttot16(5)));
+	tm->setTexture();
 	glVertex3f(x-w2,y-h2,z);
-  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65),inttot16(5)));
+	tm->setTexture();
 	glVertex3f(x+w2,y-h2,z);
-  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65), inttot16(5)));
+	tm->setTexture();
 	glVertex3f(x+w2,y+h2,z);
-  GFX_TEX_COORD = (TEXTURE_PACK(inttot16(65),inttot16(5)));
+	tm->setTexture();
 	glVertex3f(x-w2,y+h2,z);
 }
 
 void StaticDraw::drawRect(float x, float y, float z, float width, float height)
 {
-//	StaticDraw::drawRect(x,y,z,width,height, NULL);
 	float w2 = width * 0.5;
 	float h2 = height * 0.5;
 

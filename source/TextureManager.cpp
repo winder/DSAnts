@@ -21,18 +21,46 @@ void TextureManager::bind( )
   glBindTexture(0, textureID);
 }
 
+//TODO: there might be a good algorithmic way to do this.
 void TextureManager::setTexture()
 {
+	// reset callNum every 4th call.
 	if (callNum >= 4) callNum = 0;
-//	if ( currentTexture == WHATEVER )
 
+	// Top Left 64 bit texture.
+	if (curTex == 0)
+	{
 		if (callNum == 0)
 			GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(63)));
 		else if (callNum == 1)
 			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63),inttot16(63)));
 		else if (callNum == 2)
 			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(63), 0));
-		else if (callNum == 2)
+		else if (callNum == 3)
 			GFX_TEX_COORD = (TEXTURE_PACK(0,0));
-			
+	}
+	// Top Right 64 bit texture.
+	else if (curTex == 1)
+
+	{
+		if (callNum == 0)
+			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(64)));
+		else if (callNum == 1)
+			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(64)));
+		else if (callNum == 2)
+			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(0)));
+		else if (callNum == 2)
+			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(0)));
+	}
+
+	callNum++;
+}
+
+// Selects which texture setTexture will return for.
+void TextureManager::nextTexture(int ID)
+{
+	// reset the call count.
+	callNum = 0;
+
+	curTex = ID;
 }
