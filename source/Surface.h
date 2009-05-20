@@ -8,7 +8,6 @@ class Surface: public MapDraw
 	public:
 		// The surface is pretty much empty.
 		// TODO: remove X wrapping or add Y wrapping for the surface.
-//		Surface(){ initGrid(); }
 		Surface();
 		virtual ~Surface(){ /* superclass deletes structure */ }
 

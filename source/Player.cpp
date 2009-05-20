@@ -245,7 +245,9 @@ void Player::printDebug()
 // chance of errors later on.
 Patch* Player::adjacentPatchPicked()
 {
-	if( p->getPatch()->right->picked )
+	if( p->getPatch()->picked )
+		return p->getPatch();
+	else if( p->getPatch()->right->picked )
 		return p->getPatch()->right;
 	else if( p->getPatch()->left->picked )
 		return p->getPatch()->left;
