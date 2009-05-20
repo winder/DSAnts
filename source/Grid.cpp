@@ -246,3 +246,31 @@ void Grid::clear(Patch* p)
 		cleared.push_back(p);
 	}
 }
+
+void Grid::takeObject(Patch* p)
+{
+	if (p == '\0') return;
+
+	if (OBJECT(p))
+	{
+		p->TYPE = PATCH_EMPTY;
+		// searth through objects for the object being taken.
+		// When (if?) found, remove it from the list as it is now empty.
+		// TODO: I can probably get around to doing this only periodically, since
+		//				I can always just check if the patch is an object first.
+		for(unsigned int i=0; i < objects.size(); i++)
+			if ( objects[i] == p )
+				objects.erase( objects.begin() + i, objects.begin() + i + 1);
+	}
+}
+
+void Grid::addObject(Patch* p, int Ob)
+{
+	if (p == '\0') return;
+
+	if (EMPTY(p) && OBJECTi(Ob))
+	{
+		p->TYPE = Ob;
+		objects.push_back(p);
+	}
+}

@@ -52,8 +52,8 @@ class Player: public Subject, public Observer
 
 		// Player interaction with the world: dig dirt, pickup objects, drop objects.
 		Patch* dig();
-		void pickUp();
-		void drop();
+		Patch* pickUp();
+		Patch* drop();
 
 		// auto movement:
 		void move();
@@ -65,6 +65,9 @@ class Player: public Subject, public Observer
 		void printDebug();
 //#endif
 	private:
+		// helper function, check if a patch adjacent to the ant is picked.
+		Patch* adjacentPatchPicked();
+
 		// The player is an ant.  This ant is the player.
 		Ant *p;
 

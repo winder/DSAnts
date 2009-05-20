@@ -68,7 +68,6 @@ class GameWorld: public Observer, public Subject
 				// surf->setTextures(tex); }
 				ug->initTextures();
 				surf->setTextures( ug->getTextures() ); }
-//										surf->setTextures( ug->getTextures() ); }
 
 		// have the camera look at the player!
 		// TODO: this is an interesting concept, but it needs some work to... work.

@@ -147,6 +147,10 @@ void Player::move()
 // If it can dig, return the spot.
 Patch* Player::dig()
 {
+	Patch* t = adjacentPatchPicked();
+	if (t && (t->TYPE == PATCH_DIRT))
+		return t;
+/*
 	if( (p->getPatch()->right->TYPE == PATCH_DIRT) && p->getPatch()->right->picked )
 		return p->getPatch()->right;
 	else if( (p->getPatch()->left->TYPE == PATCH_DIRT) && p->getPatch()->left->picked )
@@ -157,32 +161,51 @@ Patch* Player::dig()
 	// BOTTOM will not be NULL, it always has a barrier along the bottom.
 	else if( (p->getPatch()->bottom->TYPE == PATCH_DIRT) && p->getPatch()->bottom->picked )
 		return p->getPatch()->bottom;
-
+*/
 	return '\0';
 }
 
-void Player::pickUp()
-{
+Patch* Player::pickUp()
+{ 
+	Patch* t = adjacentPatchPicked();
+	if (t)
+		if (getPlayerAnt()->pickup( t ))
+			return t;
+	return '\0';
+/*
+	// Check if any of the 
 	if( (OBJECT(p->getPatch()->right)) && p->getPatch()->right->picked )
-		getPlayerAnt()->pickup(p->getPatch()->right);
+		if( getPlayerAnt()->pickup(p->getPatch()->right) )
+			return p->getPatch()->right;
 	else if( (OBJECT(p->getPatch()->left)) && p->getPatch()->left->picked )
-		getPlayerAnt()->pickup(p->getPatch()->left);
+		if( getPlayerAnt()->pickup(p->getPatch()->left) )
+			return p->getPatch()->left;
 	else if( (p->getPatch()->top) && (OBJECT(p->getPatch()->top)) && p->getPatch()->top->picked )
-		getPlayerAnt()->pickup(p->getPatch()->top);
+		if( getPlayerAnt()->pickup(p->getPatch()->top) )
+			return p->getPatch()->top;
 	else if( (OBJECT(p->getPatch()->bottom)) && p->getPatch()->bottom->picked )
-		getPlayerAnt()->pickup(p->getPatch()->bottom);
+		if( getPlayerAnt()->pickup(p->getPatch()->bottom) )
+			return p->getPatch()->bottom;
+*/
 }
 
-void Player::drop()
+Patch* Player::drop()
 {
+	Patch* t = adjacentPatchPicked();
+	if (t)
+		if ( getPlayerAnt()->drop( t ) )
+			return t;
+	return '\0';
+/*
 	if( (EMPTY(p->getPatch()->right)) && p->getPatch()->right->picked )
-		getPlayerAnt()->drop(p->getPatch()->right);
+		return getPlayerAnt()->drop(p->getPatch()->right);
 	else if( (EMPTY(p->getPatch()->left)) && p->getPatch()->left->picked )
-		getPlayerAnt()->drop(p->getPatch()->left);
+		return getPlayerAnt()->drop(p->getPatch()->left);
 	else if( (p->getPatch()->top) && (EMPTY(p->getPatch()->top)) && p->getPatch()->top->picked )
-		getPlayerAnt()->drop(p->getPatch()->top);
+		return getPlayerAnt()->drop(p->getPatch()->top);
 	else if( (EMPTY(p->getPatch()->bottom)) && p->getPatch()->bottom->picked )
-		getPlayerAnt()->drop(p->getPatch()->bottom);
+		return getPlayerAnt()->drop(p->getPatch()->bottom);
+*/
 }
 
 // the observer method.
@@ -216,4 +239,19 @@ void Player::printDebug()
 		printf("PATCH_ENTRANCE");
 	printf("\nFacing: x=%i, y=%i", getPlayerAnt()->getFacingX(), getPlayerAnt()->getFacingY());
 
+}
+
+// I'm seeing a lot of repeat code doing this, a helper function will reduce
+// chance of errors later on.
+Patch* Player::adjacentPatchPicked()
+{
+	if( p->getPatch()->right->picked )
+		return p->getPatch()->right;
+	else if( p->getPatch()->left->picked )
+		return p->getPatch()->left;
+	else if( p->getPatch()->top && p->getPatch()->top->picked )
+			return p->getPatch()->top;
+	else if( p->getPatch()->bottom && p->getPatch()->bottom->picked )
+			return p->getPatch()->bottom;
+	return '\0';
 }

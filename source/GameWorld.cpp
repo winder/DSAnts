@@ -265,16 +265,17 @@ void GameWorld::update(int value)
 	{
 		// If it is dirt, see if we can DIG IT.
 		if (picked->TYPE == PATCH_DIRT)
-			ug->getGrid()->clear(p->dig());
+			curMap->getGrid()->clear(p->dig());
 		// If your carrying something, and the spot is empty, drop.
 		else if (EMPTY(picked) && p->getPlayerAnt()->getCarrying())
 		{
-			p->drop();
+			int saveO = p->getPlayerAnt()->getCarrying();
+			curMap->getGrid()->addObject( p->drop(), saveO );
 		}
 		// if it is an object, see if we can PICK IT.
 		else if (OBJECT(picked))
 		{
-			p->pickUp();
+			curMap->getGrid()->takeObject( p->pickUp() );
 		}
 	}
 	else if (value == PLAYER_RELEASED_TOUCHPAD)
@@ -309,11 +310,14 @@ void GameWorld::printDebugFiveLines()
 		printf("\nCurrent map: underground");
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 		printf("\nCurrent map: surface");
+	printf("\nMap Stats: <UG> <Surf>");
+	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
+	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
 	printf("\nMap Center: (%i, %i)", ug->getCenterX(), ug->getCenterY());
 	printf("\nNUM ANTS BEING DRAWN: %i", numAnts);
 	printf("\nCamera distance: %f", cam->getCamLocation().z);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
-//	p->printDebug();
+	p->printDebug();
 
 
 }

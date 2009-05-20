@@ -53,16 +53,32 @@ class Grid
 		void generateNest(int size);
 
 		// Keep track of cleared tiles in a vector.
-		std::vector<Patch*> getCleared(){ return cleared; }
 		void clear(Patch* p);
+		// Keep track of food tiles.
+		void addObject(Patch* p, int Ob);
+		void takeObject(Patch* p);
+
+		// Keep STL structure abstracted from other classes.
+		//std::vector<Patch*> getCleared(){ return cleared; }
+		//std::vector<Patch*> getObjects(){ return objects; }
+
+		// number of ___'s
+		int numCleared(){ return cleared.size(); }
+		int numObjects(){ return objects.size(); }
+		// the whole reason of maintaining these lists is so we can get a random one
+		// without searching the entire grid.
+		Patch* getRandomCleared(){ return cleared[ rand()%(cleared.size()) ]; }
+		Patch* getRandomObject(){ return objects[ rand()%(objects.size()) ]; }
 	private:
 		Patch* dd[WIDTH][DEPTH];
 
 		// Grids can optionally be set to loop.
 		bool loopX;
 		bool loopY;
-		// a list of cleared tiles.
+
+		// a list of certain tiles that I may want to information about.
 		std::vector<Patch*> cleared;
+		std::vector<Patch*> objects;
 };
 
 #endif

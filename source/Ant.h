@@ -60,21 +60,29 @@ class Ant
 
 		int getCarrying(){ return carrying; }
 		void setCarrying(int x){ carrying = x; }
-		void pickup(Patch *p)
+		// True if will pickup.  False otherwise.
+		bool pickup(Patch *p)
 			{
 				if (OBJECT(p))
 				{
 					carrying = p->TYPE;
-					p->TYPE = PATCH_EMPTY;
+					return true;
+					// The Grid must modify the type
+					//p->TYPE = PATCH_EMPTY;
 				}
+				return false;
 			}
-		void drop(Patch *p)
+		// True if it can drop, false otherwise.
+		bool drop(Patch *p)
 			{
 				if (EMPTY(p))
 				{
-					p->TYPE = carrying;
 					carrying = '\0';
+					// the grid must modify the type.
+					//p->TYPE = carrying;
+					return true;
 				}
+				return false;
 			}
 	private:
 		// these are used to change offsetX / offsetY and keep the direction correct.

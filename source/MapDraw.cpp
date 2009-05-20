@@ -79,8 +79,8 @@ void MapDraw::decY()
 
 }
 
-
-// WARNING: COPY / PASTE / TWEAK of MapDraw::draw()
+// Setup viewport to a 1 pixel window where the user clicked.
+// Set the "pickMode" flag and call draw to find out what piece of the grid was drawn.
 bool MapDraw::pickPoint(int x, int y, Camera &cam)
 {
   // This flag makes it so "startCheck" and "endCheck" are called
@@ -156,8 +156,6 @@ float MapDraw::positionX(short x)
 }
 float MapDraw::positionY(short y)
 {
-//	return (getCenterY() - y) * MODEL_SCALE;
-
 	// normal bounds.
 	if ( ( y < (getCenterY()+GRID_SIZE)) && ( y > (getCenterY()-GRID_SIZE)))
 		return ((getCenterY() - y));
@@ -176,17 +174,18 @@ float MapDraw::positionY(short y)
 void MapDraw::shiftCenter(Ant *p)
 {
 	float pos = positionY(p->getY());
+	int DISTANCE = GRID_SIZE / 3;
 
 	// if the ant is GRID_SIZE/3 boxes away from the center, start trying to follow it.
-	if (pos < (-1* (GRID_SIZE / 3)) )
+	if (pos < (-1* DISTANCE))
 		decY();
-	else if (pos > (GRID_SIZE / 3)) 
+	else if (pos > DISTANCE) 
 		incY();
 
 	pos = positionX(p->getX());
-	if (pos < (-1 * (GRID_SIZE / 3)))
+	if (pos < (-1 * DISTANCE))
 		decX();
-	else if (pos > (GRID_SIZE / 3)) 
+	else if (pos > DISTANCE) 
 		incX();
 }
 
@@ -280,7 +279,6 @@ Patch* MapDraw::draw()
 		bottomLeft = Grid::getLeft(bottomLeft);
 
 	// shift up a bunch of times or until we hit the surface.
-//	for (temp=GRID_SIZE; ((bottomLeft) && (bottomLeft->bottom) && (temp < GRID_SIZE)); temp++)
 	for (temp=0; ((bottomLeft) && (Grid::getDown(bottomLeft)) && (temp < GRID_SIZE)); temp++)
 		bottomLeft = Grid::getDown(bottomLeft);
 
@@ -474,6 +472,9 @@ void MapDraw::material(int r, int g, int b)
 //  glMaterialShinyness();
 
 }
+
+
+// Picking algorithms, set the polyCount before drawing, check it after.
 void MapDraw::startCheck()
 {
 	while(PosTestBusy()); // wait for the position test to finish

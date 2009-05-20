@@ -5,11 +5,16 @@
 
 
 // Simple generic functions:
+// Note: I don't really know much about designing macros, it made sense to cascade
+// them like this, but it could get confusing.
+// TODO: re-evaluate how I'm creating patch comparisons.
 
-// Patch is walkable
-#define WALKABLE(X) ((X->TYPE == PATCH_EMPTY) || (X->TYPE == PATCH_ENTRANCE) || (X->TYPE == PATCH_TOP) || (X->TYPE == PATCH_FOOD))
-#define OBJECT(X) ((X->TYPE == PATCH_FOOD))
-#define EMPTY(X) ((X->TYPE == PATCH_EMPTY))
+#define WALKABLE(X) WALKABLEi(X->TYPE)
+#define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || (X == PATCH_TOP) || (X == PATCH_FOOD))
+#define OBJECT(X) OBJECTi(X->TYPE)
+#define OBJECTi(X) ((X == PATCH_FOOD))
+#define EMPTY(X) EMPTYi(X->TYPE)
+#define EMPTYi(X) ((X == PATCH_EMPTY))
 
 
 struct Patch
