@@ -2,6 +2,7 @@
 
 TextureManager::TextureManager()
 {
+	callNum = 0;
 	textureID = 0;
 }
 
@@ -49,7 +50,7 @@ void TextureManager::setTexture()
 			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(64)));
 		else if (callNum == 2)
 			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), inttot16(0)));
-		else if (callNum == 2)
+		else if (callNum == 3)
 			GFX_TEX_COORD = (TEXTURE_PACK(inttot16(64) , inttot16(0)));
 	}
 
@@ -60,7 +61,6 @@ void TextureManager::setTexture()
 void TextureManager::nextTexture(int ID)
 {
 	// reset the call count.
-	callNum = 0;
-
 	curTex = ID;
+	callNum = 0;
 }

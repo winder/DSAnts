@@ -6,6 +6,7 @@ MapDraw::MapDraw()
 	boxSide = 0.1;
 	picked = '\0';
 	pickMode = false;
+	tm = '\0';
 }
 
 
@@ -189,7 +190,7 @@ void MapDraw::shiftCenter(Ant *p)
 bool MapDraw::drawAnt(Ant* a, bool animate)
 {
 	// top-right - white
-	tm->nextTexture(1);
+//	tm->nextTexture(1);
 	material(3,3,3);
 
 	// exit early if not visible.
@@ -323,7 +324,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	s = MODEL_SCALE;
 
 	// default to top-right (white)
-	tm->nextTexture(1);
+//	tm->nextTexture(1);
 
 	// WARNING: this optomization makes it so picking only works from one side of the X/Y plane.
 	// (when cam location z > 0)
@@ -349,7 +350,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	if (p->TYPE == PATCH_DIRT)
 	{
 		// dirt texture, top-left
-		tm->nextTexture(0);
+//		tm->nextTexture(0);
 		// texture "brightness"
 		material(31,31,31);
 		// Draw filled dirt.
