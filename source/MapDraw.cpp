@@ -336,16 +336,16 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		return;
 	}
 
-/*// this is getting in the way for now.
+// this is getting in the way for now.
 	// If this box is also picked, make a visible highlight in addition to whatever is below..
 	if (p->picked)
 	{
 		// TODO: set alpha level
 		// if the box was picked, identify it by coloring red..
 		material(31,31,1);
-		drawBox(x, y, 0.1, s, s, 0.1);
+		StaticDraw::drawBox(x, y, 0.1, s, s, 0.1, tm);
 	}
-*/
+
 
 // glColor can't work with glNormal, so use materials.
 	if (p->TYPE == PATCH_DIRT)
