@@ -22,6 +22,8 @@ class Grid
 
 		// Sets up the Patches for the surface.
 		void setupSurface();
+		// Sets up the Patches for the underground.
+		void setupUnderground();
 
 		// Make the grid loop on the Y axis.
 		void setLoopY();

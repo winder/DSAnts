@@ -9,5 +9,6 @@ Underground::Underground()
 
 void Underground::initGrid()
 {
+	getGrid()->setupUnderground();
 	getGrid()->generateNest(tunnelSize);
 }
