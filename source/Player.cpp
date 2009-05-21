@@ -150,18 +150,6 @@ Patch* Player::dig()
 	Patch* t = adjacentPatchPicked();
 	if (t && (t->TYPE == PATCH_DIRT))
 		return t;
-/*
-	if( (p->getPatch()->right->TYPE == PATCH_DIRT) && p->getPatch()->right->picked )
-		return p->getPatch()->right;
-	else if( (p->getPatch()->left->TYPE == PATCH_DIRT) && p->getPatch()->left->picked )
-		return p->getPatch()->left;
-	// TOP could potentially be NULL (actually I don't think so.)
-	else if( (p->getPatch()->top) && (p->getPatch()->top->TYPE == PATCH_DIRT) && p->getPatch()->top->picked )
-		return p->getPatch()->top;
-	// BOTTOM will not be NULL, it always has a barrier along the bottom.
-	else if( (p->getPatch()->bottom->TYPE == PATCH_DIRT) && p->getPatch()->bottom->picked )
-		return p->getPatch()->bottom;
-*/
 	return '\0';
 }
 
@@ -172,21 +160,6 @@ Patch* Player::pickUp()
 		if (getPlayerAnt()->pickup( t ))
 			return t;
 	return '\0';
-/*
-	// Check if any of the 
-	if( (OBJECT(p->getPatch()->right)) && p->getPatch()->right->picked )
-		if( getPlayerAnt()->pickup(p->getPatch()->right) )
-			return p->getPatch()->right;
-	else if( (OBJECT(p->getPatch()->left)) && p->getPatch()->left->picked )
-		if( getPlayerAnt()->pickup(p->getPatch()->left) )
-			return p->getPatch()->left;
-	else if( (p->getPatch()->top) && (OBJECT(p->getPatch()->top)) && p->getPatch()->top->picked )
-		if( getPlayerAnt()->pickup(p->getPatch()->top) )
-			return p->getPatch()->top;
-	else if( (OBJECT(p->getPatch()->bottom)) && p->getPatch()->bottom->picked )
-		if( getPlayerAnt()->pickup(p->getPatch()->bottom) )
-			return p->getPatch()->bottom;
-*/
 }
 
 Patch* Player::drop()
@@ -196,16 +169,6 @@ Patch* Player::drop()
 		if ( getPlayerAnt()->drop( t ) )
 			return t;
 	return '\0';
-/*
-	if( (EMPTY(p->getPatch()->right)) && p->getPatch()->right->picked )
-		return getPlayerAnt()->drop(p->getPatch()->right);
-	else if( (EMPTY(p->getPatch()->left)) && p->getPatch()->left->picked )
-		return getPlayerAnt()->drop(p->getPatch()->left);
-	else if( (p->getPatch()->top) && (EMPTY(p->getPatch()->top)) && p->getPatch()->top->picked )
-		return getPlayerAnt()->drop(p->getPatch()->top);
-	else if( (EMPTY(p->getPatch()->bottom)) && p->getPatch()->bottom->picked )
-		return getPlayerAnt()->drop(p->getPatch()->bottom);
-*/
 }
 
 // the observer method.
@@ -254,6 +217,22 @@ Patch* Player::adjacentPatchPicked()
 	else if( p->getPatch()->top && p->getPatch()->top->picked )
 			return p->getPatch()->top;
 	else if( p->getPatch()->bottom && p->getPatch()->bottom->picked )
-			return p->getPatch()->bottom;
+		return p->getPatch()->bottom;
+
+	// if they are accessible, diagonals are OK as well.
+	// TODO: this *could* look weird depending on where in the box the player is, so consider checking
+	//       the players offset as well.
+	// top right
+	else if ( (EMPTY(p->getPatch()->right) || EMPTY(p->getPatch()->top)) && p->getPatch()->right->top->picked )
+		return p->getPatch()->right->top;
+	// bottom right
+	else if ( (EMPTY(p->getPatch()->right) || EMPTY(p->getPatch()->bottom)) && p->getPatch()->right->bottom->picked )
+		return p->getPatch()->right->bottom;
+	// top left
+	else if ( (EMPTY(p->getPatch()->left) || EMPTY(p->getPatch()->top)) && p->getPatch()->left->top->picked )
+		return p->getPatch()->left->top;
+	// bottom left
+	else if ( (EMPTY(p->getPatch()->left) || EMPTY(p->getPatch()->bottom)) && p->getPatch()->left->bottom->picked )
+		return p->getPatch()->left->bottom;
 	return '\0';
 }

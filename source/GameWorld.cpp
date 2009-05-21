@@ -174,7 +174,13 @@ void GameWorld::stepForward()
 	if (followingPlayer)
 		curMap->shiftCenter(p->getPlayerAnt());
 
+
+	// no draw here, it is handled elsewhere so that things will be able
+	// to move forward if things start to lag.
+
 	// process user input.
+	// TODO: if this is moved into the VBlank, will the input registers be valid?
+	// note: vBlank didn't work.
 	in->process();
 
 	// send everyone on their way.
@@ -212,35 +218,6 @@ void GameWorld::stepForward()
 	{
 		p->move();
 	}
-
-	// no draw here, it is handled elsewhere so that things will be able
-	// to move forward if things start to lag.
-
-	touchPosition touchXY;
-	// snag touch info from hardware.
-	touchRead(&touchXY);
-
-	curX = touchXY.px;
-	curY = touchXY.py;
-
-
-
-//int oldX, oldY;
-//	//reset x and y when user touches screen
-//	if( pressed & KEY_TOUCH)  {
-//		oldX = touchXY.px;
-//		oldY = touchXY.py;
-//	}
-
-	//if user drags then grab the delta
-//	if( held & KEY_TOUCH) {
-//		touchY += touchXY.px - oldX; 
-//		touchX += touchXY.py - oldY;
-//		oldX = touchXY.px;
-//		oldY = touchXY.py;
-//	}
-
-
 */
 
 }
@@ -270,6 +247,7 @@ void GameWorld::update(int value)
 		// If your carrying something, and the spot is empty, drop.
 		else if (EMPTY(picked) && p->getPlayerAnt()->getCarrying())
 		{
+			// "drop" clears out what its carring, so need to store it for a moment.
 			int saveO = p->getPlayerAnt()->getCarrying();
 			curMap->getGrid()->addObject( p->drop(), saveO );
 		}
@@ -305,19 +283,18 @@ void GameWorld::printDebugFiveLines()
 	//		Spot touched
 	//		Player info
 	//		player automove?
-	printf("\nGAME WORLD");
-	printf("\nNum Ants, black(%i), red(%i)", black.size(), red.size());
+//	printf("\nWORLD, Ants: black(%i), red(%i)", black.size(), red.size());
 	if (STATE == GAMEWORLD_STATE_UNDERGROUND)
 		printf("\nCurrent map: underground");
 	else if (STATE == GAMEWORLD_STATE_SURFACE)
 		printf("\nCurrent map: surface");
 	else
 		printf("\nCurrent map: unknown");
-//	printf("\nMap Stats: <UG> <Surf>");
-//	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
-//	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
+	printf("\nMap Stats: <UG> <Surf>");
+	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
+	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
 	printf("\nMap Center: (%i, %i)", curMap->getCenterX(), curMap->getCenterY());
-	printf("\nNUM ANTS BEING DRAWN: %i", numAnts);
+	printf("\nAnts: drawn(%i), black(%i), red(%i)", numAnts, black.size(), red.size());
 //	printf("\nCamera distance: %f", cam->getCamLocation().z);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
 	p->printDebug();
