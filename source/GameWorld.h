@@ -9,6 +9,11 @@
 #include "Input.h"
 #include "Player.h"
 #include "Observer.h"
+
+// Different types of ants.
+#include "WorkerAnt.h"
+#include "QueenAnt.h"
+
 // stdlib for rand / srand
 #include <stdlib.h>
 

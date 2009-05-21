@@ -22,7 +22,7 @@ GameWorld::GameWorld()
 	doPick = false;
 	
 	// Create player.
-	Ant *tmp = new Ant();
+	Ant *tmp = new WorkerAnt();
 	tmp->setPatch( ug->getGrid()->getPatch(0,2) );
 	tmp->setLocation( STATE );
 	tmp->setCarrying(PATCH_FOOD1);	
@@ -267,17 +267,17 @@ void GameWorld::update(int value)
 
 
 	// Hold A to spawn ants,
-	else if(value == PLAYER_HELD_B)
+	else if(value == PLAYER_PRESSED_B)
 	{
 		// add a new ant on press.
-		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+		Ant *t = new WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
 		t->setAction( ANT_ACTION_WANDER );
 		black.push_back(t);
 	}
 
-	else if (value == PLAYER_PRESSED_X);
+	else if (value == PLAYER_PRESSED_A)
 	{
-		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+		Ant *t = new QueenAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
 		t->setAction( ANT_ACTION_WANDER );
 		black.push_back(t);
 		#ifdef __PROFILING

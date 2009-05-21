@@ -38,25 +38,13 @@ void Input::process()
 
 	// D-PAD:
 	if( held & KEY_LEFT)
-	{
 		set_val(PLAYER_HELD_LEFT);
-//		automove = false;
-	}
 	if( held & KEY_RIGHT)
-	{
 		set_val(PLAYER_HELD_RIGHT);
-//		automove = false;
-	}
 	if( held & KEY_UP)
-	{
 		set_val(PLAYER_HELD_UP);
-//		automove = false;
-	}
 	if( held & KEY_DOWN)
-	{
 		set_val(PLAYER_HELD_DOWN);
-//		automove = false;
-	}
 
 	// TOUCH-PAD
 	if( held & KEY_TOUCH)
@@ -76,12 +64,30 @@ void Input::process()
 		touchReleaseSent = true;
 	}
 
-	// BUTTONS
+	// Pressed BUTTONS
+	if( pressed & KEY_A )
+		set_val(PLAYER_PRESSED_A);
+
+	if( pressed & KEY_B )
+		set_val(PLAYER_PRESSED_B);
+
+	if( pressed & KEY_X )
+		set_val(PLAYER_PRESSED_X);
+
+	if( pressed & KEY_Y )
+		set_val(PLAYER_PRESSED_Y);
+
+	if( held & KEY_X )
+		set_val(PLAYER_HELD_X);
+
 	if( held & KEY_A )
 		set_val(PLAYER_HELD_A);
 
 	if( held & KEY_B )
 		set_val(PLAYER_HELD_B);
+
+	if( held & KEY_Y )
+		set_val(PLAYER_HELD_Y);
 
 	// SHOULDER BUTTONS
 	if( held & KEY_R)

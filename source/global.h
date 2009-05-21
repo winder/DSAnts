@@ -66,24 +66,21 @@ typedef struct {
 	float x, y, z, d;
 } VectorF;
 
-// Observer states:
-enum Player_Actions
+// These are the physical inputs sent out from the Input class.
+enum Observer_states
 {
+	// Player sourced states
 	PLAYER_MOVE_UP,
 	PLAYER_MOVE_DOWN,
 	PLAYER_MOVE_RIGHT,
 	PLAYER_MOVE_LEFT,
-
 	// note: this does not actually originate from the player,
 	//       and is not an observer message.  But conceptually it
 	//       is from the player, and the GameWorld notifies itself
 	//       through its update message.
-	PLAYER_PICKED_SOMETHING
-};
+	PLAYER_PICKED_SOMETHING,
 
-// These are the physical inputs sent out from the Input class.
-enum Input_Types
-{
+	// Input sourced states.
 	// D-PAD.
 	PLAYER_HELD_LEFT,
 	PLAYER_HELD_RIGHT,
