@@ -34,6 +34,9 @@ CFLAGS	:=	-g -Wall -O2\
 
 CFLAGS	+=	$(INCLUDE) -DARM9
 
+#uncomment for profiler:
+#CFLAGS += -finstrument-functions -mpoke-function-name -D__PROFILING=on
+
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 
 ASFLAGS	:=	-g $(ARCH)

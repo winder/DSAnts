@@ -85,12 +85,9 @@ sub main()
 			# Don't print exits
 			my $sym=(defined($symtab{$off1})?$symtab{$off1}:"???");
 
-			printf("\t0x%x\t%6d\t%10.4f\n",
-				$off1, $hits, $ticks / 15.720);
-
-#			printf("\t0x%x\t%6d\t%10.4f\t%.3f\t%.3f\t%d\t%d\t%s\n",
-#				$off1, $hits, $ticks / 15.720, ($ticks / 15.720) / $hits, $ticks / 15.720 / 600,
-#				$4, $5, $sym);
+			printf("\t0x%x\t%6d\t%10.4f\t%.3f\t%.3f\t%d\t%d\t%s\n",
+				$off1, $hits, $ticks / 15.720, ($ticks / 15.720) / $hits, $ticks / 15.720 / 600,
+				$4, $5, $sym);
 			$total += $ticks / 15720;
 		}
 	}

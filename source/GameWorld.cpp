@@ -267,7 +267,7 @@ void GameWorld::update(int value)
 
 
 	// Hold A to spawn ants,
-	else if(value == PLAYER_PRESSED_B)
+	else if(value == PLAYER_HELD_B)
 	{
 		// add a new ant on press.
 		Ant *t = new WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
@@ -275,11 +275,14 @@ void GameWorld::update(int value)
 		black.push_back(t);
 	}
 
-	else if (value == PLAYER_PRESSED_A)
+	else if (value == PLAYER_HELD_A)
 	{
 		Ant *t = new QueenAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
 		t->setAction( ANT_ACTION_WANDER );
 		black.push_back(t);
+	}
+	else if (value == PLAYER_PRESSED_X)
+	{
 		#ifdef __PROFILING
 			cygprofile_end();
 		#endif
