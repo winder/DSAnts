@@ -115,4 +115,16 @@ enum Input_Types
 	// SELECT, START
 };
 
+// Different creatures.
+enum Creature_TYPE
+{
+	ANT_WORKER,
+	ANT_SOLDIER,
+	ANT_BREEDER,
+	ANT_QUEEN,
+	ENEMY_SPIDER,
+	ENEMY_PILL_BUG,
+	ENEMY_WORM
+};
+
 #endif

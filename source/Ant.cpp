@@ -30,6 +30,8 @@ Ant::Ant(Patch* pat, int loc)
 	ACTION=0;
 	direction=-1;
 	directionOld=-1;
+
+	hp = 1000;
 }
 
 // Checks if there is a portal.  If there is, go through.

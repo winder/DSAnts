@@ -277,6 +277,9 @@ void GameWorld::update(int value)
 
 	else if (value == PLAYER_PRESSED_X);
 	{
+		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+		t->setAction( ANT_ACTION_WANDER );
+		black.push_back(t);
 		#ifdef __PROFILING
 			cygprofile_end();
 		#endif

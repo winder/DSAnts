@@ -11,6 +11,8 @@ class Ant
 		Ant();
 		Ant(Patch* pat, int location);
 
+		virtual int getType(){ return ANT_WORKER; }
+
 		void setHP(short h){ hp=h; }
 		short getHP(){ return hp; }
 
@@ -132,6 +134,7 @@ class Ant
 		
 		// Status, health information.
 		short hp;
+		short TYPE; // what type of creature?
 
 		// is the ant carrying something?
 		int carrying;

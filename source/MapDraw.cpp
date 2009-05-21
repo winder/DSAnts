@@ -241,22 +241,56 @@ bool MapDraw::drawAnt(Ant* a, bool animate)
 	glTranslatef(x, y, 0.01);
 	// rotate so the ant faces in the correct direction.
 	glRotatef( rotation			, 0, 0, 1);
-	//drawBox(0, 0, 0, MODEL_SCALE*.4, MODEL_SCALE*0.9, MODEL_SCALE*0.4);
-	StaticDraw::drawRect(0, 0, MODEL_SCALE*0.2, MODEL_SCALE*.4, MODEL_SCALE*0.9, tm);
 
+	if (a->getType() == ANT_WORKER)
+		drawWorker( a->getCarrying() );
+	else if (a->getType() == ANT_QUEEN)
+		drawQueen( a->getCarrying() ); // queens don't carry anything, but whatev.
+
+	glPopMatrix(1);
+	return true;
+}
+
+void MapDraw::drawWorker(int carry)
+{
+	StaticDraw::drawRect(0, 0, MODEL_SCALE*0.15, MODEL_SCALE*.35, MODEL_SCALE*0.9, tm);
 
 	// Check if the ant is carrying anything.  If it is, draw it..
-	if (a->getCarrying())
+	if (carry)
 	{
 		glTranslatef(0,MODEL_SCALE*0.50, MODEL_SCALE*0.1);
 
 		// TODO: different types of objects: drawObject (scaled down if being carried).
-		material(3,25,3);
+		if (FOODi(carry))
+			material(3,25,3);
+		else
+			material(31,2,3); // unknown object, red.
+
+		StaticDraw::drawBox(0, 0, 0, MODEL_SCALE*.5, MODEL_SCALE*0.5, MODEL_SCALE*1.0, tm);
+	}
+}
+
+void MapDraw::drawQueen(int carry)
+{
+	//StaticDraw::drawRect(0, 0, MODEL_SCALE*0.15, MODEL_SCALE*.35, MODEL_SCALE*0.9, tm);
+	// drawRect(x, y, z, width, height, texture);
+	StaticDraw::drawRect(0, 0, MODEL_SCALE*0.15, MODEL_SCALE*.45, MODEL_SCALE*1.5, tm);
+
+	// Check if the ant is carrying anything.  If it is, draw it..
+	if (carry)
+	{
+		glTranslatef(0,MODEL_SCALE*0.50, MODEL_SCALE*0.1);
+
+		// TODO: different types of objects: drawObject (scaled down if being carried).
+		if (FOODi(carry))
+			material(3,25,3);
+		else
+			material(31,2,3); // unknown object, red.
+
 		StaticDraw::drawBox(0, 0, 0, MODEL_SCALE*.5, MODEL_SCALE*0.5, MODEL_SCALE*0.5, tm);
 	}
-	glPopMatrix(1);
-	return true;
 }
+
 Patch* MapDraw::draw()
 {
 

@@ -38,9 +38,9 @@ Development process, Asterisk indicates complete:
 4. Basic ant functions
 *	- hp / death
 	- extended statistics (not sure what these are)
-	- Food / Eating
-	- Egg / Hatch
+*	- Food / Eating
 	-	Queen / Egg production
+	- Egg / Hatch
 
 6. A.I. / Enemy base.
 	- Ant action AI's:

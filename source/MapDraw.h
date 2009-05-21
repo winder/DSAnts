@@ -39,7 +39,18 @@ class MapDraw: public Map
 		// Drawing functions.
 		Patch* draw();
 		void drawAnts(std::vector<Ant*> &black, std::vector<Ant*> &red);
+		// sets up offset/rotation of creature
 		bool drawAnt(Ant* a, bool animate);
+		// draws specific type of creature
+		void drawWorker(int carry);
+		void drawQueen(int carry);
+		//void drawSoldier(int carry);
+		//void drawBreeder(int carry);
+		//void drawSpider(int carry);
+		//void drawWorm(int carry);
+		//void drawPillBug(int carry);
+		// etc...
+
 		void drawPatch(float x, float y, Patch *p);
 
 		// This function does picking to find out where in the grid the touch occurred.
