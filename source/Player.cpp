@@ -2,6 +2,7 @@
 
 Player::Player()
 {
+	statespeed=1;
 }
 
 Player::Player(Ant* inp)
@@ -15,8 +16,11 @@ Player::~Player()
 	delete p;
 }
 
-void Player::stepForward()
+void Player::stepForward(int num)
 {
+	// cache num, for player input step speed.
+	statespeed = num;
+
 	if (p->getHP() <= 0)
 	{
 //		set_val(PLAYER_HAS_DIED);
@@ -24,7 +28,7 @@ void Player::stepForward()
 	}
 
 	// update the ants status (hp)
-	p->stateStep();
+	p->stateStep(num);
 }
 
 void Player::setDestination(int x, int y)
@@ -165,14 +169,20 @@ Patch* Player::dig()
 	return '\0';
 }
 
-int Player::pickUp()
+Patch* Player::pickUp()
 { 
 	Patch* t = adjacentPatchPicked();
 	if (t)
 	{
 		p->pickup( t );
 		// try using it immediately.  normal ants wait until the next step to use.
-		return use();
+		int useAction = use();
+		// if the player used an object, notify listeners so actions may be performed.
+		// i.e. sound effect.
+		if (useAction)
+			set_val(useAction);
+
+		return t;
 	}
 	// Not adjacent, can't do anything with it.
 	return '\0';

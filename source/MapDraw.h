@@ -54,19 +54,18 @@ class MapDraw: public Map
 		float positionX(short x);
 		float positionY(short y);
 
-		void shiftCenter(Ant *p);
-
-		// Used for determining the center of the map.
-		// TODO: increment a scene shift some amount before scrolling the tiles.
-		virtual void incX(); 
-		virtual void decX(); 
-		virtual void incY(); 
-		virtual void decY(); 
+		void shiftCenter(Ant *p, int num);
 
 		void begin(){ glBegin(GL_QUADS); }
 		void end(){ glEnd(); }
 	private:
 		void material(int r, int g, int b);
+		// Used for determining the center of the map.
+		virtual void incX(); 
+		virtual void decX(); 
+		virtual void incY(); 
+		virtual void decY(); 
+
 
 		// Note: these two functions and the rediculously clever picking method
 		// was taken directly from Gabe Ghearing's Feb 2007 picking example.

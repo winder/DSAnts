@@ -144,18 +144,18 @@ int GameWorld::getInput()
 	return in->getPressed();
 }
 
-void GameWorld::stepAntsForward()
+void GameWorld::stepAntsForward(int num)
 {
 	// test, move each ant around randomly.
 	for (unsigned int i=0; i < black.size(); i++)
 	{
 		// AI for ant "black[i]->AImove()"
-		black[i]->stateStep();
-		black[i]->move();
+		black[i]->stateStep(num);
+		black[i]->move(num);
 	}
 }
 
-void GameWorld::stepForward()
+void GameWorld::stepForward(int num)
 {
 	// The "Player" doesn't keep track of its location, so I can't do this through observer.
 	if (STATE != p->getPlayerAnt()->getLocation())
@@ -173,7 +173,7 @@ void GameWorld::stepForward()
 	// This needs to be done every frame rather than on player move event,
 	// otherwise panning is jerky.
 	if (followingPlayer)
-		curMap->shiftCenter(p->getPlayerAnt());
+		curMap->shiftCenter(p->getPlayerAnt(), num);
 
 
 	// no draw here, it is handled elsewhere so that things will be able
@@ -185,8 +185,8 @@ void GameWorld::stepForward()
 	in->process();
 
 	// send everyone on their way.
-	stepAntsForward();
-	p->stepForward();
+	stepAntsForward(num);
+	p->stepForward(num);
 
 /*
 	if( held & KEY_LEFT)
@@ -256,8 +256,7 @@ void GameWorld::update(int value)
 		// if it is an object, see if we can PICK IT.
 		else if (OBJECT(picked))
 		{
-			int pickupAction = p->pickUp();
-			curMap->getGrid()->takeObject( picked );
+			curMap->getGrid()->takeObject( p->pickUp() );
 		}
 	}
 	else if (value == PLAYER_RELEASED_TOUCHPAD)

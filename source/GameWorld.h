@@ -46,10 +46,11 @@ class GameWorld: public Observer, public Subject
 
 		// TODO: This will move the player, and depending on player information will
 		//       then move the screen.
-		void incX(){ ug->incX(); }
-		void incY(){ ug->incY(); }
-		void decX(){ ug->decX(); }
-		void decY(){ ug->decY(); }
+// This clearly isn't used anymore, since "ug" was replaced with "curMap"
+//		void incX(){ ug->incX(); }
+//		void incY(){ ug->incY(); }
+//		void decX(){ ug->decX(); }
+//		void decY(){ ug->decY(); }
 
 		Underground* getUG(){ return ug; }
 		Surface* getSurface(){ return surf; }
@@ -59,9 +60,9 @@ class GameWorld: public Observer, public Subject
 		int getInput();
 
 		// Coordinates a step in the game.
-		void stepForward();
+		void stepForward(int num);
 		// lets each ant know they can move forward one step.
-		void stepAntsForward();
+		void stepAntsForward(int num);
 
 		// Camera needs to set itself up.
 		void initCam(){	cam->init();

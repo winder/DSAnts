@@ -187,7 +187,15 @@ int main()
 		// Tell the world to move forward one step.
 		// TODO: put this in VBlank override, so that even if
 		//			 drawing gets too slow the world will still move forward.
-		gw->stepForward();
+		// VBlank didn't seem to work, so calculate steps based on framerate
+		// I'm told that the way I calculate framerate is bad, so implement timer at
+		// some point.
+		if (frameold == 60)
+			gw->stepForward(1);
+		else if (frameold >= 30)
+			gw->stepForward(2);
+		else if (frameold >= 20)
+			gw->stepForward(3);
 
 		// not needed?
 		glResetMatrixStack();

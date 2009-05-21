@@ -171,7 +171,7 @@ float MapDraw::positionY(short y)
 }
 
 // Shift the center if the player is too far to the side of the map.
-void MapDraw::shiftCenter(Ant *p)
+void MapDraw::shiftCenter(Ant *p, int num)
 {
 	float pos = positionY(p->getY());
 	int DISTANCE = GRID_SIZE / 3;

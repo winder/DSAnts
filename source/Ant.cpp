@@ -158,11 +158,13 @@ bool Ant::moveDown()
 // at which point it will keep going till in the center
 // of a tile, then call the AI function according to its
 // ACTION.
-void Ant::stateStep()
+void Ant::stateStep(int num)
 {
 	// health goes down every step.
-	if (hp > 0)
-		hp--;
+	if (hp > (num-1))
+		hp-=num;
+	else
+		hp=0;
 
 	if ((hp < 10) && FOODi(carrying))
 		use();
@@ -172,6 +174,14 @@ void Ant::stateStep()
 		return;
 }
 
+// because of tile changes/animation, need to call move multiple times or the move
+// logic will get crazy.  In any case, AI only runs on a tile change so this isn't
+// a very expensive addition.
+void Ant::move(int num)
+{
+	for(int i=num; i>0; i--)
+		move();
+}
 void Ant::move()
 {
 	// they are dead.  will be deleted from the list at some interval.

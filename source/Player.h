@@ -18,7 +18,7 @@ class Player: public Subject, public Observer
 		~Player();
 
 		// Handle game state things.
-		void stepForward();
+		void stepForward(int num);
 
 		// this will probably only be called from GameWorld, the player ant will need
 		// to be removed from whatever list it was taken out of to prevent duplicate drawings.
@@ -34,28 +34,32 @@ class Player: public Subject, public Observer
 		// If the player moves to the next tile notify observers.
 		void moveUp()
 			{
-				if (p->moveUp())
-					set_val(PLAYER_MOVE_UP);
+				for(int i=statespeed; i>0; i--)
+					p->moveUp();
+				set_val(PLAYER_MOVE_UP);
 			}
 		void moveDown()
 			{
-				if (p->moveDown())
-					set_val(PLAYER_MOVE_DOWN);
+				for(int i=statespeed; i>0; i--)
+					p->moveDown();
+				set_val(PLAYER_MOVE_DOWN);
 			}
 		void moveLeft()
 			{
-				if (p->moveLeft())
-					set_val(PLAYER_MOVE_LEFT);
+				for(int i=statespeed; i>0; i--)
+					p->moveLeft();
+				set_val(PLAYER_MOVE_LEFT);
 			}
 		void moveRight()
 			{
-				if (p->moveRight())
-					set_val(PLAYER_MOVE_RIGHT);
+				for(int i=statespeed; i>0; i--)
+					p->moveRight();
+				set_val(PLAYER_MOVE_RIGHT);
 			}
 
 		// Player interaction with the world: dig dirt, pickup objects, drop objects.
 		Patch* dig();
-		int pickUp();
+		Patch* pickUp();
 		Patch* drop();
 		// returns what action the object was used for.
 		int use();
@@ -81,6 +85,8 @@ class Player: public Subject, public Observer
 		bool stuck;
 		short direction;
 		short directionX, directionY;
+
+		short statespeed;
 };
 
 #endif

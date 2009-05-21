@@ -39,7 +39,8 @@ class Ant
 		// This lets the ant move on its own accord, influenced by:
 		//		-feramone level of adjacent tiles
 		//		-current action
-		void stateStep();
+		void stateStep(int num);
+		void move(int num);
 		void move();
 		void wander();
 		void attack();
