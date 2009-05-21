@@ -1,7 +1,6 @@
 all:
 	cp ../global.h .
-	cp ../Underground.* .
-	cp ../DirtDisk.* .
+	cp ../Grid.* .
 	cp ../Patch.* .
 	cp ../Ant.* .
 	g++ -c *.cpp
@@ -9,4 +8,4 @@ all:
 	g++ *.o test.cpp -o test
 
 clean:
-	rm global.h Underground.* DirtDisk.* Patch.* Ant.* test
+	rm global.h Grid.* Patch.* Ant.* test

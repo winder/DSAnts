@@ -2,7 +2,7 @@
 
 Underground::Underground()
 {
-	tunnelSize = 60;
+	tunnelSize = 160;
 	setCenter(0, 0);
 	initGrid();
 }

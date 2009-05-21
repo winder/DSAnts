@@ -10,22 +10,11 @@ Grid::Grid()
 		{
 			dd[x][y] = new Patch();
 
+			// setting it to this just so I can use the "clear" method without anything special.
+			dd[x][y]->TYPE = PATCH_DIRT;
 			dd[x][y]->x = x;
 			dd[x][y]->y = y;
-/*
-			dd[x][y]->location = GAMEWORLD_STATE_UNDERGROUND;
-
-			// Unpassable patch at the deepest level.
-			if (y == DEPTH-1)
-				dd[x][y]->TYPE = PATCH_BARRIER;
-			// Sky / trigger to enter surface world at the top.  This patch will
-			// have a coordinate to where on the surface the hole emerges.
-			else if ( y == 0 )
-				dd[x][y]->TYPE = PATCH_TOP;
-			// Everything else is dirt.
-			else
-				dd[x][y]->TYPE = PATCH_DIRT;
-*/
+			dd[x][y]->portal = '\0';
 		}
 
 	// Connect the objects.
@@ -47,6 +36,9 @@ void Grid::setupSurface()
 		for (int y=0; y < DEPTH; y++)
 		{
 			dd[x][y]->TYPE = PATCH_EMPTY;
+			// If for some reason this becomes necessary, cross the bridge.
+			// Otherwise a vector of thousands of patches doesn't seem too useful.
+			//clear(dd[x][y]);
 			dd[x][y]->location = GAMEWORLD_STATE_SURFACE;
 		}
 }

@@ -15,6 +15,9 @@
 //#ifdef __DEBUG_
 #include <stdio.h>
 //#endif
+#ifdef __PROFILING
+	#include "cyg-profile.h"
+#endif
 
 // TODO: this class would make more sense as a "GameSquare" if I decide to go
 //			 the original SimAnt route and have multiple colonies spanning a grid.

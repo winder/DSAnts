@@ -2,21 +2,25 @@
 
 // stdio for printf
 #include <stdio.h>
+// fat for disk I/O
+#include <fat.h>
 // stdlib for rand / srand
 #include <stdlib.h>
+
 #include "GameWorld.h"
-//#include "UndergroundDrawSphere.h"
 #include "Underground.h"
 #include "StaticDraw.h"
 #include "Camera.h"
-#include "SphereCamera.h"
 #include "memoryStats.h"
 #include "cpu_usage.h"
 #include "Lighting.h"
 #include "TextureManager.h"
-
 #include "dirt_one_img_bin.h"
-//#include "texture_bin.h"
+
+#ifdef __PROFILING
+#define __cplusplus
+#include "cyg-profile.h"
+#endif
 
 //TODO: setup the function that implements the VBlank handling
 //      put a GameWorld->step() call in there.  That way even
@@ -40,11 +44,24 @@ void vBlank(void){
    }
 }
 
+	// even though this is used for profiling, put it out so cyg-profile.c doesn't complain
+	int hblanks = 0;
+#ifdef __PROFILING
+	bool enabled = false;
+	static void hblankCount (void)
+	__attribute__ ((no_instrument_function));
+
+	void hblankCount(){
+		hblanks++;
+	}
+#endif
+
 int main()
 {	
 
 	// Set vBlank callback.
 	irqSet(IRQ_VBLANK,vBlank);
+
 
 	// seed rand.
 	srand(time(NULL));
@@ -62,6 +79,47 @@ int main()
 
 	// Exception handler.
 	defaultExceptionHandler();
+
+	// initialize libfat.
+	fatInitDefault();
+
+	#ifdef __PROFILING
+	irqEnable(IRQ_HBLANK);
+	irqSet(IRQ_HBLANK, hblankCount);
+	if (!enabled)
+	{
+		cygprofile_begin();
+		cygprofile_enable();
+		enabled = true;
+	}
+	#endif
+
+/* // file write test.  file isn't written until fclose is called.
+	// init lib fat
+	if (fatInitDefault())
+	{
+		printf("lib fat init success.\n");
+    FILE *fp;
+    fp = fopen("/results.dat", "w");
+		if (fp)
+		{
+			printf("opened file /results.dat\n");
+			for (int i=0; i<=10; ++i)
+				fprintf(fp, "%d, %d\n", i, i*i);
+			printf("wrote to file.\n");
+			fclose(fp);
+			printf("closed the file.\n");
+		}
+		else
+			printf("failed to open file.");
+		while(true){};
+	}
+	else 
+	{
+		printf("lib fat init failure.");
+		while(true){};
+	}
+*/
 
   //set mode 0, enable BG0 and set it to 3D
   videoSetMode(MODE_0_3D);

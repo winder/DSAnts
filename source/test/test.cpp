@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Underground.h"
-#include "DirtDisk.h"
+//#include "Underground.h"
+#include "Grid.h"
 //#include "Patch.h"
 //#include "Dirt.h"
 //#include "Empty.h"
@@ -18,18 +18,19 @@ void printP(Patch *p)
 
 int main()
 {
-	Underground *ud = new Underground();
-	DirtDisk *dd = ud->getDisk();
+//	Underground *ud = new Underground();
+	Grid *dd = new Grid();
+	dd->setLoopY();
 
 	Patch *temp;
 	Patch *temp2;
 	int x,y,z;
-	for (x=0; x < SLICES; x++)
-		for (y=0; y < WIDTH; y++)
-			for (z=0; z < DEPTH; z++)
+//	for (x=0; x < SLICES; x++)
+		for (x=0; x < WIDTH; x++)
+			for (y=0; y < DEPTH; y++)
 			{
-				temp = dd->getPatch(x,y,z);
-				std::cout<<"\nPatch @ ("<<x<<','<<y<<','<<z<<")";
+				temp = dd->getPatch(x,y);
+				std::cout<<"\nPatch @ ("<<x<<','<<y<<")";
 				temp2 = temp->right;
 				std::cout<<"\n\tright: "; printP(temp2);
 				temp2 = temp->right;

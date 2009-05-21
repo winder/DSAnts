@@ -75,7 +75,7 @@ void GameWorld::linkSurfaceAntUnderground()
 			randX = rand() % (WIDTH / 2);
 			randY = rand() % DEPTH;
 			topleft->portal = surf->getGrid()->getPatch(randX, randY);
-		}while (topleft->portal->TYPE == PATCH_ENTRANCE);
+		}while (!EMPTY(topleft->portal));
 
 		topleft->portal->TYPE = PATCH_ENTRANCE;
 
@@ -271,6 +271,13 @@ void GameWorld::update(int value)
 		Ant *t = new Ant(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
 		t->setAction( ANT_ACTION_WANDER );
 		black.push_back(t);
+	}
+
+	else if (value == PLAYER_PRESSED_X);
+	{
+		#ifdef __PROFILING
+			cygprofile_end();
+		#endif
 	}
 }
 
