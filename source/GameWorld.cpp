@@ -150,6 +150,7 @@ void GameWorld::stepAntsForward()
 	for (unsigned int i=0; i < black.size(); i++)
 	{
 		// AI for ant "black[i]->AImove()"
+		black[i]->stateStep();
 		black[i]->move();
 	}
 }
@@ -185,6 +186,7 @@ void GameWorld::stepForward()
 
 	// send everyone on their way.
 	stepAntsForward();
+	p->stepForward();
 
 /*
 	if( held & KEY_LEFT)
@@ -254,7 +256,8 @@ void GameWorld::update(int value)
 		// if it is an object, see if we can PICK IT.
 		else if (OBJECT(picked))
 		{
-			curMap->getGrid()->takeObject( p->pickUp() );
+			int pickupAction = p->pickUp();
+			curMap->getGrid()->takeObject( picked );
 		}
 	}
 	else if (value == PLAYER_RELEASED_TOUCHPAD)
@@ -297,11 +300,11 @@ void GameWorld::printDebugFiveLines()
 		printf("\nCurrent map: surface");
 	else
 		printf("\nCurrent map: unknown");
-	printf("\nMap Stats: <UG> <Surf>");
-	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
-	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
+//	printf("\nMap Stats: <UG> <Surf>");
+//	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
+//	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
 	printf("\nMap Center: (%i, %i)", curMap->getCenterX(), curMap->getCenterY());
-	printf("\nAnts: drawn(%i), black(%i), red(%i)", numAnts, black.size(), red.size());
+	printf("\nAnts: drawn(%i)\n black(%i), red(%i)", numAnts, black.size(), red.size());
 //	printf("\nCamera distance: %f", cam->getCamLocation().z);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
 	p->printDebug();

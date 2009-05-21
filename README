@@ -27,15 +27,22 @@ Development process, Asterisk indicates complete:
 *	- Camera following
 	- Player control
 *		- D-Pad
-*		- Touch, simple
+*		- Touch, simple (broke this after I made the surface.
 		- Touch, dijkstra
 
-3. Create surface world
+*3. Create surface world
 *	- Link to underground
 *	- Objects (Rocks, Food)
-	-	Object spawns.
+*	-	Object spawns (food on surface).
 
-4. A.I. / Enemy base.
+4. Basic ant functions
+*	- hp / death
+	- extended statistics (not sure what these are)
+	- Food / Eating
+	- Egg / Hatch
+	-	Queen / Egg production
+
+6. A.I. / Enemy base.
 	- Ant action AI's:
 *		-Wander
 		-Forage
@@ -46,17 +53,13 @@ Development process, Asterisk indicates complete:
 *		-simple/random
 		-more interesting?
 
-5. Gameplay
+7. Gameplay, 
 	- Enemies (Pincer pit, spider, foot, lawnmower)
-	- Queen
-	- Egg / Hatch system
-	- Food / Eating system
 	- Workers / Breeders / Soldiers
 	- Scores
-	- Ant statistics
 	- Ant combat.
 
-6. Polish
+8. Polish
 	- Terrain themes (outdoors, patio, kitchen, etc)
 	- Object models:
 		-dirt

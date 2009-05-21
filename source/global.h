@@ -55,10 +55,11 @@ enum PATCH_types
 #define GRID_SIZE 10
 
 // Draw scale and animation between grid stuff.
-// ANIMATION_SIZE must be divisible by 2.
+// ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
+// for an ant to move 1 tile.
 #define ANIMATION_SIZE 20
 #define MODEL_SCALE 0.2
-#define MODEL_SCALE_INCREMENT 0.01
+#define MODEL_SCALE_INCREMENT MODEL_SCALE / ANIMATION_SIZE
 // there is a built in vector: "GLvector" but it uses ints...
 // I'm not that good yet.
 typedef struct {

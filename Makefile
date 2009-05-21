@@ -112,7 +112,8 @@ findline:
 	arm-eabi-addr2line -e $(TARGET).elf $(GDBLINE)
 
 #---------------------------------------------------------------------------------
-copy:
+copy:	$(patch)
+	./dlditool m3sd.dldi $(TARGET).nds
 	cp $(TARGET).nds $(MOUNTDIR)/DSAnts
 	sudo umount $(MOUNTDIR)
 

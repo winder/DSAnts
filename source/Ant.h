@@ -11,11 +11,8 @@ class Ant
 		Ant();
 		Ant(Patch* pat, int location);
 
-		// the ant doesn't draw itself.  the world draws the ants.
-//		virtual void draw();
-
-//		void setXY(short inx, short iny)
-//			{ x = inx; y = iny; }
+		void setHP(short h){ hp=h; }
+		short getHP(){ return hp; }
 
 		short getX(){ return p->x; }
 		short getY(){ return p->y; }
@@ -42,6 +39,7 @@ class Ant
 		// This lets the ant move on its own accord, influenced by:
 		//		-feramone level of adjacent tiles
 		//		-current action
+		void stateStep();
 		void move();
 		void wander();
 		void attack();
@@ -61,6 +59,9 @@ class Ant
 
 		int getCarrying(){ return carrying; }
 		void setCarrying(int x){ carrying = x; }
+
+		// use the carrying object (i.e. eat food / egg)
+		int use();
 		// True if will pickup.  False otherwise.
 		bool pickup(Patch *p)
 			{
@@ -92,6 +93,7 @@ class Ant
 		void incrementOffsetY();
 		void decrementOffsetY();
 		void clampDirections();
+
 		   //-----------------//
 		  // AI INFORMATION: //
 		 //-----------------//
@@ -111,9 +113,6 @@ class Ant
 		  // LOCATION INFORMATION: //
 		 //-----------------------//
 		// The x/y coordinate the ant is in, for convenient draw checks.
-		// these are now stored in the Patch.
-//		short x;
-//		short y;
 		// UNDERGROUND, SURFACE, ENEMY_UNDERGROUND.
 		int location;
 
@@ -121,15 +120,17 @@ class Ant
 		Patch *p;
 		// flag so that we don't go back and forth through a portal infinitly.
 		bool portaled;
+
 		// The offset within the patch
 		short offsetX;
 		short offsetY;
-		// These are needed so that the ant faces in the right direction.
+
+		// These are needed so that the ant is rotated in the right direction.
 		short directionX;
 		short directionY;
 		
 		// Status, health information.
-		int status;
+		short hp;
 
 		// is the ant carrying something?
 		int carrying;

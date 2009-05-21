@@ -17,6 +17,9 @@ class Player: public Subject, public Observer
 
 		~Player();
 
+		// Handle game state things.
+		void stepForward();
+
 		// this will probably only be called from GameWorld, the player ant will need
 		// to be removed from whatever list it was taken out of to prevent duplicate drawings.
 		// (Or maybe a flag in the ant for if its a player, like setting the AI bool to false)
@@ -52,8 +55,10 @@ class Player: public Subject, public Observer
 
 		// Player interaction with the world: dig dirt, pickup objects, drop objects.
 		Patch* dig();
-		Patch* pickUp();
+		int pickUp();
 		Patch* drop();
+		// returns what action the object was used for.
+		int use();
 
 		// auto movement:
 		void move();

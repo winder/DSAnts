@@ -15,6 +15,18 @@ Player::~Player()
 	delete p;
 }
 
+void Player::stepForward()
+{
+	if (p->getHP() <= 0)
+	{
+//		set_val(PLAYER_HAS_DIED);
+		return;
+	}
+
+	// update the ants status (hp)
+	p->stateStep();
+}
+
 void Player::setDestination(int x, int y)
 {
 	// reset stuck flag
@@ -153,12 +165,16 @@ Patch* Player::dig()
 	return '\0';
 }
 
-Patch* Player::pickUp()
+int Player::pickUp()
 { 
 	Patch* t = adjacentPatchPicked();
 	if (t)
-		if (getPlayerAnt()->pickup( t ))
-			return t;
+	{
+		p->pickup( t );
+		// try using it immediately.  normal ants wait until the next step to use.
+		return use();
+	}
+	// Not adjacent, can't do anything with it.
 	return '\0';
 }
 
@@ -166,14 +182,25 @@ Patch* Player::drop()
 {
 	Patch* t = adjacentPatchPicked();
 	if (t)
-		if ( getPlayerAnt()->drop( t ) )
+		if ( p->drop( t ) )
 			return t;
 	return '\0';
+}
+
+int Player::use()
+{
+	return p->use();
 }
 
 // the observer method.
 void Player::update(int value)
 {
+	// If the user gives input while the ant is dead, don't do anything.
+	// The Player object should notify the world that it needs to respawn shortly.
+	if (p->getHP() <= 0)
+	{
+		return;
+	}
 	if (value == PLAYER_HELD_LEFT)
 		moveLeft();
 	else if (value == PLAYER_HELD_RIGHT)
@@ -187,9 +214,9 @@ void Player::update(int value)
 
 void Player::printDebug()
 {
-	printf("\nPlayer loc: (%i, %i)",getPlayerAnt()->getPatch()->x, getPlayerAnt()->getPatch()->y); 
+//	printf("\nPlayer loc: (%i, %i)",p->getPatch()->x, p->getPatch()->y); 
 	printf("\nPatch type: ");
-	int type = getPlayerAnt()->getPatch()->TYPE;
+	int type = p->getPatch()->TYPE;
 	if ( type == PATCH_DIRT )
 		printf("PATCH_DIRT");
 	else if ( type == PATCH_EMPTY )
@@ -200,7 +227,8 @@ void Player::printDebug()
 		printf("PATCH_TOP");
 	else if ( type == PATCH_ENTRANCE )
 		printf("PATCH_ENTRANCE");
-	printf("\nFacing: x=%i, y=%i", getPlayerAnt()->getFacingX(), getPlayerAnt()->getFacingY());
+//	printf("\nFacing: x=%i, y=%i", p->getFacingX(), p->getFacingY());
+	printf("\nAnt HP: %i", p->getHP());
 
 }
 

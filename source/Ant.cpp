@@ -12,6 +12,8 @@ Ant::Ant()
 	ACTION=0;
 	direction=-1;
 	directionOld=-1;
+
+	hp = 1000;
 }
 
 Ant::Ant(Patch* pat, int loc)
@@ -156,8 +158,24 @@ bool Ant::moveDown()
 // at which point it will keep going till in the center
 // of a tile, then call the AI function according to its
 // ACTION.
+void Ant::stateStep()
+{
+	// health goes down every step.
+	if (hp > 0)
+		hp--;
+
+	if ((hp < 10) && FOODi(carrying))
+		use();
+
+	// if they are dead, no longer move.
+	if (hp <= 0)
+		return;
+}
+
 void Ant::move()
 {
+	// they are dead.  will be deleted from the list at some interval.
+	if (hp <= 0) return;
 	// Run without checking, AI figured everything out until the tile changes.
 	if (!getAI())
 	{
@@ -300,6 +318,18 @@ void Ant::clampDirections()
 		directionY = 20;
 	else if (directionY < -20)
 		directionY = -20;
+}
+
+int Ant::use()
+{
+	if ((hp <= 10) && FOODi(carrying))
+	{
+		hp = 1000;
+		carrying = 0;
+		return 1; // TODO: object action enum, i.e. PLAYER_USED_FOOD
+	}
+	// if not usable.
+	return 0;
 }
 
 void Ant::incrementOffsetX()
