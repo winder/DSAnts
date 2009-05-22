@@ -172,7 +172,7 @@ Patch* Player::dig()
 Patch* Player::pickUp()
 { 
 	Patch* t = adjacentPatchPicked();
-	if (t)
+	if (t && (p->getCarrying() == NOTHING))
 	{
 		p->pickup( t );
 		// try using it immediately.  normal ants wait until the next step to use.
@@ -209,7 +209,7 @@ void Player::update(int value)
 	// The Player object should notify the world that it needs to respawn shortly.
 	if (p->getHP() <= 0)
 	{
-		return;
+//		return;
 	}
 	if (value == PLAYER_HELD_LEFT)
 		moveLeft();
@@ -239,6 +239,7 @@ void Player::printDebug()
 		printf("PATCH_ENTRANCE");
 //	printf("\nFacing: x=%i, y=%i", p->getFacingX(), p->getFacingY());
 	printf("\nAnt HP: %i", p->getHP());
+	printf("\nAnt Carrying: %i", p->getCarrying());
 
 }
 

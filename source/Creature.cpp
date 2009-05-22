@@ -7,7 +7,7 @@ Creature::Creature()
 	directionX = 0;
 	directionY = 20;
 	portaled = false;
-	carrying = 0;
+	carrying = NOTHING;
 	ai = true;
 	ACTION=0;
 	direction=-1;
@@ -25,7 +25,7 @@ Creature::Creature(Patch* pat, int loc)
 	directionY = 20;
 	p=pat;
 	portaled = false;
-	carrying = 0;
+	carrying = NOTHING;
 	ai = true;
 	ACTION=0;
 	direction=-1;
@@ -208,7 +208,7 @@ void Creature::move()
 		}
 		return;
 	}
-
+/*
 	// if AI needs to be run, but it hasn't gotten to the center yet, keep moving.
 	if ((direction == 0) && (getOffsetY() != 0))
 	{
@@ -230,7 +230,7 @@ void Creature::move()
 		moveUp();
 		return;
 	}
-
+*/
 	// if the tile changed, reset.
 	if (getAI())
 	{
@@ -247,6 +247,11 @@ void Creature::move()
 	else if (directionOld == 2) directionOld = 1;
 	else if (directionOld == 3) directionOld = 0;
 
+	moveAI();
+}
+
+void Creature::moveAI()
+{
 	// If it gets here need to decide where to go.
 	// Select AI pattern based on ACTION.
 	if (ACTION == ANT_ACTION_WANDER)
@@ -337,7 +342,7 @@ int Creature::use()
 	if ((hp <= 10) && FOODi(carrying))
 	{
 		hp = 1000;
-		carrying = 0;
+		carrying = NOTHING;
 		return 1; // TODO: object action enum, i.e. PLAYER_USED_FOOD
 	}
 	// if not usable.

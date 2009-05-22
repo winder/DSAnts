@@ -30,6 +30,7 @@ enum Ant_AI
 // Patch TYPE values
 enum PATCH_types
 {
+	NOTHING,
 	PATCH,
 	PATCH_DIRT,
 	PATCH_EMPTY,

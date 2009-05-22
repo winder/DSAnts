@@ -256,7 +256,7 @@ void MapDraw::drawWorker(int carry)
 	StaticDraw::drawRect(0, 0, MODEL_SCALE*0.15, MODEL_SCALE*.35, MODEL_SCALE*0.9, tm);
 
 	// Check if the ant is carrying anything.  If it is, draw it..
-	if (carry)
+	if (carry != NOTHING)
 	{
 		glTranslatef(0,MODEL_SCALE*0.50, MODEL_SCALE*0.1);
 

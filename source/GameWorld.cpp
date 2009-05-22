@@ -28,6 +28,14 @@ GameWorld::GameWorld()
 	tmp->setCarrying(PATCH_FOOD1);	
 	p = new Player(tmp);
 
+
+	// Create queen(s) and put in a random location.
+	tmp = new QueenAnt();
+	tmp->setPatch( ug->getGrid()->getRandomCleared() );
+	tmp->setLocation( STATE );
+	// Queen doesn't need an action, she just sits around making eggs
+	black.push_back( tmp );
+
 	// SETUP OBSERVERs:
 
 	// Observing Player: GameWorld.
@@ -308,7 +316,7 @@ void GameWorld::printDebugFiveLines()
 //	printf("\nMap Stats: <UG> <Surf>");
 //	printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
 //	printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
-	printf("\nMap Center: (%i, %i)", curMap->getCenterX(), curMap->getCenterY());
+//	printf("\nMap Center: (%i, %i)", curMap->getCenterX(), curMap->getCenterY());
 	printf("\nAnts: drawn(%i)\n black(%i), red(%i)", numAnts, black.size(), red.size());
 //	printf("\nCamera distance: %f", cam->getCamLocation().z);
 //	printf("\nTouch coord: (%i, %i)", curX, curY);

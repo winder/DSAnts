@@ -11,45 +11,62 @@ class Creature
 		Creature();
 		Creature(Patch* pat, int location);
 
-		//virtual int getType(){ return ANT_WORKER; }
 		// template class.
 		virtual int getType() = 0;
 
-		void setHP(short h){ hp=h; }
-		short getHP(){ return hp; }
-
-		short getX(){ return p->x; }
-		short getY(){ return p->y; }
-
-		void setPatch(Patch* inp){ p = inp; }
-		Patch* getPatch(){ return p; }
-
-		int getLocation(){ return location; }
-		void setLocation(int l){ location = l; }
-
 		// move the ant.
-		// If moving into a portal from any direction, need to handle it the same way.
-		// returns true if it needed to be handled and the move needed to be stopped.
-		bool handlePortal();
-
-		// TODO: This could use more tweaking efficiency wise.
 		// return value: true if tile changed.
 		bool moveRight();
 		bool moveLeft();
 		bool moveUp();
 		bool moveDown();
-		
+		// If moving into a portal from any direction, need to handle it the same way.
+		// returns true if it needed to be handled and the move needed to be stopped.
+		virtual bool handlePortal();
 
 		// This lets the ant move on its own accord, influenced by:
 		//		-feramone level of adjacent tiles
 		//		-current action
-		void stateStep(int num);
-		void move(int num);
-		void move();
-		void wander();
-		void attack();
-		void forage();
+		virtual void stateStep(int num);
 
+		// move is broken into several parts.
+		virtual void move(int num);
+		virtual void move();
+		virtual void moveAI();
+		virtual void wander();
+		virtual void attack();
+		virtual void forage();
+
+		// use the carrying object (i.e. eat food / egg)
+		virtual int use();
+
+		// True if will pickup.  False otherwise.
+		bool pickup(Patch *p) {
+														if ((carrying == NOTHING) && OBJECT(p))
+														{
+															carrying = p->TYPE;
+															return true;
+															// The Grid must modify the type
+															//p->TYPE = PATCH_EMPTY;
+														}
+														return false;
+													}
+
+		// True if it can drop, false otherwise.
+		bool drop(Patch *p)	{
+													if (EMPTY(p))
+													{
+														carrying = NOTHING;
+														// the grid must modify the type.
+														//p->TYPE = carrying;
+														return true;
+													}
+													return false;
+												}
+
+		//-----------------------//
+		// Accessors and Getters //
+		//-----------------------//
 		void setAction(int a){ ACTION = a; }
 		int getAction(){ return ACTION; }
 
@@ -65,32 +82,18 @@ class Creature
 		int getCarrying(){ return carrying; }
 		void setCarrying(int x){ carrying = x; }
 
-		// use the carrying object (i.e. eat food / egg)
-		int use();
-		// True if will pickup.  False otherwise.
-		bool pickup(Patch *p)
-			{
-				if (OBJECT(p))
-				{
-					carrying = p->TYPE;
-					return true;
-					// The Grid must modify the type
-					//p->TYPE = PATCH_EMPTY;
-				}
-				return false;
-			}
-		// True if it can drop, false otherwise.
-		bool drop(Patch *p)
-			{
-				if (EMPTY(p))
-				{
-					carrying = '\0';
-					// the grid must modify the type.
-					//p->TYPE = carrying;
-					return true;
-				}
-				return false;
-			}
+		void setHP(short h){ hp=h; }
+		short getHP(){ return hp; }
+
+		short getX(){ return p->x; }
+		short getY(){ return p->y; }
+
+		void setPatch(Patch* inp){ p = inp; }
+		Patch* getPatch(){ return p; }
+
+		int getLocation(){ return location; }
+		void setLocation(int l){ location = l; }
+
 	private:
 		// these are used to change offsetX / offsetY and keep the direction correct.
 		void incrementOffsetX();
@@ -99,9 +102,9 @@ class Creature
 		void decrementOffsetY();
 		void clampDirections();
 
-		   //-----------------//
-		  // AI INFORMATION: //
-		 //-----------------//
+		//-----------------//
+		// AI INFORMATION: //
+		//-----------------//
 		// True or false if the AI needs to intervene.
 		bool ai;
 		// ai will set these after deciding where the ant is heading.
@@ -136,7 +139,8 @@ class Creature
 		
 		// Status, health information.
 		short hp;
-		short TYPE; // what type of creature?
+		// what type of creature is it (ANT_WORKER, ANT_QUEEN, SPIDER, etc)
+		short TYPE;
 
 		// is the ant carrying something?
 		int carrying;
