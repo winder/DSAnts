@@ -32,19 +32,23 @@ Development process, Asterisk indicates complete:
 
 *3. Create surface world
 *	- Link to underground
-*	- Objects (Rocks, Food)
+*	- Objects (Rocks, Food), carryable by Player / Ants
 *	-	Object spawns (food on surface).
 
 4. Basic ant functions
 *	- hp / death
 	- extended statistics (not sure what these are)
 *	- Food / Eating
-	-	Queen / Egg production
+*	-	Queen / Egg production
 	- Egg / Hatch
+	- Collision detection
+		- Grid, patch knows when ant is on it
+		- Two ants per patch, if red + black ant, fight.
 
-6. A.I. / Enemy base.
+6. A.I.
 	- Ant action AI's:
 *		-Wander
+*		-Queen, egg production
 		-Forage
 		-Attack
 		-Defend
@@ -65,6 +69,8 @@ Development process, Asterisk indicates complete:
 		-dirt
 		-barriers
 		-???
+	- Sound Effects
+	- Background Music
 
 
 NOTE: The below was determined to be too much work for too little reward,

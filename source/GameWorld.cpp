@@ -26,6 +26,7 @@ GameWorld::GameWorld()
 	tmp->setPatch( ug->getGrid()->getPatch(0,2) );
 	tmp->setLocation( STATE );
 	tmp->setCarrying(PATCH_FOOD1);	
+	tmp->setTakePortals( true );
 	p = new Player(tmp);
 
 
@@ -33,6 +34,7 @@ GameWorld::GameWorld()
 	tmp = new QueenAnt();
 	tmp->setPatch( ug->getGrid()->getRandomCleared() );
 	tmp->setLocation( STATE );
+	tmp->setTakePortals( false );
 	// Queen doesn't need an action, she just sits around making eggs
 	black.push_back( tmp );
 
@@ -74,7 +76,7 @@ void GameWorld::linkSurfaceAntUnderground()
 	int randX, randY;
 	// loop across the top layer of the underground, link to random areas of the surface.
 	// ug is the black ants, in the left side of the map.
-	Patch* topleft = ug->getGrid()->getPatch(0,0);
+	Patch* topleft = ug->getGrid()->getPatch(0,1);
 	do
 	{
 		// find random locations until we get one that hasn't already been picked.
@@ -89,7 +91,7 @@ void GameWorld::linkSurfaceAntUnderground()
 
 		// make it two-way.
 		// NOTE: the surface points to just below the top level of the underground
-		topleft->portal->portal = topleft->bottom;
+		topleft->portal->portal = topleft;
 		// move right
 		topleft = Grid::getRight( topleft );
 		// until we loop all the way around.

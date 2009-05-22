@@ -12,6 +12,7 @@ Creature::Creature()
 	ACTION=0;
 	direction=-1;
 	directionOld=-1;
+	takePortals=false;
 
 	hp = 1000;
 }
@@ -30,6 +31,7 @@ Creature::Creature(Patch* pat, int loc)
 	ACTION=0;
 	direction=-1;
 	directionOld=-1;
+	takePortals=false;
 
 	hp = 1000;
 }
@@ -37,24 +39,26 @@ Creature::Creature(Patch* pat, int loc)
 // Checks if there is a portal.  If there is, go through.
 bool Creature::handlePortal()
 {
-	// the portaled flag is supposed to stop it from flipping back and forth over and over again.
-	if (!p->portal)
+	if (takePortals)
 	{
-		portaled = false;
-		return false;
+		// the portaled flag is supposed to stop it from flipping back and forth over and over again.
+		if (!p->portal)
+		{
+			portaled = false;
+			return false;
+		}
+
+		if (!portaled && p->portal && WALKABLE(p->portal))
+		{
+			p = p->portal;
+
+			offsetX=0;
+			offsetY=0;
+			portaled = true;
+			location = p->location;
+			return true;
+		}
 	}
-
-	if (!portaled && p->portal && WALKABLE(p->portal))
-	{
-		p = p->portal;
-
-		offsetX=0;
-		offsetY=0;
-		portaled = true;
-		location = p->location;
-		return true;
-	}
-
 	return false;
 }
 

@@ -10,7 +10,7 @@
 // TODO: re-evaluate how I'm creating patch comparisons.
 
 #define WALKABLE(X) WALKABLEi(X->TYPE)
-#define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || (X == PATCH_TOP) || (X == PATCH_EGG) || FOODi(X))
+#define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || (X == PATCH_EGG) || FOODi(X))
 
 #define FOOD(X) FOODi(X->TYPE)
 #define FOODi(X) ((X == PATCH_FOOD1) ||(X == PATCH_FOOD2) ||(X == PATCH_FOOD3) ||(X == PATCH_FOOD4) ||\

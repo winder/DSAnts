@@ -67,32 +67,35 @@ class Creature
 		//-----------------------//
 		// Accessors and Getters //
 		//-----------------------//
-		void setAction(int a){ ACTION = a; }
-		int getAction(){ return ACTION; }
+		inline void setAction(int a){ ACTION = a; }
+		inline int getAction(){ return ACTION; }
 
-		int getOffsetX(){ return offsetX; }
-		int getOffsetY(){ return offsetY; }
+		inline int getOffsetX(){ return offsetX; }
+		inline int getOffsetY(){ return offsetY; }
 
-		void setAI(bool inai){ ai = inai; }
-		bool getAI(){ return ai; }
+		inline void setAI(bool inai){ ai = inai; }
+		inline bool getAI(){ return ai; }
 
-		short getFacingX(){ return directionX; }
-		short getFacingY(){ return directionY; }
+		inline short getFacingX(){ return directionX; }
+		inline short getFacingY(){ return directionY; }
 
-		int getCarrying(){ return carrying; }
-		void setCarrying(int x){ carrying = x; }
+		inline int getCarrying(){ return carrying; }
+		inline void setCarrying(int x){ carrying = x; }
 
-		void setHP(short h){ hp=h; }
-		short getHP(){ return hp; }
+		inline void setHP(short h){ hp=h; }
+		inline short getHP(){ return hp; }
 
-		short getX(){ return p->x; }
-		short getY(){ return p->y; }
+		inline short getX(){ return p->x; }
+		inline short getY(){ return p->y; }
 
-		void setPatch(Patch* inp){ p = inp; }
-		Patch* getPatch(){ return p; }
+		inline void setPatch(Patch* inp){ p = inp; }
+		inline Patch* getPatch(){ return p; }
 
-		int getLocation(){ return location; }
-		void setLocation(int l){ location = l; }
+		inline int getLocation(){ return location; }
+		inline void setLocation(int l){ location = l; }
+
+		inline bool getTakePortals(){ return takePortals; }
+		inline void setTakePortals(bool tp){ takePortals = tp; }
 
 	private:
 		// these are used to change offsetX / offsetY and keep the direction correct.
@@ -128,6 +131,8 @@ class Creature
 		Patch *p;
 		// flag so that we don't go back and forth through a portal infinitly.
 		bool portaled;
+		// if false, will not go through portals.
+		bool takePortals;
 
 		// The offset within the patch
 		short offsetX;
