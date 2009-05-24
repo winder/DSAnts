@@ -67,7 +67,8 @@ int main()
 	srand(time(NULL));
 
 	//UndergroundDrawGrid *ug = new UndergroundDrawGrid();
-	GameWorld *gw = new GameWorld();
+//	GameWorld *gw = new GameWorld();
+	GameWorld *gw = GameWorldSingleton::getInstance();
 
 	//put 3D on top/bottom
 	lcdMainOnBottom();

@@ -1,6 +1,9 @@
 #ifndef GAMEWORLD_H
 #define GAMEWORLD_H
 
+#include "Singleton.h"
+// typedef after class definition
+//typedef Singleton<GameWorld> GameWorldSingleton; // global declaration
 #include "Underground.h"
 #include "Surface.h"
 #include <vector>
@@ -132,5 +135,7 @@ class GameWorld: public Observer, public Subject
 		int oldX, oldY;
 		int curX, curY;
 };
+
+typedef Singleton<GameWorld> GameWorldSingleton; // global declaration
 
 #endif
