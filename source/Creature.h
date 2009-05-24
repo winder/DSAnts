@@ -42,30 +42,9 @@ class Creature
 
 		// True if will pickup.  False otherwise.
 		void pickup(Patch *p);
-/*
- {
-														if ((carrying == NOTHING) && OBJECT(p))
-														{
-															carrying = p->TYPE;
-															return true;
-															// The Grid must modify the type
-															//p->TYPE = PATCH_EMPTY;
-														}
-														return false;
-													}
-*/
 
 		// True if it can drop, false otherwise.
-		bool drop(Patch *p)	{
-													if (EMPTY(p))
-													{
-														carrying = NOTHING;
-														// the grid must modify the type.
-														//p->TYPE = carrying;
-														return true;
-													}
-													return false;
-												}
+		bool drop(Patch *p);
 
 		//-----------------------//
 		// Accessors and Getters //

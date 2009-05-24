@@ -43,6 +43,29 @@ void Creature::pickup(Patch *p)
 	carrying = GameWorldSingleton::getInstance()->pickup(location, p);
 }
 
+bool Creature::drop(Patch *p)
+{
+//	if (EMPTY(p))
+//	{
+	if( GameWorldSingleton::getInstance()->drop(location, p, carrying) )
+	{
+		carrying = NOTHING;
+		return true;
+	}
+	return false;
+}
+/*
+													if (EMPTY(p))
+													{
+														carrying = NOTHING;
+														// the grid must modify the type.
+														//p->TYPE = carrying;
+														return true;
+													}
+													return false;
+												}
+}
+*/
 
 // Checks if there is a portal.  If there is, go through.
 bool Creature::handlePortal()

@@ -46,6 +46,7 @@ class GameWorld: public Observer, public Subject
 
  		// Modifies the patch, picks up the object and returns it.
  		int pickup(int loc, Patch* pat);
+		bool drop(int loc, Patch* pat, int Ob);
 
  		MapDraw* getMap(int st)
  		{	
