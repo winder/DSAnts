@@ -293,9 +293,6 @@ void MapDraw::drawQueen(int carry)
 
 Patch* MapDraw::draw()
 {
-
-	// Adding this saves me several hundred additions / subtractions.  Cool beans.
-	glTranslatef(smoothScrollX*-1, smoothScrollY*-1, 0);
 	// TODO: Fit this one in too so I don't have to to all the MODEL_SCALE multiplications.
 //	glScalef(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
 
@@ -408,7 +405,12 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		StaticDraw::drawBox(x, y, 0, s, s, s, tm);
 		return;
 	}
-	else if (p->TYPE == PATCH_EMPTY)
+	else if (FOOD(p))
+	{
+		drawFoodPatch(x, y, p);
+		return;
+	}
+	else if (EMPTY(p))
 	{
 		material(31,31,31); // make it easier to see ants...
 		// Check top, bottom, left, right and draw
@@ -490,6 +492,65 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	// for now, draw a box upon completion. each clause above will return early
 	// if it does its business.
 	StaticDraw::drawBox(x, y, 0, s*0.5, s*0.5, s*0.5, tm);
+}
+
+// This draws all the food types, the green cube is bigger depending
+// on the size of the pile.
+void MapDraw::drawFoodPatch(float x, float y, Patch *p)
+{
+	// draw empty at bottom.
+	material(31,31,31);
+	StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+	material(1,31,1);
+	int factor = 1;
+	switch(p->TYPE)
+	{
+		case PATCH_FOOD1 :
+			factor = 1;
+			break;
+
+		case PATCH_FOOD2 :
+			factor = 2;
+			break;
+
+		case PATCH_FOOD3 :
+			factor = 3;
+			break;
+
+		case PATCH_FOOD4 :
+			factor = 4;
+			break;
+
+		case PATCH_FOOD5 :
+			factor = 5;
+			break;
+
+		case PATCH_FOOD6 :
+			factor = 6;
+			break;
+
+		case PATCH_FOOD7 :
+			factor = 7;
+			break;
+
+		case PATCH_FOOD8 :
+			factor = 8;
+			break;
+
+		case PATCH_FOOD9 :
+			factor = 9;
+			break;
+
+		case PATCH_FOOD10 :
+			factor = 10;
+			break;
+
+		default:
+			factor = 1;
+			break;
+	}
+	
+	StaticDraw::drawBox(x, y, 0, factor*(MODEL_SCALE/11), factor*(MODEL_SCALE/11), (MODEL_SCALE/15), tm);
 }
 
 void MapDraw::material(int r, int g, int b)

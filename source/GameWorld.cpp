@@ -76,9 +76,64 @@ int GameWorld::pickup(int loc, Patch *pat)
 	if (OBJECT(pat))
 	{
 		int savet = pat->TYPE;
-		// TODO: special cases: PATCH_FOOD10 -> PATCH_FOOD
 		getMap(loc)->getGrid()->takeObject( pat );
-		return savet;
+		// TODO: special cases: PATCH_FOOD10 -> PATCH_FOOD
+
+		if (FOODi(savet))
+		{
+			switch (savet)
+			{
+				case PATCH_FOOD1 :
+					// Ant is holding 1 food, Patch is empty.  Correct.
+					break;
+
+				case PATCH_FOOD2 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD1 );
+					break;
+
+				case PATCH_FOOD3 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD2 );
+					break;
+	
+				case PATCH_FOOD4 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD3 );
+					break;
+
+				case PATCH_FOOD5 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD4 );
+					break;
+
+				case PATCH_FOOD6 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD5 );
+					break;
+
+				case PATCH_FOOD7 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD6 );
+					break;
+
+				case PATCH_FOOD8 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD7 );
+					break;
+
+				case PATCH_FOOD9 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD8 );
+					break;
+
+				case PATCH_FOOD10 :
+					getMap(loc)->getGrid()->addObject( pat , PATCH_FOOD9 );
+					break;
+
+				default:
+					// should never get here.  do nothing.
+					break;
+			}
+			// if something picked up food, it only picks up one at a time.
+			return PATCH_FOOD1;
+		}
+
+		// Object doesn't need special handling.
+		else
+			return savet;
 	}
 	// otherwise, nothing.
 	return NOTHING;
@@ -86,13 +141,63 @@ int GameWorld::pickup(int loc, Patch *pat)
 
 bool GameWorld::drop(int loc, Patch* pat, int Ob)
 {
-	if( EMPTY(pat) )
+	// Dropping food onto food.
+	if (FOODi(Ob))
+	{
+		switch (pat->TYPE)
+		{
+			case PATCH_EMPTY :
+				pat->TYPE = PATCH_FOOD1;
+				break;
+
+			case PATCH_FOOD1 :
+				pat->TYPE = PATCH_FOOD2;
+				break;
+
+			case PATCH_FOOD2 :
+				pat->TYPE = PATCH_FOOD3;
+				break;
+
+			case PATCH_FOOD3 :
+				pat->TYPE = PATCH_FOOD4;
+				break;
+
+			case PATCH_FOOD4 :
+				pat->TYPE = PATCH_FOOD5;
+				break;
+
+			case PATCH_FOOD5 :
+				pat->TYPE = PATCH_FOOD6;
+				break;
+
+			case PATCH_FOOD6 :
+				pat->TYPE = PATCH_FOOD7;
+				break;
+
+			case PATCH_FOOD7 :
+				pat->TYPE = PATCH_FOOD8;
+				break;
+
+			case PATCH_FOOD8 :
+				pat->TYPE = PATCH_FOOD9;
+				break;
+
+			case PATCH_FOOD9 :
+				pat->TYPE = PATCH_FOOD10;
+				break;
+
+			// only case that should hit this is PATCH_FOOD10
+			default:
+				return false;
+		}
+		return true;
+	}
+	// Dropping something with no special handling..
+	else if( EMPTY(pat) )
 	{
 		pat->TYPE = Ob;
 		return true;
 	}
-	// TODO: special handling for objects.
-//	else if (FOODi(Ob) || FOOD(pat))
 
 	return false;
 }
@@ -133,7 +238,8 @@ void GameWorld::draw()
 	if (! curMap->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
 		curMap->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
 
-	curMap->begin();
+	curMap->doMapShift();
+	curMap->beginQuads();
 	// Draw game field.
 	curMap->draw();
 
@@ -149,7 +255,6 @@ void GameWorld::draw()
 
 	curMap->drawAnt(p->getPlayerAnt(), true);
 
-	curMap->end();
 	// DO THE PICKING
 	// If the touch pad is being touched... see what its touching.
 	if (doPick)
@@ -157,6 +262,8 @@ void GameWorld::draw()
 		pickPoint(in->getTouchX(), in->getTouchY());
 		doPick = false;
 	}
+
+	curMap->end();
 }
 
 void GameWorld::pickPoint(short x, short y)

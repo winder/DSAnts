@@ -52,6 +52,7 @@ class MapDraw: public Map
 		// etc...
 
 		void drawPatch(float x, float y, Patch *p);
+		void drawFoodPatch(float x, float y, Patch *p);
 
 		// This function does picking to find out where in the grid the touch occurred.
 		bool pickPoint(int x, int y, Camera &cam);
@@ -67,8 +68,11 @@ class MapDraw: public Map
 
 		void shiftCenter(Creature *p, int num);
 
-		void begin(){ glBegin(GL_QUADS); }
+		void beginQuads(){ glBegin(GL_QUADS); }
 		void end(){ glEnd(); }
+		// Adding this saves me several hundred additions / subtractions.  Cool beans.
+		void doMapShift(){ glTranslatef(smoothScrollX*-1, smoothScrollY*-1, 0); }
+
 	private:
 		void material(int r, int g, int b);
 		// Used for determining the center of the map.
