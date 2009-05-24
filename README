@@ -39,8 +39,9 @@ Development process, Asterisk indicates complete:
 *	- hp / death
 	- extended statistics (not sure what these are)
 *	- Food / Eating
+*	- Pickup / Drop logic (i.e. stacks of food)
 *	-	Queen / Egg production
-	- Egg / Hatch
+	- Egg / Hatch (i.e. Game loop that checks underground for growing eggs.)
 	- Collision detection
 		- Grid, patch knows when ant is on it
 		- Two ants per patch, if red + black ant, fight.

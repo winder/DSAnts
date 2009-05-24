@@ -550,7 +550,7 @@ void MapDraw::drawFoodPatch(float x, float y, Patch *p)
 			break;
 	}
 	
-	StaticDraw::drawBox(x, y, 0, factor*(MODEL_SCALE/11), factor*(MODEL_SCALE/11), (MODEL_SCALE/15), tm);
+	StaticDraw::drawBox(x, y, 0, (2+factor)*(MODEL_SCALE/14), (2+factor)*(MODEL_SCALE/14), (MODEL_SCALE/15), tm);
 }
 
 void MapDraw::material(int r, int g, int b)

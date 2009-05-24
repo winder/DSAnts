@@ -53,7 +53,7 @@ GameWorld::GameWorld()
 
 	// This loops through The surface of the underground (both when I add the enemy underground)
 	// and links them to the surface.
-	linkSurfaceAntUnderground();
+	linkSurfaceAndUnderground();
 }
 
 GameWorld::~GameWorld()
@@ -203,7 +203,7 @@ bool GameWorld::drop(int loc, Patch* pat, int Ob)
 }
 
 
-void GameWorld::linkSurfaceAntUnderground()
+void GameWorld::linkSurfaceAndUnderground()
 {
 	int randX, randY;
 	// loop across the top layer of the underground, link to random areas of the surface.
@@ -380,13 +380,10 @@ void GameWorld::update(int value)
 		// If it is dirt, see if we can DIG IT.
 		if (picked->TYPE == PATCH_DIRT)
 			curMap->getGrid()->clear(p->dig());
-		// If your carrying something, and the spot is empty, drop.
-		else if (EMPTY(picked) && p->getPlayerAnt()->getCarrying())
+		// If your carrying something, drop.  Note: the spot doesn't always need to be empty.
+		else if ( p->getPlayerAnt()->getCarrying() )
 		{
 			p->drop();
-			// "drop" clears out what its carring, so need to store it for a moment.
-			//int saveO = p->getPlayerAnt()->getCarrying();
-			//curMap->getGrid()->addObject( p->drop(), saveO );
 		}
 		// if it is an object, see if we can PICK IT.
 		else if (OBJECT(picked))

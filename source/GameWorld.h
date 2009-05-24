@@ -61,7 +61,7 @@ class GameWorld: public Observer, public Subject
  		}
 
 		// Link the surface with the underground.
-		void linkSurfaceAntUnderground();
+		void linkSurfaceAndUnderground();
 
 		void changeState(int st){ STATE = st; }
 
