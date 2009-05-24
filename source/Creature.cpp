@@ -1,4 +1,6 @@
 #include "Creature.h"
+// Include this here to avoid circular dependencies
+#include "GameWorld.h"
 
 Creature::Creature()
 {
@@ -35,6 +37,12 @@ Creature::Creature(Patch* pat, int loc)
 
 	hp = 1000;
 }
+
+void Creature::pickup(Patch *p)
+{
+	carrying = GameWorldSingleton::getInstance()->pickup(location, p);
+}
+
 
 // Checks if there is a portal.  If there is, go through.
 bool Creature::handlePortal()

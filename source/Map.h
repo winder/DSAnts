@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "Ant.h"
+#include "Creature.h"
 #include "Grid.h"
 
 class Map
@@ -20,9 +20,9 @@ class Map
 
 		virtual void initGrid() = 0;
 		// Adds an ant in a random location.
-		void addAnt(Ant *a);
+		void addAnt(Creature *a);
 
-		void addAnt(Ant *a, int x, int y);
+		void addAnt(Creature *a, int x, int y);
 
 		// This is for increasing the index into the underground grid.
 		// Used primarily for determining where the map should be pointing.

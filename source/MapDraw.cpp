@@ -171,7 +171,7 @@ float MapDraw::positionY(short y)
 }
 
 // Shift the center if the player is too far to the side of the map.
-void MapDraw::shiftCenter(Ant *p, int num)
+void MapDraw::shiftCenter(Creature *p, int num)
 {
 	float pos = positionY(p->getY());
 	int DISTANCE = GRID_SIZE / 3;
@@ -189,7 +189,7 @@ void MapDraw::shiftCenter(Ant *p, int num)
 		incX();
 }
 
-bool MapDraw::drawAnt(Ant* a, bool animate)
+bool MapDraw::drawAnt(Creature* a, bool animate)
 {
 	// top-right - white
 	tm->nextTexture(1);

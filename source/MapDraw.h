@@ -38,9 +38,9 @@ class MapDraw: public Map
 
 		// Drawing functions.
 		Patch* draw();
-		void drawAnts(std::vector<Ant*> &black, std::vector<Ant*> &red);
+		void drawAnts(std::vector<Creature*> &black, std::vector<Creature*> &red);
 		// sets up offset/rotation of creature
-		bool drawAnt(Ant* a, bool animate);
+		bool drawAnt(Creature* a, bool animate);
 		// draws specific type of creature
 		void drawWorker(int carry);
 		void drawQueen(int carry);
@@ -65,7 +65,7 @@ class MapDraw: public Map
 		float positionX(short x);
 		float positionY(short y);
 
-		void shiftCenter(Ant *p, int num);
+		void shiftCenter(Creature *p, int num);
 
 		void begin(){ glBegin(GL_QUADS); }
 		void end(){ glEnd(); }

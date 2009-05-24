@@ -71,6 +71,21 @@ GameWorld::~GameWorld()
 		delete red[i];
 }
 
+int GameWorld::pickup(int loc, Patch *pat)
+{
+	if (OBJECT(pat))
+	{
+		int savet = pat->TYPE;
+		// TODO: special cases: PATCH_FOOD10 -> PATCH_FOOD
+		getMap(loc)->getGrid()->takeObject( pat );
+		return savet;
+	}
+	// otherwise, nothing.
+	return NOTHING;
+}
+
+
+
 void GameWorld::linkSurfaceAntUnderground()
 {
 	int randX, randY;
@@ -149,11 +164,6 @@ void GameWorld::pickPoint(short x, short y)
 	}
 }
 
-int GameWorld::getInput()
-{
-	return in->getPressed();
-}
-
 void GameWorld::stepAntsForward(int num)
 {
 	// test, move each ant around randomly.
@@ -170,13 +180,7 @@ void GameWorld::stepForward(int num)
 	// The "Player" doesn't keep track of its location, so I can't do this through observer.
 	if (STATE != p->getPlayerAnt()->getLocation())
 	{
-		STATE = p->getPlayerAnt()->getLocation();
-		if (STATE == GAMEWORLD_STATE_UNDERGROUND)
-			curMap = ug;
-		else if (STATE == GAMEWORLD_STATE_SURFACE)
-			curMap = surf;
-		//else if (STATE == GAMEWORLD_STATE_ENEMY_UNDERGROUND)
-		//	curMap = eug;
+		curMap = getMap(p->getPlayerAnt()->getLocation());
 	}
 
 	// The map needs to follow the player.
@@ -266,7 +270,8 @@ void GameWorld::update(int value)
 		// if it is an object, see if we can PICK IT.
 		else if (OBJECT(picked))
 		{
-			curMap->getGrid()->takeObject( p->pickUp() );
+			p->pickUp();
+			//curMap->getGrid()->takeObject( p->pickUp() );
 		}
 	}
 	else if (value == PLAYER_RELEASED_TOUCHPAD)

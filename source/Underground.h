@@ -1,7 +1,7 @@
 #ifndef UNDERGROUND_H
 #define UNDERGROUND_H
 
-#include "Ant.h"
+//#include "Ant.h"
 #include "Grid.h"
 #include "MapDraw.h"
 
@@ -19,9 +19,9 @@ class Underground: public MapDraw
 		virtual void initGrid();
 
 		// Adds an ant in a random location.
-		void addAnt(Ant *a);
+//		void addAnt(Ant *a);
 
-		void addAnt(Ant *a, int x, int y);
+//		void addAnt(Ant *a, int x, int y);
 
 	private:
 		int tunnelSize;

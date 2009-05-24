@@ -41,7 +41,9 @@ class Creature
 		virtual int use();
 
 		// True if will pickup.  False otherwise.
-		bool pickup(Patch *p) {
+		void pickup(Patch *p);
+/*
+ {
 														if ((carrying == NOTHING) && OBJECT(p))
 														{
 															carrying = p->TYPE;
@@ -51,6 +53,7 @@ class Creature
 														}
 														return false;
 													}
+*/
 
 		// True if it can drop, false otherwise.
 		bool drop(Patch *p)	{

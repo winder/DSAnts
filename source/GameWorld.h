@@ -44,28 +44,33 @@ class GameWorld: public Observer, public Subject
 		GameWorld();
 		~GameWorld();
 
+ 		// Modifies the patch, picks up the object and returns it.
+ 		int pickup(int loc, Patch* pat);
+
+ 		MapDraw* getMap(int st)
+ 		{	
+ 			if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+ 				return ug;
+ 			else if (STATE == GAMEWORLD_STATE_SURFACE)
+ 				return surf;
+ 			//else if (STATE == GAMEWORLD_STATE_ENEMY_UNDERGROUND)
+ 			//	return eug;
+			else
+				return '\0';
+ 		}
+
 		// Link the surface with the underground.
 		void linkSurfaceAntUnderground();
 
 		void changeState(int st){ STATE = st; }
 
+		// tell classes to draw themselves
 		void draw();
 		void pickPoint(short x, short y);
 
-		// TODO: This will move the player, and depending on player information will
-		//       then move the screen.
-// This clearly isn't used anymore, since "ug" was replaced with "curMap"
-//		void incX(){ ug->incX(); }
-//		void incY(){ ug->incY(); }
-//		void decX(){ ug->decX(); }
-//		void decY(){ ug->decY(); }
-
+		// getters
 		Underground* getUG(){ return ug; }
 		Surface* getSurface(){ return surf; }
-
-		// Get INPUT, everything else will use input as though
-		// it is up to date.
-		int getInput();
 
 		// Coordinates a step in the game.
 		void stepForward(int num);
@@ -81,19 +86,8 @@ class GameWorld: public Observer, public Subject
 				ug->initTextures();
 				surf->setTextures( ug->getTextures() ); }
 
-		// have the camera look at the player!
-		// TODO: this is an interesting concept, but it needs some work to... work.
-/*
-		void placeCamera(){
-						cam->render(
-									ug->positionX(
-											p->getPlayerAnt()->getX()) + p->getPlayerAnt()->getOffsetX()*MODEL_SCALE_INCREMENT ,
-									ug->positionY(
-											p->getPlayerAnt()->getY()) + p->getPlayerAnt()->getOffsetY()*MODEL_SCALE_INCREMENT		); }
-*/
 		void placeCamera(){ cam->render(); }
 		void setProjection();
-
 
 		// Event handling: Observer implementation:
 		virtual void update(int value);
