@@ -3,6 +3,7 @@
 GameWorld::GameWorld()
 {
 	followingPlayer = true;
+	eggTimer = 0;
 
 	in = new Input();
 
@@ -298,6 +299,43 @@ void GameWorld::stepAntsForward(int num)
 	}
 }
 
+void GameWorld::stepEggsForward()
+{
+	// Counter for eggs:
+	eggTimer++;
+	if (eggTimer >= 500)
+	{
+		eggTimer = 0;
+		for (unsigned int i=0; i < ug->getGrid()->getCleared().size(); i++)
+		{
+			if (EGG(ug->getGrid()->getCleared()[i]))
+			{
+				switch(ug->getGrid()->getCleared()[i]->TYPE)
+				{
+					case PATCH_EGG1:
+						ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG2;
+						break;
+					case PATCH_EGG2:
+						ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG3;
+						break;
+					case PATCH_EGG3:
+						ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG4;
+						break;
+					case PATCH_EGG4:
+						ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG5;
+						break;
+					case PATCH_EGG5:
+						ug->getGrid()->getCleared()[i]->TYPE = PATCH_EMPTY;
+						createAnt( ug->getGrid()->getCleared()[i], GAMEWORLD_STATE_UNDERGROUND );
+						break;
+				}
+			}
+		}
+	}
+}
+
+// no draw here, it is handled elsewhere so that things will be able
+// to move forward if things start to lag.
 void GameWorld::stepForward(int num)
 {
 	// The "Player" doesn't keep track of its location, so I can't do this through observer.
@@ -307,61 +345,30 @@ void GameWorld::stepForward(int num)
 		curMap = getMap(STATE);
 	}
 
-	// The map needs to follow the player.
-	// This needs to be done every frame rather than on player move event,
-	// otherwise panning is jerky.
+	// Shift the map to center the player (normal circumstances)
 	if (followingPlayer)
-		curMap->shiftCenter(p->getPlayerAnt(), num);
-
-
-	// no draw here, it is handled elsewhere so that things will be able
-	// to move forward if things start to lag.
+		for (int i = num; i > 0; i--)
+		{
+			curMap->shiftCenter(p->getPlayerAnt());
+			stepEggsForward();
+		}
 
 	// process user input.
-	// TODO: if this is moved into the VBlank, will the input registers be valid?
-	// note: vBlank didn't work.
 	in->process();
 
 	// send everyone on their way.
 	stepAntsForward(num);
 	p->stepForward(num);
-
-/*
-	if( held & KEY_LEFT)
-	{
-		//p->moveLeft();
-		set_val(PLAYER_HELD_LEFT);
-		automove = false;
-	}
-	if( held & KEY_RIGHT)
-	{
-		//p->moveRight();
-		set_val(PLAYER_HELD_RIGHT);
-		automove = false;
-	}
-	if( held & KEY_UP)
-	{
-		//p->moveUp();
-		set_val(PLAYER_HELD_UP);
-		automove = false;
-	}
-	if( held & KEY_DOWN)
-	{
-		//p->moveDown();
-		set_val(PLAYER_HELD_DOWN);
-		automove = false;
-	}
-
-	// Pressing the D-Pad cancels automove.
-	// automove is set by touching an empty spot.
-	if (automove)
-	{
-		p->move();
-	}
-*/
-
 }
 
+// TODO: population ratio's (i.e. 50% workers, 30% breeders, 20% soldiers)
+// TODO: createRedAnt / createBlackAnt ?
+void GameWorld::createAnt( Patch* pat, int location )
+{
+		Ant *t = new WorkerAnt( pat, location);
+		t->setAction( ANT_ACTION_WANDER );
+		black.push_back(t);
+}
 
 void GameWorld::setProjection()
 {

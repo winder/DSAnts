@@ -27,6 +27,15 @@ void Player::stepForward(int num)
 		return;
 	}
 
+/*
+	// Pressing the D-Pad cancels automove.
+	// automove is set by touching an empty spot.
+	if (automove)
+	{
+		p->move();
+	}
+*/
+
 	// update the ants status (hp)
 	p->stateStep(num);
 }
@@ -212,13 +221,25 @@ void Player::update(int value)
 //		return;
 	}
 	if (value == PLAYER_HELD_LEFT)
+	{
 		moveLeft();
+//		automove = false;
+	}
 	else if (value == PLAYER_HELD_RIGHT)
+	{
 		moveRight();
+//		automove = false;
+	}
 	else if (value == PLAYER_HELD_UP)
+	{
 		moveUp();
+//		automove = false;
+	}
 	else if (value == PLAYER_HELD_DOWN)
+	{
 		moveDown();
+//		automove = false;
+	}
 }
 
 

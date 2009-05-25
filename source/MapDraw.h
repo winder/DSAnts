@@ -67,7 +67,7 @@ class MapDraw: public Map
 		float positionX(short x);
 		float positionY(short y);
 
-		void shiftCenter(Creature *p, int num);
+		void shiftCenter(Creature *p);
 
 		void beginQuads(){ glBegin(GL_QUADS); }
 		void end(){ glEnd(); }

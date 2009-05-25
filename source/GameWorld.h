@@ -75,8 +75,12 @@ class GameWorld: public Observer, public Subject
 
 		// Coordinates a step in the game.
 		void stepForward(int num);
+		void stepEggsForward();
 		// lets each ant know they can move forward one step.
 		void stepAntsForward(int num);
+
+		// Creates an ant based on population ratio settings.
+		void createAnt( Patch* pat, int location );
 
 		// Camera needs to set itself up.
 		void initCam(){	cam->init();
@@ -97,38 +101,31 @@ class GameWorld: public Observer, public Subject
 		void printDebugFiveLines();
 		// #endif
 	private:
-		int numAnts;
+		unsigned int numAnts;
+		unsigned short eggTimer;
+
+		// Player, Player Input, Input class, picking, touch-movement
 		// store the picked patch.
+		Player *p;
 		bool doPick;
 		Patch *picked;
 		bool automove;
-
-		// cache for if the input is new.
 		Input *in;
 
 		// GAMEWORLD_STATE_SURFACE, GAMEWORLD_STATE_UNDERGROUND
 		short STATE;
-		// should use polymorphism so that I don't have to do everything twice with
-		// underground and surface.
 		MapDraw* curMap;
 		Underground *ug;
 		Surface *surf;
 
-		Player *p;
 		// in most cases this will be true, but there may be cases where
 		// I want to follow something else (another ant, spider, etc).
 		bool followingPlayer;
-
-		std::vector<Ant*> black;
-		std::vector<Ant*> red;
-
 		// Camera
 		Camera *cam;
 
-		int held, pressed;
-		int touchX, touchY;
-		int oldX, oldY;
-		int curX, curY;
+		std::vector<Ant*> black;
+		std::vector<Ant*> red;
 };
 
 typedef Singleton<GameWorld> GameWorldSingleton; // global declaration

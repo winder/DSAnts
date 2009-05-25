@@ -61,7 +61,8 @@ class Grid
 		void takeObject(Patch* p);
 
 		// Keep STL structure abstracted from other classes.
-		//std::vector<Patch*> getCleared(){ return cleared; }
+		// sorry, I need it.
+		std::vector<Patch*> getCleared(){ return cleared; }
 		//std::vector<Patch*> getObjects(){ return objects; }
 
 		// number of ___'s
