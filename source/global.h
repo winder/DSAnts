@@ -45,7 +45,11 @@ enum PATCH_types
 	PATCH_FOOD8,
 	PATCH_FOOD9,
 	PATCH_FOOD10, // food stacks.
-	PATCH_EGG,
+	PATCH_EGG1,
+	PATCH_EGG2,
+	PATCH_EGG3,
+	PATCH_EGG4,
+	PATCH_EGG5,
 	PATCH_TOP,
 	// entrance to underground (hill)
 	PATCH_ENTRANCE

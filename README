@@ -12,7 +12,7 @@ Development process, Asterisk indicates complete:
 
 *1. Create the 2D underground world.
 *	- 2d
-*	- destrutable, player
+*	- destructable, player
 * - basic types:
 *		-Dirt
 *		-Empty
@@ -46,7 +46,7 @@ Development process, Asterisk indicates complete:
 		- Grid, patch knows when ant is on it
 		- Two ants per patch, if red + black ant, fight.
 
-6. A.I.
+5. A.I.
 	- Ant action AI's:
 *		-Wander
 *		-Queen, egg production
@@ -58,14 +58,16 @@ Development process, Asterisk indicates complete:
 *		-simple/random
 		-more interesting?
 
-7. Gameplay, 
+6. Gameplay, 
 	- Enemies (Pincer pit, spider, foot, lawnmower)
 	- Workers / Breeders / Soldiers
 	- Scores
 	- Ant combat.
+	- Win conditions
+	- levels
 
-8. Polish
-	- Terrain themes (outdoors, patio, kitchen, etc)
+7. Polish
+	- Terrain themes (outdoors, patio, kitchen, leg, etc)
 	- Object models:
 		-dirt
 		-barriers

@@ -73,12 +73,16 @@ GameWorld::~GameWorld()
 
 int GameWorld::pickup(int loc, Patch *pat)
 {
+	// If it is not something we can interact with, do not pick it up.
 	if (OBJECT(pat))
 	{
+		// Cache the patch's type, and remove it.
 		int savet = pat->TYPE;
 		getMap(loc)->getGrid()->takeObject( pat );
-		// TODO: special cases: PATCH_FOOD10 -> PATCH_FOOD
 
+		// Special handling for food Objects, if it is a stack of food objects,
+		// mark the patch as food - 1.
+		// TODO: can I assume the enums are declared incrementally?
 		if (FOODi(savet))
 		{
 			switch (savet)
@@ -192,7 +196,7 @@ bool GameWorld::drop(int loc, Patch* pat, int Ob)
 		}
 		return true;
 	}
-	// Dropping something with no special handling..
+	// Dropping anything with no special handling..
 	else if( EMPTY(pat) )
 	{
 		pat->TYPE = Ob;

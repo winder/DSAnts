@@ -10,7 +10,7 @@ void QueenAnt::stateStep(int num)
 		if (pat != '\0')
 		{
 			// lay egg.
-			pat->TYPE = PATCH_EGG;
+			pat->TYPE = PATCH_EGG1;
 			gestation = 0;
 		}
 	}

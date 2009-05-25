@@ -405,6 +405,11 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		StaticDraw::drawBox(x, y, 0, s, s, s, tm);
 		return;
 	}
+	else if (EGG(p))
+	{
+		drawEggPatch(x, y, p);
+		return;
+	}
 	else if (FOOD(p))
 	{
 		drawFoodPatch(x, y, p);
@@ -454,8 +459,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 		}
 		else
 		{
-		// TODO: call the empty surface method.
-			material(1,31,1); // make it easier to see ants...
+			material(31,31,31); // make it easier to see ants...
 			StaticDraw::drawRect(x, y, 0, s, s, tm);
 			return;
 		}
@@ -492,6 +496,43 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 	// for now, draw a box upon completion. each clause above will return early
 	// if it does its business.
 	StaticDraw::drawBox(x, y, 0, s*0.5, s*0.5, s*0.5, tm);
+}
+
+void MapDraw::drawEggPatch(float x, float y, Patch *p)
+{
+	// draw empty at bottom.
+	material(31,31,31);
+	StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+	material(25,21,18);
+	int factor = 1;
+	switch(p->TYPE)
+	{
+		case PATCH_EGG1 :
+			factor = 1;
+			break;
+
+		case PATCH_EGG2 :
+			factor = 2;
+			break;
+
+		case PATCH_EGG3 :
+			factor = 3;
+			break;
+
+		case PATCH_EGG4 :
+			factor = 4;
+			break;
+
+		case PATCH_EGG5 :
+			factor = 5;
+			break;
+
+		default:
+			factor = 1;
+			break;
+	}
+	
+	StaticDraw::drawBox(x, y, 0, (2+factor)*(MODEL_SCALE/10), (2+factor)*(MODEL_SCALE/6), (MODEL_SCALE/3), tm);
 }
 
 // This draws all the food types, the green cube is bigger depending
