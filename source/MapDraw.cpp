@@ -503,7 +503,7 @@ void MapDraw::drawEggPatch(float x, float y, Patch *p)
 	// draw empty at bottom.
 	material(31,31,31);
 	StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
-	material(25,21,18);
+	material(31,21,10);
 	int factor = 1;
 	switch(p->TYPE)
 	{

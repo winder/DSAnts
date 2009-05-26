@@ -93,6 +93,13 @@ bool Creature::handlePortal()
 	return false;
 }
 
+bool Creature::checkCollision(Patch* pat)
+{
+//	if (AVAILABLE_SPOT(pat))
+		return true;
+//	return false;
+}
+
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.
 // center the offending piece if they arne't 0.
 // I added a couple tweaks:
@@ -121,8 +128,15 @@ bool Creature::moveRight()
 	if (offsetX >= (ANIMATION_SIZE / 2))
 	{
 		offsetX=-1 * (ANIMATION_SIZE / 2);
-		p = Grid::getRight(p);
-		return true;
+		Patch* next = Grid::getRight(p);
+		// Check if there is an empty spot
+		if (checkCollision(next))
+		{
+			p = next;
+			return true;
+		}
+		else
+			return false;
 	}
 	return false;
 }
@@ -142,8 +156,15 @@ bool Creature::moveLeft()
 	if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
 	{
 		offsetX=(ANIMATION_SIZE / 2);
-		p = Grid::getLeft(p);
-		return true;
+		Patch* next = Grid::getLeft(p);
+		// Check if there is an empty spot
+		if (checkCollision(next))
+		{
+			p = next;
+			return true;
+		}
+		else
+			return false;
 	}
 	return false;
 }
@@ -162,8 +183,15 @@ bool Creature::moveUp()
 	if (offsetY >= (ANIMATION_SIZE / 2))
 	{
 		offsetY=-1 * (ANIMATION_SIZE / 2);
-		p = Grid::getUp(p);
-		return true;
+		Patch* next = Grid::getUp(p);
+		// Check if there is an empty spot
+		if (checkCollision(next))
+		{
+			p = next;
+			return true;
+		}
+		else
+			return false;
 	}
 	return false;
 }
@@ -183,8 +211,15 @@ bool Creature::moveDown()
 	if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
 	{
 		offsetY=(ANIMATION_SIZE / 2);
-		p = Grid::getDown(p);
-		return true;
+		Patch* next = Grid::getDown(p);
+		// Check if there is an empty spot
+		if (checkCollision(next))
+		{
+			p = next;
+			return true;
+		}
+		else
+			return false;
 	}
 	return false;
 }

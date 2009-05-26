@@ -4,7 +4,7 @@
 
 void QueenAnt::stateStep(int num)
 {
-	if (gestation >= GESTATION_PERIOD)
+	if ((gestation >= GESTATION_PERIOD) && getAI())
 	{
 		Patch* pat = findEmptyAdjacent();
 		if (pat != '\0')
@@ -21,9 +21,11 @@ void QueenAnt::stateStep(int num)
 void QueenAnt::moveAI()
 {
 	// TODO: make wander not go through portals.
-	if (findEmptyAdjacent() == '\0')
-//	if (gestation >= GESTATION_PERIOD)
+	if (gestation >= GESTATION_PERIOD)
 		wander();
+//	if (findEmptyAdjacent() == '\0')
+//	if (gestation >= GESTATION_PERIOD)
+//		wander();
 }
 
 // I'm seeing a lot of repeat code doing this, a helper function will reduce

@@ -23,7 +23,8 @@ class Creature
 		// If moving into a portal from any direction, need to handle it the same way.
 		// returns true if it needed to be handled and the move needed to be stopped.
 		virtual bool handlePortal();
-
+		virtual bool checkCollision(Patch* pat);
+//		virtual bool movePatch(Patch* from, Patch* to);
 		// This lets the ant move on its own accord, influenced by:
 		//		-feramone level of adjacent tiles
 		//		-current action

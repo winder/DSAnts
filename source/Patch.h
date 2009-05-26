@@ -2,6 +2,7 @@
 #define PATCH_H
 
 #include "global.h"
+//#include "Creature.h"
 
 
 // Simple generic functions:
@@ -9,22 +10,30 @@
 // them like this, but it could get confusing.
 // TODO: re-evaluate how I'm creating patch comparisons.
 
+// Can walk
 #define WALKABLE(X) WALKABLEi(X->TYPE)
 #define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || EGGi(X) || FOODi(X))
 
+// Is food
 #define FOOD(X) FOODi(X->TYPE)
 #define FOODi(X) ((X == PATCH_FOOD1) ||(X == PATCH_FOOD2) ||(X == PATCH_FOOD3) ||(X == PATCH_FOOD4) || (X == PATCH_FOOD5)\
  ||(X == PATCH_FOOD6) ||(X == PATCH_FOOD7) ||(X == PATCH_FOOD8) ||(X == PATCH_FOOD9) ||(X == PATCH_FOOD10))
 
+// Is an egg
 #define EGG(X) EGGi(X->TYPE)
 #define EGGi(X) ((X == PATCH_EGG1) ||(X == PATCH_EGG2) ||(X == PATCH_EGG3) ||(X == PATCH_EGG4) || (X == PATCH_EGG5))
 
+// Is an object
 #define OBJECT(X) OBJECTi(X->TYPE)
 #define OBJECTi(X) (FOODi(X) || EGGi(X))
 
+// Empty
 #define EMPTY(X) EMPTYi(X->TYPE)
 #define EMPTYi(X) ((X == PATCH_EMPTY))
 
+// Collision detection checks
+#define NOANTS(X) ((X->occupant_one == '\0') && (X->occupant_two == '\0'))
+#define AVAILABLE_SPOT(X) ((X->occupant_one == '\0') || (X->occupant_two == '\0'))
 
 struct Patch
 {
@@ -45,37 +54,9 @@ struct Patch
 	// Some patches have a 5th direction, where they portal to another map.
 	Patch *portal;
 
-// something like this will be useful at some point, these could be used as a TYPE though.
-//	Ant* occupant?
-//	bool occupied?
+	// Ants can walk over each other, but I don't want big piles.
+//	Creature* occupant_one;
+//	Creature* occupant_two;
 };
 
-/*
-class Patch
-{
-	public:
-		Patch(short s, short w, short d){ slice=s; width=w; depth=d; }
-		void setRight(Patch* p){ right = p; }
-		void setLeft(Patch* p){ left = p; }
-		void setTop(Patch* p){ top = p; }
-		void setBottom(Patch* p){ bottom = p; }
-		Patch* getRight(){ return right; }
-		Patch* getLeft(){ return left; }
-		Patch* getTop(){ return top; }
-		Patch* getBottom(){ return bottom; }
-
-		short getSlice(){ return slice; }
-		short getWidth(){ return width; }
-		short getDepth(){ return depth; }
-
-		virtual int getType(){ return PATCH; }
-
-	private:
-		Patch *left;
-		Patch *right;
-		Patch *top;
-		Patch *bottom;
-		short slice, width, depth;
-};
-*/
 #endif
