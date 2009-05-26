@@ -2,7 +2,8 @@
 #define PATCH_H
 
 #include "global.h"
-//#include "Creature.h"
+// Forward declaration of creature class, because the Patch has a pointer to them.
+class Creature;
 
 
 // Simple generic functions:
@@ -55,8 +56,8 @@ struct Patch
 	Patch *portal;
 
 	// Ants can walk over each other, but I don't want big piles.
-//	Creature* occupant_one;
-//	Creature* occupant_two;
+	Creature* occupant_one;
+	Creature* occupant_two;
 };
 
 #endif
