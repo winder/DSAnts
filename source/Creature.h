@@ -14,7 +14,7 @@ class Creature
     Creature(Patch* pat, int location);
 
     // TODO: this needs to clear out the ant-pointer in the patch upon deletion.
-    //~Creature();
+    ~Creature();
     // template class.
     virtual int getType() = 0;
 

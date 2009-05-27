@@ -454,8 +454,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
     // If the spot isn't empty, this is a dormant hole...
     // this will probably get confusing at some point, will need to always check
     // if portal->TYPE is empty or not.
-    //if (p->portal && p->portal->bottom && p->portal->bottom->TYPE != PATCH_EMPTY)
-    if (WALKABLE(p->portal))
+    if (EMPTY(p->portal))
     {
       material(1,1,1);
       StaticDraw::drawRect(x, y, 0, s, s, tm);

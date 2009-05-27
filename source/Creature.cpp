@@ -41,6 +41,11 @@ Creature::Creature(Patch* pat, int loc)
   hp = 1000;
 }
 
+Creature::~Creature()
+{
+  REMOVE_SPOT(p, this);
+}
+
 void Creature::pickup(Patch *p)
 {
   carrying = GameWorldSingleton::getInstance()->pickup(location, p);
@@ -113,11 +118,21 @@ bool Creature::checkCollision(Patch* pat)
 // Checks whether can move to the new patch (not full) and moves there.
 bool Creature::moveTo(Patch *pat)
 {
-//  p = pat;
-//  return true;
 
-// not sure whats wrong down there, but things are going crazy.
   bool t = false;
+
+  // This is what it looks like with macro's
+  if (AVAILABLE_SPOT(pat))
+  {
+    REMOVE_SPOT(p, this)
+    SET_SPOT(pat, this);
+
+    t = true;
+    // move old spot to new spot.
+    p = pat;
+  }
+/*
+  // this is what it looks like manually.
   if (pat->occupant_one == '\0')
   {
     pat->occupant_one = this;
@@ -128,7 +143,8 @@ bool Creature::moveTo(Patch *pat)
     pat->occupant_two = this;
     t = true;
   }
-
+*/
+/*
   // remove the old spot, move the new spot forward.
   if (t)
   {
@@ -145,17 +161,7 @@ bool Creature::moveTo(Patch *pat)
     // move old spot to new spot.
     p = pat;
   }
-
-  if (t == false)
-{
-printf("!");
-    failCount++;// = 0;
-}
-  if (failCount > 100)
-  {
-    failCount=0;
-    setAI(true);
-  }
+*/
 
   return t;
 }
