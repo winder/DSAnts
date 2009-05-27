@@ -34,7 +34,18 @@ class Creature;
 
 // Collision detection checks
 #define NOANTS(X) ((X->occupant_one == '\0') && (X->occupant_two == '\0'))
+
 #define AVAILABLE_SPOT(X) ((X->occupant_one == '\0') || (X->occupant_two == '\0'))
+
+#define AVAILABLE_SPOT_ONE(X) (X->occupant_one == '\0')
+#define SET_SPOT_ONE(X, Y) (X->occupant_one = Y)
+
+#define AVAILABLE_SPOT_TWO(X) (X->occupant_two == '\0')
+#define SET_SPOT_TWO(X, Y) (X->occupant_two = Y)
+
+#define SPOT_ONE_IS(X, Y) (X->occupant_one == Y)
+#define SPOT_TWO_IS(X, Y) (X->occupant_two == Y)
+
 
 struct Patch
 {

@@ -26,6 +26,7 @@ Creature::Creature(Patch* pat, int loc)
 	offsetY = 0;
 	directionX = 0;
 	directionY = 20;
+	// what if pat already has 2 ants?  ant pile on pat until they move outta the way I guess.
 	p=pat;
 	portaled = false;
 	carrying = NOTHING;
@@ -79,9 +80,9 @@ bool Creature::handlePortal()
 			return false;
 		}
 
-		if (!portaled && p->portal && WALKABLE(p->portal))
+		if (!portaled && p->portal && WALKABLE(p->portal) && moveTo(p->portal))
 		{
-			p = p->portal;
+//			p = p->portal;
 
 			offsetX=0;
 			offsetY=0;
@@ -95,9 +96,44 @@ bool Creature::handlePortal()
 
 bool Creature::checkCollision(Patch* pat)
 {
-//	if (AVAILABLE_SPOT(pat))
+	if (AVAILABLE_SPOT(pat))
 		return true;
-//	return false;
+	return false;
+}
+
+// TODO: might want to have this always return true so the ant will turn around
+// if there is a barricade.
+// Checks whether can move to the new patch (not full) and moves there.
+bool Creature::moveTo(Patch *pat)
+{
+	p = pat;
+	return true;
+	
+	bool t = false;
+	if (AVAILABLE_SPOT_ONE(pat))
+	{
+		SET_SPOT_ONE(pat, this);
+		t = true;
+	}
+	else if (AVAILABLE_SPOT_TWO(pat))
+	{
+		SET_SPOT_TWO(pat, this);
+		t = true;
+	}
+
+	// remove the old spot, move the new spot forward.
+	if (t)
+	{
+		// clear out the old spot.
+		if (SPOT_ONE_IS(p, this))
+			SET_SPOT_ONE(p, '\0');
+		else if (SPOT_TWO_IS(p, this))
+			SET_SPOT_TWO(p, '\0');
+
+		// move old spot to new spot.
+		p = pat;
+	}
+	return false;
 }
 
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.
@@ -130,9 +166,9 @@ bool Creature::moveRight()
 		offsetX=-1 * (ANIMATION_SIZE / 2);
 		Patch* next = Grid::getRight(p);
 		// Check if there is an empty spot
-		if (checkCollision(next))
+		if (moveTo(next))
 		{
-			p = next;
+//			p = next;
 			return true;
 		}
 		else
@@ -158,9 +194,9 @@ bool Creature::moveLeft()
 		offsetX=(ANIMATION_SIZE / 2);
 		Patch* next = Grid::getLeft(p);
 		// Check if there is an empty spot
-		if (checkCollision(next))
+		if (moveTo(next))//checkCollision(next))
 		{
-			p = next;
+//			p = next;
 			return true;
 		}
 		else
@@ -185,9 +221,9 @@ bool Creature::moveUp()
 		offsetY=-1 * (ANIMATION_SIZE / 2);
 		Patch* next = Grid::getUp(p);
 		// Check if there is an empty spot
-		if (checkCollision(next))
+		if (moveTo(next))//checkCollision(next))
 		{
-			p = next;
+//			p = next;
 			return true;
 		}
 		else
@@ -213,9 +249,9 @@ bool Creature::moveDown()
 		offsetY=(ANIMATION_SIZE / 2);
 		Patch* next = Grid::getDown(p);
 		// Check if there is an empty spot
-		if (checkCollision(next))
+		if (moveTo(next))//checkCollision(next))
 		{
-			p = next;
+//			p = next;
 			return true;
 		}
 		else

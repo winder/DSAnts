@@ -11,6 +11,8 @@ class Creature
 		Creature();
 		Creature(Patch* pat, int location);
 
+		// TODO: this needs to clear out the ant-pointer in the patch upon deletion.
+		//~Creature();
 		// template class.
 		virtual int getType() = 0;
 
@@ -24,7 +26,7 @@ class Creature
 		// returns true if it needed to be handled and the move needed to be stopped.
 		virtual bool handlePortal();
 		virtual bool checkCollision(Patch* pat);
-//		virtual bool movePatch(Patch* from, Patch* to);
+		virtual bool moveTo(Patch* pat);
 		// This lets the ant move on its own accord, influenced by:
 		//		-feramone level of adjacent tiles
 		//		-current action
