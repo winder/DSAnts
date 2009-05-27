@@ -9,12 +9,13 @@ Creature::Creature()
 	directionX = 0;
 	directionY = 20;
 	portaled = false;
+	failCount = 0;
 	carrying = NOTHING;
 	ai = true;
 	ACTION=0;
 	direction=-1;
 	directionOld=-1;
-	takePortals=false;
+	takePortals=true;
 
 	hp = 1000;
 }
@@ -29,12 +30,13 @@ Creature::Creature(Patch* pat, int loc)
 	// what if pat already has 2 ants?  ant pile on pat until they move outta the way I guess.
 	p=pat;
 	portaled = false;
+	failCount = 0;
 	carrying = NOTHING;
 	ai = true;
 	ACTION=0;
 	direction=-1;
 	directionOld=-1;
-	takePortals=false;
+	takePortals=true;
 
 	hp = 1000;
 }
@@ -79,9 +81,14 @@ bool Creature::handlePortal()
 			portaled = false;
 			return false;
 		}
-
-		if (!portaled && p->portal && WALKABLE(p->portal) && moveTo(p->portal))
+		if (!portaled && p->portal && WALKABLE(p->portal))
 		{
+			// if try & fail to go through portal, try again.
+			if (!moveTo(p->portal))
+			{
+				portaled = false;
+				return false;
+			}
 //			p = p->portal;
 
 			offsetX=0;
@@ -106,40 +113,49 @@ bool Creature::checkCollision(Patch* pat)
 // Checks whether can move to the new patch (not full) and moves there.
 bool Creature::moveTo(Patch *pat)
 {
-	p = pat;
-	return true;
+//	p = pat;
+//	return true;
 
 // not sure whats wrong down there, but things are going crazy.
 	bool t = false;
-	if (AVAILABLE_SPOT_ONE(pat))
+	if (pat->occupant_one == '\0')
 	{
-		SET_SPOT_ONE(pat, this);
+		pat->occupant_one = this;
 		t = true;
 	}
-	else if (AVAILABLE_SPOT_TWO(pat))
+	else if (pat->occupant_two == '\0')
 	{
-		SET_SPOT_TWO(pat, this);
+		pat->occupant_two = this;
 		t = true;
 	}
 
 	// remove the old spot, move the new spot forward.
 	if (t)
 	{
-//		if (p->occupant_one == this)
-//			p->occupant_one = '\0';
-//		else if (p->occupant_two == this)
-//			p->occupant_two = '\0';
+		if (p->occupant_one == this)
+			p->occupant_one = '\0';
+		else if (p->occupant_two == this)
+			p->occupant_two = '\0';
 		// clear out the old spot.
-		if (SPOT_ONE_IS(p, this))
-			SET_SPOT_ONE(p, '\0');
-		else if (SPOT_TWO_IS(p, this))
-			SET_SPOT_TWO(p, '\0');
+//		if (SPOT_ONE_IS(p, this))
+//			SET_SPOT_ONE(p, '\0');
+//		else if (SPOT_TWO_IS(p, this))
+//			SET_SPOT_TWO(p, '\0');
 
 		// move old spot to new spot.
 		p = pat;
 	}
-	else
+
+	if (t == false)
+{
+printf("!");
+		failCount++;// = 0;
+}
+	if (failCount > 100)
+	{
+		failCount=0;
 		setAI(true);
+	}
 
 	return t;
 }
@@ -179,8 +195,11 @@ bool Creature::moveRight()
 //			p = next;
 			return true;
 		}
-		else
-			return false;
+//		else
+//		{
+//			offsetX = (ANIMATION_SIZE / 2) - 1;
+//			return false;
+//		}
 	}
 	return false;
 }
@@ -207,8 +226,11 @@ bool Creature::moveLeft()
 //			p = next;
 			return true;
 		}
-		else
-			return false;
+//		else
+//		{
+//			offsetX = ((ANIMATION_SIZE / 2) - 1)*-1;
+//			return false;
+//		}
 	}
 	return false;
 }
@@ -234,8 +256,11 @@ bool Creature::moveUp()
 //			p = next;
 			return true;
 		}
-		else
-			return false;
+//		else
+//		{
+//			offsetY = (ANIMATION_SIZE / 2) - 1;
+//			return false;
+//		}
 	}
 	return false;
 }
@@ -244,7 +269,7 @@ bool Creature::moveDown()
 {
 	if (handlePortal()) return true;
 
-	if ((offsetY <= 0) && !WALKABLE(p->bottom)) return true;
+	if ((offsetY <= 0) && !WALKABLE(p->bottom)) return false;
 
 	// Prevent player from going in a weird direction if that way is blocked.
 	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom && !WALKABLE(p->bottom->right)))	decrementOffsetX();
@@ -262,8 +287,11 @@ bool Creature::moveDown()
 //			p = next;
 			return true;
 		}
-		else
-			return false;
+//		else
+//		{
+//			offsetY = ((ANIMATION_SIZE / 2) - 1) * -1;
+//			return false;
+//		}
 	}
 	return false;
 }
@@ -284,10 +312,6 @@ void Creature::stateStep(int num)
 
 	if ((hp < 10) && FOODi(carrying))
 		use();
-
-	// if they are dead, no longer move.
-	if (hp <= 0)
-		return;
 }
 
 // because of tile changes/animation, need to call move multiple times or the move
@@ -301,7 +325,8 @@ void Creature::move(int num)
 void Creature::move()
 {
 	// they are dead.  will be deleted from the list at some interval.
-	if (hp <= 0) return;
+//	if (hp <= 0) return;
+
 	// Run without checking, AI figured everything out until the tile changes.
 	if (!getAI())
 	{
@@ -520,3 +545,22 @@ void Creature::decrementOffsetY()
 
 	clampDirections();
 }
+
+//#ifdef __DEBUG
+void Creature::printDebug()
+{
+	printf("AI (");
+	if (ai)
+		printf("X)");
+	else
+		printf(" )");
+
+	printf(" failcount(%i)", failCount);
+	printf("\n portaled(");
+	if (portaled)
+		printf("X)");
+	else
+		printf(" )");
+	
+}
+//#endif

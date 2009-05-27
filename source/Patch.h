@@ -12,7 +12,7 @@ class Creature;
 // TODO: re-evaluate how I'm creating patch comparisons.
 
 // Can walk
-#define WALKABLE(X) WALKABLEi(X->TYPE)
+#define WALKABLE(X) (WALKABLEi(X->TYPE) && AVAILABLE_SPOT(X))
 #define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || EGGi(X) || FOODi(X))
 
 // Is food

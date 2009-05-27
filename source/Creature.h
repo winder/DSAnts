@@ -3,7 +3,9 @@
 
 #include "Patch.h"
 #include "Grid.h"
+//#ifdef __DEBUG
 #include <stdio.h>
+//#endif
 
 class Creature
 {
@@ -82,6 +84,9 @@ class Creature
 		inline bool getTakePortals(){ return takePortals; }
 		inline void setTakePortals(bool tp){ takePortals = tp; }
 
+		//#ifdef __DEBUG
+		void printDebug();
+		//#endif
 	private:
 		// these are used to change offsetX / offsetY and keep the direction correct.
 		void incrementOffsetX();
@@ -118,6 +123,8 @@ class Creature
 		bool portaled;
 		// if false, will not go through portals.
 		bool takePortals;
+		// collision counter.  If collide too many times look for another direction.
+		short failCount;
 
 		// The offset within the patch
 		short offsetX;

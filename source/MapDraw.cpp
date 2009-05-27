@@ -193,7 +193,12 @@ bool MapDraw::drawAnt(Creature* a, bool animate)
 {
 	// top-right - white
 	tm->nextTexture(1);
-	material(3,3,3);
+
+	// ant dead?
+	if (a->getHP() <= 0)
+		material( 15,10,10 );
+	else
+		material(3,3,3);
 
 	// exit early if not visible.
 	if (! isVisible(a->getX(), a->getY()))

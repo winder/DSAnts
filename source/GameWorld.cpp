@@ -458,6 +458,37 @@ void GameWorld::printDebugFiveLines()
 //	printf("\nTouch coord: (%i, %i)", curX, curY);
 	p->printDebug();
 
+	if (picked)
+	{
+		printf("\nPatch:");
+
+	  printf("\n Occupants: ");
+		if (picked->occupant_one)
+			printf("one(X) ");
+		else
+			printf("one( ) ");
+
+		if (picked->occupant_two)
+			printf("two(X) ");
+		else
+			printf("two( ) ");
+
+		printf("\n portal: ");
+		if (picked->portal)
+			printf("X");
+
+
+		if (picked->occupant_one)
+		{
+			printf("\n one: \n");
+			picked->occupant_one->printDebug();
+		}
+		if (picked->occupant_two)
+		{
+			printf("\n two: \n");
+			picked->occupant_two->printDebug();
+		}
+	}
 
 }
 //#endif

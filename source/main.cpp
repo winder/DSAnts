@@ -251,17 +251,17 @@ int main()
 		consoleClear();
 		printf("My variables:\n");
 
-		printf("\n\nMemory Statistics:");
+		printf("\nMemory Statistics:");
 		printf("\n\tTotal mem: %i", getMemUsed() + getMemFree());
 		float pc_free = (float)getMemFree() / (float)(getMemUsed()+getMemFree()) * 100.0;
 		float pc_used = (float)getMemUsed() / (float)(getMemUsed()+getMemFree()) * 100.0;
 		printf("\n\tMem Used: %i (%.1f%%)", getMemUsed(), pc_used);
 		printf("\n\tMem Free: %i (%.1f%%)", getMemFree(), pc_free);
 //		printf("\n\nCPU Percent for drawing: %i%", cpu_percent);
-		printf("\n\n");
+		printf("\n");
 		PrintMemoryStatistics();
-		printf("\nVideo info: Vert Ram = %i", vertex_count);
-		printf("\n            Poly Count = %i", polygon_count);
+//		printf("\nVideo info: Vert Ram = %i", vertex_count);
+//		printf("\n            Poly Count = %i", polygon_count);
 		gw->printDebugFiveLines();
 
 		printf("\n FPS: %i", frameold);
