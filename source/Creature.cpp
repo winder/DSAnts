@@ -108,7 +108,8 @@ bool Creature::moveTo(Patch *pat)
 {
 	p = pat;
 	return true;
-	
+
+// not sure whats wrong down there, but things are going crazy.
 	bool t = false;
 	if (AVAILABLE_SPOT_ONE(pat))
 	{
@@ -124,6 +125,10 @@ bool Creature::moveTo(Patch *pat)
 	// remove the old spot, move the new spot forward.
 	if (t)
 	{
+//		if (p->occupant_one == this)
+//			p->occupant_one = '\0';
+//		else if (p->occupant_two == this)
+//			p->occupant_two = '\0';
 		// clear out the old spot.
 		if (SPOT_ONE_IS(p, this))
 			SET_SPOT_ONE(p, '\0');
@@ -133,7 +138,10 @@ bool Creature::moveTo(Patch *pat)
 		// move old spot to new spot.
 		p = pat;
 	}
-	return false;
+	else
+		setAI(true);
+
+	return t;
 }
 
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.
@@ -163,11 +171,11 @@ bool Creature::moveRight()
 	// if we are half way towards the next way, swap to the next one.
 	if (offsetX >= (ANIMATION_SIZE / 2))
 	{
-		offsetX=-1 * (ANIMATION_SIZE / 2);
 		Patch* next = Grid::getRight(p);
 		// Check if there is an empty spot
 		if (moveTo(next))
 		{
+			offsetX=-1 * (ANIMATION_SIZE / 2);
 //			p = next;
 			return true;
 		}
@@ -191,11 +199,11 @@ bool Creature::moveLeft()
 		decrementOffsetX();
 	if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
 	{
-		offsetX=(ANIMATION_SIZE / 2);
 		Patch* next = Grid::getLeft(p);
 		// Check if there is an empty spot
 		if (moveTo(next))//checkCollision(next))
 		{
+			offsetX=(ANIMATION_SIZE / 2);
 //			p = next;
 			return true;
 		}
@@ -218,11 +226,11 @@ bool Creature::moveUp()
 		incrementOffsetY();
 	if (offsetY >= (ANIMATION_SIZE / 2))
 	{
-		offsetY=-1 * (ANIMATION_SIZE / 2);
 		Patch* next = Grid::getUp(p);
 		// Check if there is an empty spot
 		if (moveTo(next))//checkCollision(next))
 		{
+			offsetY=-1 * (ANIMATION_SIZE / 2);
 //			p = next;
 			return true;
 		}
@@ -246,11 +254,11 @@ bool Creature::moveDown()
 
 	if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
 	{
-		offsetY=(ANIMATION_SIZE / 2);
 		Patch* next = Grid::getDown(p);
 		// Check if there is an empty spot
 		if (moveTo(next))//checkCollision(next))
 		{
+			offsetY=(ANIMATION_SIZE / 2);
 //			p = next;
 			return true;
 		}
