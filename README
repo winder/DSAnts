@@ -20,60 +20,78 @@ Development process, Asterisk indicates complete:
 *		-Barrier
 
 
-2. Create basics
+*2. Create basics
 *	- Player
 *	- Ants
 *	- Basic AI
 *	- Camera following
-	- Player control
+*	- Player control
 *		- D-Pad
 *		- Touch, simple (broke this after I made the surface.
-		- Touch, dijkstra
+/		- Touch, dijkstra
 
 *3. Create surface world
 *	- Link to underground
 *	- Objects (Rocks, Food), carryable by Player / Ants
 *	-	Object spawns (food on surface).
 
-4. Basic ant functions
+*4. Basic ant functions
 *	- hp / death
-	- extended statistics (not sure what these are)
+/ not sure for now	- extended statistics (not sure what these are)
 *	- Food / Eating
 *	- Pickup / Drop logic (i.e. stacks of food)
 *	-	Queen / Egg production
 *	- Egg / Hatch (i.e. Game loop that checks underground for growing eggs.)
-	- Collision detection
-		- Grid, patch knows when ant is on it
-		- Two ants per patch, if red + black ant, fight.
+*	- Collision detection (Grid, patch knows when ant is on it
 
 5. A.I.
 	- Ant action AI's:
 *		-Wander
 *		-Queen, egg production
 		-Forage
-		-Attack
+		-Attack (patch knows who is on it, if red + black ant, fight).
 		-Defend
+		-Follow (player, etc?)
 		-???
-	- Base design
+	- Tunnel design
 *		-simple/random
 		-more interesting?
 
 6. Gameplay, 
-	- Enemies (Pincer pit, spider, foot, lawnmower)
-	- Workers / Breeders / Soldiers
+	- Enemy Creatures
+		- spider
+		- worm
+		- pill bug
+		- pit bug
+	- Enemy Events
+		- foot
+		- lawnmower
+	- Ant Types / stats / AI
+		- Worker
+		- Breeder
+		- Soldiers
+		- Queen
 	- Scores
 	- Ant combat.
 	- Win conditions
 	- levels
 
 7. Polish
-	- Terrain themes (outdoors, patio, kitchen, leg, etc)
+	- Terrain themes / textures (outdoors, patio, kitchen, leg, etc)
 	- Object models:
 		-dirt
 		-barriers
 		-???
 	- Sound Effects
 	- Background Music
+
+8. Wants
+	- 3D surface (tiles have a height)
+		- this would require an extra rotation for objects drawn on the
+			surface, so that they are parallel to the ground.
+	- 3D surface objects
+		-grass that goes up into camera
+		-rocks that join with adjacent rocks to make a big rock.
 
 
 NOTE: The below was determined to be too much work for too little reward,
