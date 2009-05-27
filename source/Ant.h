@@ -5,10 +5,10 @@
 
 class Ant: public Creature
 {
-	public:
-		Ant():Creature(){};
-		Ant(Patch *pat, int location):Creature(pat, location){};
-		virtual int getType() = 0;
+  public:
+    Ant():Creature(){};
+    Ant(Patch *pat, int location):Creature(pat, location){};
+    virtual int getType() = 0;
 
 
 

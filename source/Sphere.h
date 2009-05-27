@@ -3,10 +3,10 @@
 
 class Sphere
 {
-	public:
-		Sphere(){ computePoints(); }
+  public:
+    Sphere(){ computePoints(); }
 
-		void computePoints(){}
+    void computePoints(){}
 };
 
 #endif

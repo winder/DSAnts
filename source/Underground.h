@@ -7,24 +7,24 @@
 
 class Underground: public MapDraw
 {
-	public:
-		// This is structured to make a tunnel.  Need to change it to allow
-		// surface maps as well.
-		// TODO: this will need to be slightly restructured to allow multiple nests
-		//				so that a huge chunk of memory for multiple "Grid's" will not
-		//				be needed.
-		Underground();
-		virtual ~Underground(){ /* superclass destructure deletes */}
+  public:
+    // This is structured to make a tunnel.  Need to change it to allow
+    // surface maps as well.
+    // TODO: this will need to be slightly restructured to allow multiple nests
+    //        so that a huge chunk of memory for multiple "Grid's" will not
+    //        be needed.
+    Underground();
+    virtual ~Underground(){ /* superclass destructure deletes */}
 
-		virtual void initGrid();
+    virtual void initGrid();
 
-		// Adds an ant in a random location.
-//		void addAnt(Ant *a);
+    // Adds an ant in a random location.
+//    void addAnt(Ant *a);
 
-//		void addAnt(Ant *a, int x, int y);
+//    void addAnt(Ant *a, int x, int y);
 
-	private:
-		int tunnelSize;
+  private:
+    int tunnelSize;
 };
 
 #endif

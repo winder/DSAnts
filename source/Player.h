@@ -11,82 +11,82 @@
 // This class handles player interactions with the game world
 class Player: public Subject, public Observer
 {
-	public:
-		Player();
-		Player(Ant *ip);
+  public:
+    Player();
+    Player(Ant *ip);
 
-		~Player();
+    ~Player();
 
-		// Handle game state things.
-		void stepForward(int num);
+    // Handle game state things.
+    void stepForward(int num);
 
-		// this will probably only be called from GameWorld, the player ant will need
-		// to be removed from whatever list it was taken out of to prevent duplicate drawings.
-		// (Or maybe a flag in the ant for if its a player, like setting the AI bool to false)
-		void setPlayerAnt(Ant *inp){ p = inp; }
-		Ant* getPlayerAnt(){ return p; }
+    // this will probably only be called from GameWorld, the player ant will need
+    // to be removed from whatever list it was taken out of to prevent duplicate drawings.
+    // (Or maybe a flag in the ant for if its a player, like setting the AI bool to false)
+    void setPlayerAnt(Ant *inp){ p = inp; }
+    Ant* getPlayerAnt(){ return p; }
 
-		// Recursive function will be needed here, shouldn't be too bad for memory
-		// since a visible screen is only ~20x20
-		void setDestination(int x, int y);
+    // Recursive function will be needed here, shouldn't be too bad for memory
+    // since a visible screen is only ~20x20
+    void setDestination(int x, int y);
 
-		// manual movement:
-		// If the player moves to the next tile notify observers.
-		void moveUp()
-			{
-				for(int i=statespeed; i>0; i--)
-					p->moveUp();
-				set_val(PLAYER_MOVE_UP);
-			}
-		void moveDown()
-			{
-				for(int i=statespeed; i>0; i--)
-					p->moveDown();
-				set_val(PLAYER_MOVE_DOWN);
-			}
-		void moveLeft()
-			{
-				for(int i=statespeed; i>0; i--)
-					p->moveLeft();
-				set_val(PLAYER_MOVE_LEFT);
-			}
-		void moveRight()
-			{
-				for(int i=statespeed; i>0; i--)
-					p->moveRight();
-				set_val(PLAYER_MOVE_RIGHT);
-			}
+    // manual movement:
+    // If the player moves to the next tile notify observers.
+    void moveUp()
+      {
+        for(int i=statespeed; i>0; i--)
+          p->moveUp();
+        set_val(PLAYER_MOVE_UP);
+      }
+    void moveDown()
+      {
+        for(int i=statespeed; i>0; i--)
+          p->moveDown();
+        set_val(PLAYER_MOVE_DOWN);
+      }
+    void moveLeft()
+      {
+        for(int i=statespeed; i>0; i--)
+          p->moveLeft();
+        set_val(PLAYER_MOVE_LEFT);
+      }
+    void moveRight()
+      {
+        for(int i=statespeed; i>0; i--)
+          p->moveRight();
+        set_val(PLAYER_MOVE_RIGHT);
+      }
 
-		// Player interaction with the world: dig dirt, pickup objects, drop objects.
-		Patch* dig();
-		Patch* pickUp();
-		Patch* drop();
-		// returns what action the object was used for.
-		int use();
+    // Player interaction with the world: dig dirt, pickup objects, drop objects.
+    Patch* dig();
+    Patch* pickUp();
+    Patch* drop();
+    // returns what action the object was used for.
+    int use();
 
-		// auto movement:
-		void move();
+    // auto movement:
+    void move();
 
-		// the observer method.
-		void update(int value);
+    // the observer method.
+    void update(int value);
 
 //#ifdef __DEBUG_
-		void printDebug();
+    void printDebug();
 //#endif
-	private:
-		// helper function, check if a patch adjacent to the ant is picked.
-		Patch* adjacentPatchPicked();
+  private:
+    // helper function, check if a patch adjacent to the ant is picked.
+    Patch* adjacentPatchPicked();
 
-		// The player is an ant.  This ant is the player.
-		Ant *p;
+    // The player is an ant.  This ant is the player.
+    Ant *p;
 
-		// destination to move in.
-		int destX, destY;
-		bool stuck;
-		short direction;
-		short directionX, directionY;
+    // destination to move in.
+    int destX, destY;
+    bool stuck;
+    short direction;
+    short directionX, directionY;
 
-		short statespeed;
+    short statespeed;
 };
 
 #endif

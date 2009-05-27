@@ -24,108 +24,108 @@
 #include <stdio.h>
 //#endif
 #ifdef __PROFILING
-	#include "cyg-profile.h"
+  #include "cyg-profile.h"
 #endif
 
 // TODO: this class would make more sense as a "GameSquare" if I decide to go
-//			 the original SimAnt route and have multiple colonies spanning a grid.
+//       the original SimAnt route and have multiple colonies spanning a grid.
 // TODO: this class should be broken apart from all the camera and other crap
-//			 I stuck in here, those should go somewhere else and use this class to
-//			 get needed info.
+//       I stuck in here, those should go somewhere else and use this class to
+//       get needed info.
 
 // This class is designed to hold all the pieces of the world together.
 // Major pieces include:
-//			Underground / Surface world information.
-//			Creature (black/red ants, spiders, pill bugs, etc) information.
-//			Object (Food, eggs, rocks, etc) information.
+//      Underground / Surface world information.
+//      Creature (black/red ants, spiders, pill bugs, etc) information.
+//      Object (Food, eggs, rocks, etc) information.
 class GameWorld: public Observer, public Subject
 {
-	public:
-		GameWorld();
-		~GameWorld();
+  public:
+    GameWorld();
+    ~GameWorld();
 
- 		// Modifies the patch, picks up the object and returns it.
- 		int pickup(int loc, Patch* pat);
-		bool drop(int loc, Patch* pat, int Ob);
+     // Modifies the patch, picks up the object and returns it.
+     int pickup(int loc, Patch* pat);
+    bool drop(int loc, Patch* pat, int Ob);
 
- 		MapDraw* getMap(int st)
- 		{	
- 			if (STATE == GAMEWORLD_STATE_UNDERGROUND)
- 				return ug;
- 			else if (STATE == GAMEWORLD_STATE_SURFACE)
- 				return surf;
- 			//else if (STATE == GAMEWORLD_STATE_ENEMY_UNDERGROUND)
- 			//	return eug;
-			else
-				return '\0';
- 		}
+     MapDraw* getMap(int st)
+     {  
+       if (STATE == GAMEWORLD_STATE_UNDERGROUND)
+         return ug;
+       else if (STATE == GAMEWORLD_STATE_SURFACE)
+         return surf;
+       //else if (STATE == GAMEWORLD_STATE_ENEMY_UNDERGROUND)
+       //  return eug;
+      else
+        return '\0';
+     }
 
-		// Link the surface with the underground.
-		void linkSurfaceAndUnderground();
+    // Link the surface with the underground.
+    void linkSurfaceAndUnderground();
 
-		void changeState(int st){ STATE = st; }
+    void changeState(int st){ STATE = st; }
 
-		// tell classes to draw themselves
-		void draw();
-		void pickPoint(short x, short y);
+    // tell classes to draw themselves
+    void draw();
+    void pickPoint(short x, short y);
 
-		// getters
-		Underground* getUG(){ return ug; }
-		Surface* getSurface(){ return surf; }
+    // getters
+    Underground* getUG(){ return ug; }
+    Surface* getSurface(){ return surf; }
 
-		// Coordinates a step in the game.
-		void stepForward(int num);
-		void stepEggsForward();
-		// lets each ant know they can move forward one step.
-		void stepAntsForward(int num);
+    // Coordinates a step in the game.
+    void stepForward(int num);
+    void stepEggsForward();
+    // lets each ant know they can move forward one step.
+    void stepAntsForward(int num);
 
-		// Creates an ant based on population ratio settings.
-		void createAnt( Patch* pat, int location );
+    // Creates an ant based on population ratio settings.
+    void createAnt( Patch* pat, int location );
 
-		// Camera needs to set itself up.
-		void initCam(){	cam->init();
-									cam->translateZinc(2.0); }
-		void initTex()
-			{//	ug->setTextures(tex);
-				// surf->setTextures(tex); }
-				ug->initTextures();
-				surf->setTextures( ug->getTextures() ); }
+    // Camera needs to set itself up.
+    void initCam(){  cam->init();
+                  cam->translateZinc(2.0); }
+    void initTex()
+      {//  ug->setTextures(tex);
+        // surf->setTextures(tex); }
+        ug->initTextures();
+        surf->setTextures( ug->getTextures() ); }
 
-		void placeCamera(){ cam->render(); }
-		void setProjection();
+    void placeCamera(){ cam->render(); }
+    void setProjection();
 
-		// Event handling: Observer implementation:
-		virtual void update(int value);
-		
-		// #ifdef __DEBUG_
-		void printDebugFiveLines();
-		// #endif
-	private:
-		unsigned int numAnts;
-		unsigned short eggTimer;
+    // Event handling: Observer implementation:
+    virtual void update(int value);
+    
+    // #ifdef __DEBUG_
+    void printDebugFiveLines();
+    // #endif
+  private:
+    unsigned int numAnts;
+    unsigned short eggTimer;
 
-		// Player, Player Input, Input class, picking, touch-movement
-		// store the picked patch.
-		Player *p;
-		bool doPick;
-		Patch *picked;
-		bool automove;
-		Input *in;
+    // Player, Player Input, Input class, picking, touch-movement
+    // store the picked patch.
+    Player *p;
+    bool doPick;
+    Patch *picked;
+    bool automove;
+    Input *in;
 
-		// GAMEWORLD_STATE_SURFACE, GAMEWORLD_STATE_UNDERGROUND
-		short STATE;
-		MapDraw* curMap;
-		Underground *ug;
-		Surface *surf;
+    // GAMEWORLD_STATE_SURFACE, GAMEWORLD_STATE_UNDERGROUND
+    short STATE;
+    MapDraw* curMap;
+    Underground *ug;
+    Surface *surf;
 
-		// in most cases this will be true, but there may be cases where
-		// I want to follow something else (another ant, spider, etc).
-		bool followingPlayer;
-		// Camera
-		Camera *cam;
+    // in most cases this will be true, but there may be cases where
+    // I want to follow something else (another ant, spider, etc).
+    bool followingPlayer;
+    // Camera
+    Camera *cam;
 
-		std::vector<Ant*> black;
-		std::vector<Ant*> red;
+    std::vector<Ant*> black;
+    std::vector<Ant*> red;
 };
 
 typedef Singleton<GameWorld> GameWorldSingleton; // global declaration
