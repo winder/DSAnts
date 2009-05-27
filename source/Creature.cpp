@@ -175,7 +175,7 @@ bool Creature::moveRight()
 	if (handlePortal()) return true;
 
 	// don't move right if the ant is in the right spot isn't empty.
-	if ((offsetX >= 0) && !WALKABLE(p->right)) return false;
+	if ((offsetX >= 0) && !WALKABLE(p->right)) return true;
 
 	// if Y is off center, the way is not empty, and we're well on our way to the next
 	// spot, move towards center Y.
@@ -209,7 +209,7 @@ bool Creature::moveLeft()
 	if (handlePortal()) return true;
 
 	// if able to move right...
-	if ((offsetX <= 0) && !WALKABLE(p->left)) return false;
+	if ((offsetX <= 0) && !WALKABLE(p->left)) return true;
 
 	// only move left if Y is centered.
 	if			((offsetX <= 0) && (offsetY > 0) && (p->left && !WALKABLE(p->left->top))) 		decrementOffsetY();
@@ -239,7 +239,7 @@ bool Creature::moveUp()
 {
 	if (handlePortal()) return true;
 
-	if ((offsetY >= 0) && !WALKABLE(p->top)) return false;
+	if ((offsetY >= 0) && !WALKABLE(p->top)) return true;
 
 	// Prevent player from going in a weird direction if that way is blocked.
 	if 			((offsetY >= 0) && (offsetX > 0) && (p->top && !WALKABLE(p->top->right)))	decrementOffsetX();
@@ -269,7 +269,7 @@ bool Creature::moveDown()
 {
 	if (handlePortal()) return true;
 
-	if ((offsetY <= 0) && !WALKABLE(p->bottom)) return false;
+	if ((offsetY <= 0) && !WALKABLE(p->bottom)) return true;
 
 	// Prevent player from going in a weird direction if that way is blocked.
 	if 			((offsetY <= 0) && (offsetX > 0) && (p->bottom && !WALKABLE(p->bottom->right)))	decrementOffsetX();

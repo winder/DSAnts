@@ -59,6 +59,9 @@ enum PATCH_types
 #define UNDERGROUND_GRID_DRAW 7
 #define GRID_SIZE 10
 
+// Number of ticks the ant will try to walk in a direction that is not clear
+#define WALK_RETRY_NUM 100
+
 // Draw scale and animation between grid stuff.
 // ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
 // for an ant to move 1 tile.
