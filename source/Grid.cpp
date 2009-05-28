@@ -15,6 +15,7 @@ Grid::Grid()
       dd[x][y]->x = x;
       dd[x][y]->y = y;
       dd[x][y]->portal = '\0';
+      dd[x][y]->chemLevel = 0;
     }
 
   // Connect the objects.

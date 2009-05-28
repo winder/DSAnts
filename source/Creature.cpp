@@ -130,40 +130,18 @@ bool Creature::moveTo(Patch *pat)
     t = true;
     // move old spot to new spot.
     p = pat;
-  }
-/*
-  // this is what it looks like manually.
-  if (pat->occupant_one == '\0')
-  {
-    pat->occupant_one = this;
-    t = true;
-  }
-  else if (pat->occupant_two == '\0')
-  {
-    pat->occupant_two = this;
-    t = true;
-  }
-*/
-/*
-  // remove the old spot, move the new spot forward.
-  if (t)
-  {
-    if (p->occupant_one == this)
-      p->occupant_one = '\0';
-    else if (p->occupant_two == this)
-      p->occupant_two = '\0';
-    // clear out the old spot.
-//    if (SPOT_ONE_IS(p, this))
-//      SET_SPOT_ONE(p, '\0');
-//    else if (SPOT_TWO_IS(p, this))
-//      SET_SPOT_TWO(p, '\0');
 
-    // move old spot to new spot.
-    p = pat;
+    // if the ant successfully moved to a new patch.... leave a mark.
+    handleFeramone();
   }
-*/
 
   return t;
+}
+
+// Only ants do this.  Leave a stub in parent class.
+void Creature::handleFeramone()
+{
+
 }
 
 // This is the "simple" way, only move up/down if X is 0, or right/left if Y is 0.

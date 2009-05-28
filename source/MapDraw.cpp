@@ -422,7 +422,10 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
   }
   else if (EMPTY(p))
   {
-    material(31,31,31); // make it easier to see ants...
+    int cl = p->chemLevel;
+    if (cl > 31)
+      cl = 31;
+    material(31,31-cl,31-cl); // make it easier to see ants...
     // Check top, bottom, left, right and draw
     // empty patch with paths that can link to
     // whichever are missing, this will either be a bunch of call lists

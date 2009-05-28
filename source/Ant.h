@@ -9,7 +9,7 @@ class Ant: public Creature
     Ant():Creature(){};
     Ant(Patch *pat, int location):Creature(pat, location){};
     virtual int getType() = 0;
-
+    virtual void handleFeramone();
 
 
 };

@@ -29,6 +29,7 @@ class Creature
     virtual bool handlePortal();
     virtual bool checkCollision(Patch* pat);
     virtual bool moveTo(Patch* pat);
+    virtual void handleFeramone();
     // This lets the ant move on its own accord, influenced by:
     //    -feramone level of adjacent tiles
     //    -current action

@@ -43,6 +43,8 @@ Development process, Asterisk indicates complete:
 *	-	Queen / Egg production
 *	- Egg / Hatch (i.e. Game loop that checks underground for growing eggs.)
 *	- Collision detection (Grid, patch knows when ant is on it
+*  - Patch feramone level
+    - optional display of feramone level (make a bool that toggles if this is displayed or not).
 
 5. A.I.
 	- Ant action AI's:

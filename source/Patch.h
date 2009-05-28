@@ -48,29 +48,34 @@ class Creature;
 #define SPOT_ONE_IS(X, Y) (X->occupant_one == Y)
 #define SPOT_TWO_IS(X, Y) (X->occupant_two == Y)
 
+#define INCREASE_FERAMONE_ONE(X) (INCREASE_FERAMONE(X, 1))
+#define INCREASE_FERAMONE(X, Y) (X->chemLevel+=Y)
 
 struct Patch
 {
-	Patch *left;
-	Patch *right;
-	Patch *top;
-	Patch *bottom;
-	// I'm thinking of making this a long and having lots of flags in addition to
-	// just a TYPE, then having a bunch of macro's to convert TYPE into usable parts.
-	short TYPE;
-	bool picked;
-	// this flag should be moved into a bit of TYPE eventually.
-	short location;
-	// yeah, I want these in here, sorry memory.
-	short x;
-	short y;
+  Patch *left;
+  Patch *right;
+  Patch *top;
+  Patch *bottom;
+  // I'm thinking of making this a long and having lots of flags in addition to
+  // just a TYPE, then having a bunch of macro's to convert TYPE into usable parts.
+  unsigned short TYPE;
+  bool picked;
+  // this flag should be moved into a bit of TYPE eventually.
+  unsigned short location;
+  // yeah, I want these in here, sorry memory.
+  unsigned short x;
+  unsigned short y;
 
-	// Some patches have a 5th direction, where they portal to another map.
-	Patch *portal;
+  // Some patches have a 5th direction, where they portal to another map.
+  Patch *portal;
 
-	// Ants can walk over each other, but I don't want big piles.
-	Creature* occupant_one;
-	Creature* occupant_two;
+  // Ants can walk over each other, but I don't want big piles.
+  Creature* occupant_one;
+  Creature* occupant_two;
+
+  // the feramone level the ants use to move around.
+  unsigned short chemLevel;
 };
 
 #endif
