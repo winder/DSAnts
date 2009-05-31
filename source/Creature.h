@@ -28,7 +28,7 @@ class Creature
     // returns true if it needed to be handled and the move needed to be stopped.
     virtual bool handlePortal();
     virtual bool checkCollision(Patch* pat);
-    virtual bool moveTo(Patch* pat);
+    virtual bool moveTo(Patch* pat, bool force = false);
     virtual void handleFeramone();
     // This lets the ant move on its own accord, influenced by:
     //    -feramone level of adjacent tiles
@@ -41,7 +41,8 @@ class Creature
     virtual void moveAI();
     virtual void wander();
     virtual void attack();
-    virtual void forage();
+    virtual void forage() = 0;
+    virtual void goHome();
 
     // use the carrying object (i.e. eat food / egg)
     virtual int use();
@@ -55,8 +56,8 @@ class Creature
     //-----------------------//
     // Accessors and Getters //
     //-----------------------//
-    inline void setAction(int a){ ACTION = a; }
-    inline int getAction(){ return ACTION; }
+    void setAction(int a){ ACTION = a; }
+    int getAction(){ return ACTION; }
 
     inline int getOffsetX(){ return offsetX; }
     inline int getOffsetY(){ return offsetY; }
@@ -88,6 +89,12 @@ class Creature
     //#ifdef __DEBUG
     void printDebug();
     //#endif
+
+    // save the direction between steps to prevent re-calculation.
+    int direction;
+    int directionOld; // ant wants to avoid turning around.
+    // if false, will not go through portals.
+    bool takePortals;
   private:
     // these are used to change offsetX / offsetY and keep the direction correct.
     void incrementOffsetX();
@@ -107,9 +114,6 @@ class Creature
     // Action the ai has decided the ant will perform, ie:
     //  FORAGE, FIGHT, DEFEND, FOLLOW, ...?
     int ACTION;
-    // save the direction between steps to prevent re-calculation.
-    int direction;
-    int directionOld; // ant wants to avoid turning around.
 
        //-----------------------//
       // LOCATION INFORMATION: //
@@ -122,8 +126,6 @@ class Creature
     Patch *p;
     // flag so that we don't go back and forth through a portal infinitly.
     bool portaled;
-    // if false, will not go through portals.
-    bool takePortals;
     // collision counter.  If collide too many times look for another direction.
     short failCount;
 

@@ -10,12 +10,14 @@ Creature::Creature()
   directionY = 20;
   portaled = false;
   failCount = 0;
-  carrying = NOTHING;
+//  carrying = NOTHING;
+  carrying = 5;
   ai = true;
   ACTION=0;
   direction=-1;
   directionOld=-1;
-  takePortals=true;
+  takePortals=false;
+  ACTION = ANT_ACTION_FORAGE;
 
   hp = 1000;
 }
@@ -33,10 +35,10 @@ Creature::Creature(Patch* pat, int loc)
   failCount = 0;
   carrying = NOTHING;
   ai = true;
-  ACTION=0;
+  ACTION = ANT_ACTION_FORAGE;
   direction=-1;
   directionOld=-1;
-  takePortals=true;
+  takePortals=false;
 
   hp = 1000;
 }
@@ -48,13 +50,12 @@ Creature::~Creature()
 
 void Creature::pickup(Patch *p)
 {
-  carrying = GameWorldSingleton::getInstance()->pickup(location, p);
+  if (carrying == NOTHING)
+    carrying = GameWorldSingleton::getInstance()->pickup(location, p);
 }
 
 bool Creature::drop(Patch *p)
 {
-//  if (EMPTY(p))
-//  {
   if( GameWorldSingleton::getInstance()->drop(location, p, carrying) )
   {
     carrying = NOTHING;
@@ -62,23 +63,11 @@ bool Creature::drop(Patch *p)
   }
   return false;
 }
-/*
-                          if (EMPTY(p))
-                          {
-                            carrying = NOTHING;
-                            // the grid must modify the type.
-                            //p->TYPE = carrying;
-                            return true;
-                          }
-                          return false;
-                        }
-}
-*/
 
 // Checks if there is a portal.  If there is, go through.
 bool Creature::handlePortal()
 {
-  if (takePortals)
+  if (getTakePortals())
   {
     // the portaled flag is supposed to stop it from flipping back and forth over and over again.
     if (!p->portal)
@@ -88,8 +77,9 @@ bool Creature::handlePortal()
     }
     if (!portaled && p->portal && WALKABLE(p->portal))
     {
+
       // if try & fail to go through portal, try again.
-      if (!moveTo(p->portal))
+      if (!moveTo(p->portal, true))
       {
         portaled = false;
         return false;
@@ -116,15 +106,23 @@ bool Creature::checkCollision(Patch* pat)
 // TODO: might want to have this always return true so the ant will turn around
 // if there is a barricade.
 // Checks whether can move to the new patch (not full) and moves there.
-bool Creature::moveTo(Patch *pat)
+bool Creature::moveTo(Patch *pat, bool force)
 {
 
   bool t = false;
 
-  // This is what it looks like with macro's
-  if (AVAILABLE_SPOT(pat))
+  // if forcing, don't check if available spot.
+  if (force)
   {
-    REMOVE_SPOT(p, this)
+    REMOVE_SPOT(p, this);
+    t = true;
+    p = pat;
+    handleFeramone();
+  }
+  // This is what it looks like with macro's
+  else if (AVAILABLE_SPOT(pat))
+  {
+    REMOVE_SPOT(p, this);
     SET_SPOT(pat, this);
 
     t = true;
@@ -176,14 +174,8 @@ bool Creature::moveRight()
     if (moveTo(next))
     {
       offsetX=-1 * (ANIMATION_SIZE / 2);
-//      p = next;
       return true;
     }
-//    else
-//    {
-//      offsetX = (ANIMATION_SIZE / 2) - 1;
-//      return false;
-//    }
   }
   return false;
 }
@@ -207,14 +199,8 @@ bool Creature::moveLeft()
     if (moveTo(next))//checkCollision(next))
     {
       offsetX=(ANIMATION_SIZE / 2);
-//      p = next;
       return true;
     }
-//    else
-//    {
-//      offsetX = ((ANIMATION_SIZE / 2) - 1)*-1;
-//      return false;
-//    }
   }
   return false;
 }
@@ -237,14 +223,8 @@ bool Creature::moveUp()
     if (moveTo(next))//checkCollision(next))
     {
       offsetY=-1 * (ANIMATION_SIZE / 2);
-//      p = next;
       return true;
     }
-//    else
-//    {
-//      offsetY = (ANIMATION_SIZE / 2) - 1;
-//      return false;
-//    }
   }
   return false;
 }
@@ -268,14 +248,8 @@ bool Creature::moveDown()
     if (moveTo(next))//checkCollision(next))
     {
       offsetY=(ANIMATION_SIZE / 2);
-//      p = next;
       return true;
     }
-//    else
-//    {
-//      offsetY = ((ANIMATION_SIZE / 2) - 1) * -1;
-//      return false;
-//    }
   }
   return false;
 }
@@ -378,9 +352,13 @@ void Creature::moveAI()
   // If it gets here need to decide where to go.
   // Select AI pattern based on ACTION.
   if (ACTION == ANT_ACTION_WANDER)
+  {
     wander();
+  }
   else if (ACTION == ANT_ACTION_FORAGE)
+  {
     forage();
+  }
   else if (ACTION == ANT_ACTION_ATTACK)
     attack();
 }
@@ -408,6 +386,11 @@ void Creature::forage()
 
 }
 
+void Creature::goHome()
+{
+
+}
+
 // This algorithm works remarkably well in tests. The first rule makes it follow
 // tunnels very well.
 // Rules:
@@ -421,20 +404,26 @@ void Creature::wander()
     direction = (direction+1)%4;
 
   bool newDir = false;
+  // cache getPatch() so that it doesn't need a read each time.
+  Patch* cache = getPatch();
 
-  for (int four=0; !newDir; four++ )
+  for (int four=0; !newDir; four++)
   {
-    if ((direction == 0) && (direction != directionOld) && (getPatch()->bottom) && WALKABLE(getPatch()->bottom))
+    if ((direction == 0) && (direction != directionOld) && (cache->bottom) && WALKABLE(cache->bottom))
       newDir = true;
-    else if ((direction == 1) && (direction != directionOld) && (getPatch()->right) && WALKABLE(getPatch()->right))
+    else if ((direction == 1) && (direction != directionOld) && (cache->right) && WALKABLE(cache->right))
       newDir = true;
-    else if ((direction == 2) && (direction != directionOld) && (getPatch()->left) && WALKABLE(getPatch()->left))
+    else if ((direction == 2) && (direction != directionOld) && (cache->left) && WALKABLE(cache->left))
       newDir = true;
-    else if ((direction == 3) && (direction != directionOld) && (getPatch()->top) && WALKABLE(getPatch()->top))
+    else if ((direction == 3) && (direction != directionOld) && (cache->top) && WALKABLE(cache->top))
       newDir = true;
 
     if (!newDir)
-      direction = (direction+1)%4;
+    {
+      direction += 1;
+      if (direction == 4)
+        direction = 0;
+    }
 
     // dead end, forced to turn around.
     if (four == 4)
@@ -545,6 +534,8 @@ void Creature::printDebug()
     printf("X)");
   else
     printf(" )");
+
+   printf(" ACTION = %i", ACTION);
   
 }
 //#endif

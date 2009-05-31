@@ -415,7 +415,8 @@ void GameWorld::update(int value)
   {
     // add a new ant on press.
     Ant *t = new WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
-    t->setAction( ANT_ACTION_WANDER );
+//    t->setAction( ANT_ACTION_WANDER );
+    t->setAction( ANT_ACTION_FORAGE );
     black.push_back(t);
   }
 

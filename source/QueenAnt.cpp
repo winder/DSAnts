@@ -7,7 +7,7 @@ void QueenAnt::stateStep(int num)
   if ((gestation >= GESTATION_PERIOD) && getAI())
   {
     Patch* pat = findEmptyAdjacent();
-    if (pat != '\0')
+    if ((pat != '\0') && (pat->portal == '\0'))
     {
       // lay egg.
       pat->TYPE = PATCH_EGG1;

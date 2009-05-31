@@ -11,6 +11,10 @@ class Ant: public Creature
     virtual int getType() = 0;
     virtual void handleFeramone();
 
+    virtual void forage();
+    // check adjacent Patches for food.
+    Patch* checkForFood();
+
 
 };
 
