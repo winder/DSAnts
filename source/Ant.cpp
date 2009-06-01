@@ -40,7 +40,8 @@ void Ant::forage()
   cache = getPatch();
 
   // If it is walkable, and not turned around, see if other criteria are met
-  if ((cache->bottom) && WALKABLE(cache->bottom) && (directionOld != 0))
+  if ((cache->bottom) && directionIsOk(0, directionOld, cache->bottom))
+//WALKABLE(cache->bottom) && (directionOld != 0))
   {
     // if cache is greater than the wiggle value, set the direction.
     if (randWiggle < cache->bottom->chemLevel)
@@ -49,7 +50,8 @@ void Ant::forage()
       direction = 0;
     }
   }
-  if ((cache->right) && WALKABLE(cache->right) && (directionOld != 1))
+  if ((cache->right) && directionIsOk(1, directionOld, cache->right))
+//WALKABLE(cache->right) && (directionOld != 1))
   {
     // if this chemLevel is greater than the current trail.
     if (cache->right->chemLevel > followChem)
@@ -61,7 +63,8 @@ void Ant::forage()
       }
     }
   }
-  if ((cache->left) && WALKABLE(cache->left) && (directionOld != 2))
+  if ((cache->left) && directionIsOk(2, directionOld, cache->left))
+//WALKABLE(cache->left) && (directionOld != 2))
   {
     if (cache->left->chemLevel > followChem)
     {
@@ -72,7 +75,8 @@ void Ant::forage()
       }
     }
   }
-  if ((cache->top) && WALKABLE(cache->top) && (directionOld != 3))
+  if ((cache->top) && directionIsOk(3, directionOld, cache->top))
+//WALKABLE(cache->top) && (directionOld != 3))
   {
     if (cache->top->chemLevel > followChem)
     {

@@ -27,8 +27,47 @@ class Creature
     // If moving into a portal from any direction, need to handle it the same way.
     // returns true if it needed to be handled and the move needed to be stopped.
     virtual bool handlePortal();
+    virtual bool handleCollision();
     virtual bool checkCollision(Patch* pat);
     virtual bool moveTo(Patch* pat, bool force = false);
+
+    virtual inline bool directionIsOk(int n, int o, Patch* p)
+      {
+        return ((n != o) && patchIsMovable(p) && !checkCollision(p));
+      }
+
+    virtual inline bool patchIsMovable(Patch* pat)
+      {
+        return ((pat != '\0') && WALKABLE(pat) && !checkVisited(pat));
+      }
+
+    // checks whether the patch is in the recent visited memory
+    virtual bool checkVisited(Patch* newPatch)
+      {
+        if (!use_visit_memory)
+          return true;
+
+        for (int i = 0; i < MAX_VISIT_MEMORY; i++)
+          if ( newPatch == visited[i] ) return true;
+        return false;
+      }
+
+    virtual void clearVisited()
+      {
+        for (int i = 0; i < MAX_VISIT_MEMORY; i++)
+          visited[i] = '\0';
+      }
+
+    // order is not important, so just loop through to the beginning
+    // of the array overwriting the first one.
+    virtual void addVisited(Patch* newPatch)
+      {
+        if (!checkVisited(newPatch))
+          visited[visited_index++] = newPatch;
+        if (visited_index == MAX_VISIT_MEMORY)
+          visited_index = 0;
+      }
+
     virtual void handleFeramone();
     // This lets the ant move on its own accord, influenced by:
     //    -feramone level of adjacent tiles
@@ -85,6 +124,9 @@ class Creature
 
     inline bool getTakePortals(){ return takePortals; }
     inline void setTakePortals(bool tp){ takePortals = tp; }
+
+    inline bool getUseVisitMemory(){ return use_visit_memory; }
+    inline void setUseVisitMemory(bool uvm){ use_visit_memory = uvm; }
 
     //#ifdef __DEBUG
     void printDebug();
@@ -144,6 +186,10 @@ class Creature
 
     // is the ant carrying something?
     int carrying;
+
+    bool use_visit_memory;
+    short visited_index;
+    Patch* visited[MAX_VISIT_MEMORY];
 };
 
 #endif

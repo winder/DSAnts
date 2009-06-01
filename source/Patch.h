@@ -10,9 +10,11 @@ class Creature;
 // Note: I don't really know much about designing macros, it made sense to cascade
 // them like this, but it could get confusing.
 // TODO: re-evaluate how I'm creating patch comparisons.
+//        -> make these inline functions
 
 // Can walk
-#define WALKABLE(X) (WALKABLEi(X->TYPE) && AVAILABLE_SPOT(X))
+// TODO: Seperate AVAILABLE_SPOT from this.
+#define WALKABLE(X) (WALKABLEi(X->TYPE))
 #define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || EGGi(X) || FOODi(X))
 
 // Is food

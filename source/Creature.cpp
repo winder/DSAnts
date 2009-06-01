@@ -20,6 +20,9 @@ Creature::Creature()
   ACTION = ANT_ACTION_FORAGE;
 
   hp = 1000;
+
+  visited_index = 0;
+   use_visit_memory = true;
 }
 
 Creature::Creature(Patch* pat, int loc)
@@ -41,6 +44,9 @@ Creature::Creature(Patch* pat, int loc)
   takePortals=false;
 
   hp = 1000;
+
+  visited_index = 0;
+  use_visit_memory = true;
 }
 
 Creature::~Creature()
@@ -82,7 +88,7 @@ bool Creature::handlePortal()
       if (!moveTo(p->portal, true))
       {
         portaled = false;
-        return false;
+        return true;
       }
 //      p = p->portal;
 
@@ -96,11 +102,27 @@ bool Creature::handlePortal()
   return false;
 }
 
+// Called if we know there is a collision.
+// 1) if we haven't waited for WALK_RETRY_NUM, wait
+// 2) if we have waited, reset fail counter and re-run AI.
+bool Creature::handleCollision()
+{
+  if(failCount < WALK_RETRY_NUM)
+  {
+    failCount++;
+    // do not re-run AI, do not move ant.  Try again.
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+
+// True if there is a collision.
 bool Creature::checkCollision(Patch* pat)
 {
-  if (AVAILABLE_SPOT(pat))
-    return true;
-  return false;
+  return !(AVAILABLE_SPOT(pat));
 }
 
 // TODO: might want to have this always return true so the ant will turn around
@@ -122,12 +144,21 @@ bool Creature::moveTo(Patch *pat, bool force)
   // This is what it looks like with macro's
   else if (AVAILABLE_SPOT(pat))
   {
+    t = true;
+  }
+
+  // Check if we're doing the move.  If yes, do it.
+  if (t)
+  {
     REMOVE_SPOT(p, this);
     SET_SPOT(pat, this);
 
     t = true;
     // move old spot to new spot.
     p = pat;
+
+    // even if we're not using the visited value, keep it updated
+    addVisited( pat );
 
     // if the ant successfully moved to a new patch.... leave a mark.
     handleFeramone();
@@ -150,11 +181,16 @@ void Creature::handleFeramone()
 //        left then right) then there is no checking.
 //        *this piece adds some jitter I think.
 
-// TODO: get rid of the hard coded numbers so that I can tweak the ants speed without
-//       changing each one manually.
 bool Creature::moveRight()
 {
   if (handlePortal()) return true;
+
+  Patch* next = Grid::getRight(p);
+
+  if (checkCollision(next))
+    return handleCollision();
+  else
+    failCount=0;
 
   // don't move right if the ant is in the right spot isn't empty.
   if ((offsetX >= 0) && !WALKABLE(p->right)) return true;
@@ -169,7 +205,6 @@ bool Creature::moveRight()
   // if we are half way towards the next way, swap to the next one.
   if (offsetX >= (ANIMATION_SIZE / 2))
   {
-    Patch* next = Grid::getRight(p);
     // Check if there is an empty spot
     if (moveTo(next))
     {
@@ -184,6 +219,12 @@ bool Creature::moveLeft()
 {
   if (handlePortal()) return true;
 
+  Patch* next = Grid::getLeft(p);
+  if (checkCollision(next))
+    return handleCollision();
+  else
+    failCount=0;
+
   // if able to move right...
   if ((offsetX <= 0) && !WALKABLE(p->left)) return true;
 
@@ -194,7 +235,6 @@ bool Creature::moveLeft()
     decrementOffsetX();
   if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
   {
-    Patch* next = Grid::getLeft(p);
     // Check if there is an empty spot
     if (moveTo(next))//checkCollision(next))
     {
@@ -209,6 +249,12 @@ bool Creature::moveUp()
 {
   if (handlePortal()) return true;
 
+  Patch* next = Grid::getUp(p);
+  if (checkCollision(next))
+    return handleCollision();
+  else
+    failCount=0;
+
   if ((offsetY >= 0) && !WALKABLE(p->top)) return true;
 
   // Prevent player from going in a weird direction if that way is blocked.
@@ -218,7 +264,6 @@ bool Creature::moveUp()
     incrementOffsetY();
   if (offsetY >= (ANIMATION_SIZE / 2))
   {
-    Patch* next = Grid::getUp(p);
     // Check if there is an empty spot
     if (moveTo(next))//checkCollision(next))
     {
@@ -233,6 +278,13 @@ bool Creature::moveDown()
 {
   if (handlePortal()) return true;
 
+  Patch* next = Grid::getDown(p);
+  if (checkCollision(next))
+    return handleCollision();
+  else
+    failCount=0;
+
+
   if ((offsetY <= 0) && !WALKABLE(p->bottom)) return true;
 
   // Prevent player from going in a weird direction if that way is blocked.
@@ -243,7 +295,6 @@ bool Creature::moveDown()
 
   if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
   {
-    Patch* next = Grid::getDown(p);
     // Check if there is an empty spot
     if (moveTo(next))//checkCollision(next))
     {
@@ -398,6 +449,19 @@ void Creature::goHome()
 // 2. The ant will not stop.
 void Creature::wander()
 {
+/*
+    // if using the memory of recent movement, check the visited array.
+    if ( use_visit_memory )
+    {
+      if ( checkVisited(pat) )
+        t = false;
+      else
+        t = true;
+    }
+    // if we aren't using the visit memory, go ahead and move.
+    else
+*/
+
   // move about randomly.
   direction = rand()%4;
   if (direction == directionOld)
@@ -409,13 +473,13 @@ void Creature::wander()
 
   for (int four=0; !newDir; four++)
   {
-    if ((direction == 0) && (direction != directionOld) && (cache->bottom) && WALKABLE(cache->bottom))
+    if ((direction == 0) && directionIsOk(direction, directionOld, cache->bottom))
       newDir = true;
-    else if ((direction == 1) && (direction != directionOld) && (cache->right) && WALKABLE(cache->right))
+    else if ((direction == 1) && directionIsOk(direction, directionOld, cache->right))
       newDir = true;
-    else if ((direction == 2) && (direction != directionOld) && (cache->left) && WALKABLE(cache->left))
+    else if ((direction == 2) && directionIsOk(direction, directionOld, cache->left))
       newDir = true;
-    else if ((direction == 3) && (direction != directionOld) && (cache->top) && WALKABLE(cache->top))
+    else if ((direction == 3) && directionIsOk(direction, directionOld, cache->top))
       newDir = true;
 
     if (!newDir)
