@@ -449,19 +449,6 @@ void Creature::goHome()
 // 2. The ant will not stop.
 void Creature::wander()
 {
-/*
-    // if using the memory of recent movement, check the visited array.
-    if ( use_visit_memory )
-    {
-      if ( checkVisited(pat) )
-        t = false;
-      else
-        t = true;
-    }
-    // if we aren't using the visit memory, go ahead and move.
-    else
-*/
-
   // move about randomly.
   direction = rand()%4;
   if (direction == directionOld)
@@ -492,6 +479,23 @@ void Creature::wander()
     // dead end, forced to turn around.
     if (four == 4)
     {
+      // SPECIAL CASE: if ants are remembering recent tiles, check if we are
+      //               stuck because of it. 
+      // check if we can't go because they are all visited
+      if ( use_visit_memory &&
+           (!WALKABLE(cache->top)    || checkVisited(cache->top))  &&
+           (!WALKABLE(cache->right)  || checkVisited(cache->right)) &&
+           (!WALKABLE(cache->left)   || checkVisited(cache->left))  &&
+           (!WALKABLE(cache->bottom) || checkVisited(cache->bottom)) )
+      {
+        clearVisited();
+        wander();
+        return;
+      }
+
+      // Otherwise, just turn around.
+      // this case will never be true unless there are a bunch of ants blocking
+      // the way.
       direction = directionOld;
       setAI(false);
       return;
