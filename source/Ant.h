@@ -6,8 +6,9 @@
 class Ant: public Creature
 {
   public:
-    Ant():Creature(){};
-    Ant(Patch *pat, int location):Creature(pat, location){};
+    Ant():Creature(){ feramoneOutput = 100; }
+    Ant(Patch *pat, int location):Creature(pat, location)
+      { feramoneOutput = 100; }
     virtual int getType() = 0;
     virtual void handleFeramone();
 
@@ -15,6 +16,12 @@ class Ant: public Creature
     // check adjacent Patches for food.
     Patch* checkForFood();
 
+
+    // return as argument.
+    void sortAdjacentPatchByChem(Patch* center, Patch* sort[], int direction[]);
+
+  private:
+    short feramoneOutput;
 
 };
 

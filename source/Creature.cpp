@@ -432,11 +432,32 @@ void Creature::attack()
 // 3. If feramone dead end, random direction.
 // 4. If food, pick up and turn around.
 // 5. If carrying food follow feramone.
+//--------------this needs more----------------
+// 1. If not on surface, wander until on surface.
+// 2. If no food, set feramone output = 100:
+// 3.   If on surface and HOT trail, follow (hot == feramone > 100)
+// 4.   If on surface and no HOT trail, go to a spot with no feramone
+// 5.     Move to spot with no feramone, Mark feramone (output = 100)
+// 6.   If no spot with no feramone, wander
+// 7. If food, set feramone output = 1000:
+// 8.   Pickup food, mark food spot with feramone
+// 9.   Go Home
 void Creature::forage()
 {
 
 }
 
+// Two possible ways to do this...
+// Desperate way, cheat:
+// 1. Ant remembers X / Y coordinate of ant hill,
+// 2.   follows a feramone path to get there, or just b-lines it that way.
+// An accurate way?
+// 1. Use "recent memory" to go backwards last 5 steps.
+// 2. Follow feramone trail rest of way, other than the stuff we're leaving behind.
+// Maybe a hybrid,
+// 1. Use "recent memory" to go backwards last 5 steps.
+// 2. Follow feramone, if get stuck in loop
+// 3.   remember general direction and walk that way
 void Creature::goHome()
 {
 

@@ -49,7 +49,7 @@ Development process, Asterisk indicates complete:
 5. A.I.
 	- Ant action AI's:
 *		-Wander
-      = limit number of turns the ant can make
+      = limit number of turns the ant can make?
 *		-Queen, egg production
 		-Forage
       = ant prefers stronger chemical trail

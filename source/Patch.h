@@ -54,6 +54,7 @@ class Creature;
 
 #define INCREASE_FERAMONE_ONE(X) (INCREASE_FERAMONE(X, 1))
 #define INCREASE_FERAMONE(X, Y) (X->chemLevel+=Y)
+#define SET_FERAMONE(X, Y) (X->chemLevel=Y)
 
 struct Patch
 {

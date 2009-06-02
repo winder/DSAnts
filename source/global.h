@@ -57,12 +57,16 @@ enum PATCH_types
 
 // Draw distance.
 #define UNDERGROUND_GRID_DRAW 7
-#define GRID_SIZE 10
+#define GRID_SIZE 8
 
 // Number of ticks the ant will try to walk in a direction that is not clear
 #define WALK_RETRY_NUM 100
 // The number of tiles the ant will remember not to re-walk on
 #define MAX_VISIT_MEMORY 5
+
+// Feramone magic numbers
+#define HOT_TRAIL_LIMIT 100
+#define COLD_TRAIL 10
 
 // Draw scale and animation between grid stuff.
 // ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
