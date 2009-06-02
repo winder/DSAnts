@@ -15,11 +15,12 @@ void Ant::handleFeramone()
 // 5. If carrying food follow feramone.
 //--------------this needs more----------------
 //-- New algorithm looks like this:
+// Easy to check for cases:
 // 1. If carrying food, go home.
 // 2.   If in base, drop food.
-// 3. If food, pickup, set feramone output = 1000:
-// 4.   Pickup food, mark food spot with feramone, go home
-// 5. If not on surface, wander until on surface.
+// 3. If not on surface, wander until on surface.
+// 4. else (on surface) check for food, pickup, set feramone output = 1000:
+// 5.   Pickup food, mark food spot with feramone, go home
 // 6. If no food, set feramone output = 100:
 // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
 // 8.   If on surface and no HOT trail, go to a spot with no feramone
@@ -31,6 +32,7 @@ void Ant::forage()
   if (FOODi(getCarrying()))
   {
     // 2.   If in base, drop food.
+
     // if (this->getLocation() == mah base)
     //   drop food some place
     //   not carrying anymore, lower feramone output.
@@ -40,23 +42,7 @@ void Ant::forage()
     return;
   }
 
-  // 3. If food, pickup, set feramone output = 1000:
-  // 4.   Pickup food, mark food spot with feramone, go home
-  Patch *cache = checkForFood();
-  // Found food, pick it up.
-  if (cache != '\0')
-  {
-    pickup( cache );
-    feramoneOutput = 1000;
-    // mark cache 1000
-    takePortals = true;
-    // go Home.
-    //goHome();
-    wander();
-    return;
-  }
-
-  // Step 5. Not on surface, wander till on surface.
+  // Step 3. Not on surface, wander till on surface.
   takePortals = false;
   // Wander around underground till get to surface
   if (this->getLocation() != GAMEWORLD_STATE_SURFACE)
@@ -67,7 +53,26 @@ void Ant::forage()
     wander();
     return;
   }
+  // If we aren't underground, look for food
+  else
+  {
+    Patch *cache = checkForFood();
+    // Found food, pick it up.
+    if (cache != '\0')
+    {
+      // 4. If food, pickup, set feramone output = 1000:
+      // 5.   Pickup food, mark food spot with feramone, go home
+      pickup( cache );
+      feramoneOutput = 1000;
+      SET_FERAMONE( cache, feramoneOutput);
+      takePortals = true;
 
+      // TODO: go Home.
+      //goHome();
+      wander();
+      return;
+    }
+  }
 
   // 6. If no food (feramone should be = 100) - should already be set here.
   cache = getPatch();
@@ -80,6 +85,7 @@ void Ant::forage()
 
   // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
   // TODO: this, very important, but see if I can get them to find food first.
+
 
   // count how many cold trails there are.
   int cold_dirs = 0;
