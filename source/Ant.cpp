@@ -28,6 +28,8 @@ void Ant::handleFeramone()
 // 10.  If no spot with no feramone, wander
 void Ant::forage()
 {
+  Patch *cache;
+
   // 1. If carrying food, go home.
   if (FOODi(getCarrying()))
   {
@@ -37,8 +39,8 @@ void Ant::forage()
     //   drop food some place
     //   not carrying anymore, lower feramone output.
     //   feramoneOutput = 100;
-    //goHome();
-    wander();
+    goHome();
+    //wander();
     return;
   }
 
@@ -56,7 +58,7 @@ void Ant::forage()
   // If we aren't underground, look for food
   else
   {
-    Patch *cache = checkForFood();
+    cache = checkForFood();
     // Found food, pick it up.
     if (cache != '\0')
     {
@@ -67,9 +69,9 @@ void Ant::forage()
       SET_FERAMONE( cache, feramoneOutput);
       takePortals = true;
 
-      // TODO: go Home.
-      //goHome();
-      wander();
+      // go Home.
+      goHome();
+      //wander();
       return;
     }
   }
@@ -181,6 +183,119 @@ void Ant::forage()
   else
     setAI(false);
 */
+}
+
+// Two possible ways to do this...
+// Desperate way, cheat:
+// 1. Ant remembers X / Y coordinate of ant hill,
+// 2.   follows a feramone path to get there, or just b-lines it that way.
+// An accurate way?
+// 1. Use "recent memory" to go backwards last 5 steps.
+// 2. Follow feramone trail rest of way, other than the stuff we're leaving behind.
+// Maybe a hybrid,
+// 1. Use "recent memory" to go backwards last 5 steps.
+// 2. Follow feramone, if get stuck in loop
+// 3.   remember general direction and walk that way
+void Ant::goHome()
+{
+  goHomeCheating();
+}
+
+// This way is cheating, because it uses a memory of where the entrance is.
+void Ant::goHomeCheating()
+{
+  // Cheating:
+  int x_dist, y_dist;
+  bool up, right;
+  Patch* cache = getPatch();
+
+  // left or right to get there?
+  // find X distance / direction.
+  if (cache->x > savedEntrance->x)
+  {
+    x_dist = cache->x - savedEntrance->x;
+    right = true;
+    if ( x_dist > ((savedEntrance->x + WIDTH) - cache->x ))
+    {
+      x_dist = ((savedEntrance->x + WIDTH) - cache->x );
+      right = false;
+    }
+  }
+  else
+  {
+    x_dist = savedEntrance->x - cache->x;
+    right = false;
+    if ( x_dist > ((cache->x + WIDTH) - savedEntrance->x ))
+    {
+      x_dist = ((cache->x + WIDTH) - savedEntrance->x );
+      right = true;
+    }
+  }
+
+
+  // find Y distance / direction.
+  if (cache->y > savedEntrance->y)
+  {
+    y_dist = cache->y - savedEntrance->y;
+    up = true;
+    if ( y_dist > ((savedEntrance->y + DEPTH) - cache->y ))
+    {
+      y_dist = ((savedEntrance->y + DEPTH) - cache->y );
+      up = false;
+    }
+  }
+  else
+  {
+    y_dist = savedEntrance->y - cache->y;
+    up = false;
+    if ( y_dist > ((cache->y + DEPTH) - savedEntrance->y ))
+    {
+      y_dist = ((cache->y + DEPTH) - savedEntrance->y );
+      up = true;
+    }
+  }
+
+  // I think the y-axis was originally for depth, so invert this.
+  //up = !up;
+  right = !right;
+
+  // don't need to check that the other != 0, because if its 0,0 the portal will be taken.
+  if (y_dist == 0)
+  {
+    if (right)
+      direction=1;
+    else
+      direction=2;
+  }
+  else if (x_dist == 0)
+  {
+    if (up)
+      direction=3;
+    else
+      direction=0;
+  }
+  // need to move in both directions, pick one at random.
+  else
+  {
+    int dir = rand()%2;
+    if (dir == 0)
+    {
+      if (up)
+        direction=3;
+      else
+        direction=0;
+    }
+    else
+    {
+      if (right)
+        direction=1;
+      else
+        direction=2;
+    }
+  }
+
+  // done with AI, do it to it.
+  setAI(false);
 }
 
 Patch* Ant::checkForFood()

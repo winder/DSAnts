@@ -261,6 +261,7 @@ void Player::printDebug()
 //  printf("\nFacing: x=%i, y=%i", p->getFacingX(), p->getFacingY());
   printf("\nAnt HP: %i", p->getHP());
   printf("\nAnt Carrying: %i", p->getCarrying());
+  printf("\nPlayer Coord: (%i, %i)", p->getX(), p->getY());
 
 }
 

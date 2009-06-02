@@ -27,6 +27,8 @@ class Creature
     // If moving into a portal from any direction, need to handle it the same way.
     // returns true if it needed to be handled and the move needed to be stopped.
     virtual bool handlePortal();
+    // if special handling is needed while going through a portal, it goes here.
+    virtual void wentThroughPortal(){ /* not needed for creatures */  };
     virtual bool handleCollision();
     virtual bool checkCollision(Patch* pat);
     virtual bool moveTo(Patch* pat, bool force = false);

@@ -83,19 +83,18 @@ bool Creature::handlePortal()
     }
     if (!portaled && p->portal && WALKABLE(p->portal))
     {
-
-      // if try & fail to go through portal, try again.
+      // Force your way through the portal.
       if (!moveTo(p->portal, true))
       {
         portaled = false;
+        wentThroughPortal();
         return true;
       }
-//      p = p->portal;
-
       offsetX=0;
       offsetY=0;
       portaled = true;
       location = p->location;
+      wentThroughPortal();
       return true;
     }
   }
