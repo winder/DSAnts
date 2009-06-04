@@ -1,5 +1,5 @@
 #include "UndergroundDrawSphere.h"
-
+#ifdef _INCLUDE_OLD_STUFF_DONT_DO_THIS
 void UndergroundDrawSphere::draw()
 {
   int xindex;
@@ -182,3 +182,4 @@ void UndergroundDrawSphere::computeCircles()
 */
     cached = true;
 }
+#endif

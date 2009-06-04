@@ -1,6 +1,7 @@
 #ifndef UNDERGROUNDDRAWSPHERE_H
 #define UNDERGROUNDDRAWSPHERE_H
 
+/*
 #include "Underground.h"
 #include "StaticDraw.h"
 #include "Patch.h"
@@ -58,5 +59,5 @@ class UndergroundDrawSphere: public Underground
     // need some sort of storage to know where to map the patches to the sphere.
     int centerPointX, centerPointY;
 };
-
+*/
 #endif

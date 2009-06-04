@@ -18,9 +18,16 @@ class Map
         centerX=0;
         centerY=0;
       }
+    Map(Grid *g)
+      {
+        grid = g;
+        centerX=0;
+        centerY=0;
+      }
     virtual ~Map(){ delete grid; }
 
-    virtual void initGrid() = 0;
+    //virtual void initGrid() = 0;
+
     // Adds an ant in a random location.
     void addAnt(Creature *a);
 
@@ -33,6 +40,8 @@ class Map
 
     virtual void incY(){ grid->moveUp(centerY); }
     virtual void decY(){ grid->moveDown(centerY); }
+
+    void setGrid(Grid *g){ grid = g; };
 
     Grid* getGrid()
       {  return grid; }

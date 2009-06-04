@@ -12,6 +12,10 @@ MapDraw::MapDraw()
 //  tm->bind( );
 }
 
+MapDraw::MapDraw( Grid *g )
+{
+  setGrid(g);
+}
 
 void MapDraw::initTextures()
 {

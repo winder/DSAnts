@@ -10,8 +10,16 @@ GameWorld::GameWorld()
   cam = new Camera();
   //cam->translateZinc(2.2);
 
-  ug = new Underground();
-  surf = new Surface();
+//  ug = new Underground();
+//  surf = new Surface();
+//  ug = new MapDraw( new Underground() );
+//  surf = new MapDraw( new Surface() );
+
+  ug = new MapDraw();
+  ug->setGrid( new Underground() );
+  surf = new MapDraw();
+  surf->setGrid( new Surface() );
+
   surf->getGrid()->setLoopY();
 
   // start underground

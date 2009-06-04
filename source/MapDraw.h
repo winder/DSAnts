@@ -20,9 +20,11 @@ class MapDraw: public Map
 {
   public:
     MapDraw();
+    MapDraw(Grid *g);
 
     // this is an abstract class too.
-    void initGrid() = 0;
+    // scratch that, initGrid will be done in the grid (duh)
+    //void initGrid() = 0;
 
     //---------------//
     // TEXTURE STUFF //

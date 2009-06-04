@@ -83,6 +83,9 @@ printf("drop");
   // If we aren't underground, look for food
   else
   {
+    // sometimes the Ant will eat the food before it gets home, so need to
+    // make sure the feramone is set correctly.
+    feramoneOutput = 100;
     cache = checkForFood();
     // Found food, pick it up.
     if (cache != '\0')
@@ -92,6 +95,11 @@ printf("drop");
       pickup( cache );
       set_portaled( false );
       feramoneOutput = 1000;
+
+      // set feramone where standing.
+      handleFeramone();
+      // set feramone at food (so ants will move there once the
+      // pile is gone).
       SET_FERAMONE( cache, feramoneOutput);
       takePortals = true;
 

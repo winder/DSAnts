@@ -20,11 +20,6 @@ class Grid
     // Default initializes Grid to underground.
     Grid();
 
-    // Sets up the Patches for the surface.
-    void setupSurface();
-    // Sets up the Patches for the underground.
-    void setupUnderground();
-
     // Make the grid loop on the Y axis.
     void setLoopY();
 
@@ -72,8 +67,10 @@ class Grid
     // without searching the entire grid.
     Patch* getRandomCleared(){ return cleared[ rand()%(cleared.size()) ]; }
     Patch* getRandomObject(){ return objects[ rand()%(objects.size()) ]; }
-  private:
+
+    // These need to be public
     Patch* dd[WIDTH][DEPTH];
+  private:
 
     // Grids can optionally be set to loop.
     bool loopX;

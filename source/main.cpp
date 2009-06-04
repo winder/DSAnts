@@ -29,6 +29,9 @@
 
 
 
+#ifdef PATATER_TUTORIAL_BACKGROUNDS
+// This is from Patater's tutorial, will setup video and stuff using backgrounds.
+
 #include "starField.h"
 #include "planet.h"
 #include "splash.h"
@@ -155,7 +158,7 @@ void initBackgrounds() {
     REG_BG3X_SUB = 0;
     REG_BG3Y_SUB = 0;
 }
-
+#endif
 
 
 // FPS calculation.
@@ -190,6 +193,7 @@ void vBlank(void){
 int main()
 {  
 
+#ifdef PATATER_TUTORIAL_BACKGROUNDS
     /*  Turn on the 2D graphics core. */
     powerOn(POWER_ALL_2D);
 
@@ -202,8 +206,8 @@ int main()
     displayStarField(); 
 //    displayPlanet();
     displaySplash();
+#endif
 
-//    return 0;
 
 
 
@@ -224,7 +228,7 @@ int main()
 
   //setup the sub screen for basic printing
   // TODO: this is said to be very heavy weight for basic console needs.
-//  consoleDemoInit();
+  consoleDemoInit();
 
   // Exception handler.
   defaultExceptionHandler();

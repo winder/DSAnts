@@ -70,8 +70,8 @@ class GameWorld: public Observer, public Subject
     void pickPoint(short x, short y);
 
     // getters
-    Underground* getUG(){ return ug; }
-    Surface* getSurface(){ return surf; }
+    MapDraw* getUG(){ return ug; }
+    MapDraw* getSurface(){ return surf; }
 
     // Coordinates a step in the game.
     void stepForward(int num);
@@ -115,8 +115,8 @@ class GameWorld: public Observer, public Subject
     // GAMEWORLD_STATE_SURFACE, GAMEWORLD_STATE_UNDERGROUND
     short STATE;
     MapDraw* curMap;
-    Underground *ug;
-    Surface *surf;
+    MapDraw* ug;
+    MapDraw* surf;
 
     // in most cases this will be true, but there may be cases where
     // I want to follow something else (another ant, spider, etc).

@@ -5,7 +5,7 @@
 #include "Grid.h"
 #include "MapDraw.h"
 
-class Underground: public MapDraw
+class Underground: public Grid
 {
   public:
     // This is structured to make a tunnel.  Need to change it to allow
@@ -17,6 +17,9 @@ class Underground: public MapDraw
     virtual ~Underground(){ /* superclass destructure deletes */}
 
     virtual void initGrid();
+
+    // Sets up the Patches for the underground.
+    void setupUnderground();
 
     // Adds an ant in a random location.
 //    void addAnt(Ant *a);

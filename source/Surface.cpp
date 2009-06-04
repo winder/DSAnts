@@ -7,17 +7,31 @@ Surface::Surface()
 
 void Surface::initGrid()
 {
-  getGrid()->setupSurface();
+  setupSurface();
 
   // Add a bunch of food in a cluster on the grid.
   makeFood();
 }
 
+// Makes everything empty.  Ant hills, barriers, etc need to be setup later.
+void Surface::setupSurface()
+{
+  // Connect the objects.
+  for (int x=0; x < WIDTH; x++)
+    for (int y=0; y < DEPTH; y++)
+    {
+      dd[x][y]->TYPE = PATCH_EMPTY;
+      // If for some reason this becomes necessary, cross the bridge.
+      // Otherwise a vector of thousands of patches doesn't seem too useful.
+      //clear(dd[x][y]);
+      dd[x][y]->location = GAMEWORLD_STATE_SURFACE;
+    }
+}
 
 void Surface::makeFood()
 {
   // snag a reference to the grid.
-  Grid* g = getGrid();
+//  Grid* g = getGrid();
 
   Patch* p;
   Patch* tl;
@@ -29,7 +43,7 @@ void Surface::makeFood()
   {
     randX = rand() % (WIDTH / 2);
     randY = rand() % DEPTH;
-    tl = getGrid()->getPatch(randX, randY);
+    tl = getPatch(randX, randY);
   }while (!EMPTY(tl));
 
 /*
@@ -45,7 +59,7 @@ void Surface::makeFood()
   {
     for (int y=0; y<=6; y++)
     {
-      g->addObject(p, PATCH_FOOD10);
+      addObject(p, PATCH_FOOD10);
       p = Grid::getRight(p);
     }
     tl = Grid::getDown(tl);

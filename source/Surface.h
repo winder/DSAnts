@@ -3,7 +3,7 @@
 
 #include "MapDraw.h"
 
-class Surface: public MapDraw
+class Surface: public Grid
 {
   public:
     // The surface is pretty much empty.
@@ -13,6 +13,9 @@ class Surface: public MapDraw
 
     // Sets up the initial state of the grid.
     void initGrid();
+
+    // Sets up the Patches for the surface.
+    void setupSurface();
 
     // Creates a patch of food.
     void makeFood();

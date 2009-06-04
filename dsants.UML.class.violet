@@ -24,8 +24,8 @@ TextureManager *tm</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>650.0</double> 
-     <double>238.0</double> 
+     <double>653.0</double> 
+     <double>539.0</double> 
     </void> 
    </object> 
   </void> 
@@ -39,8 +39,8 @@ TextureManager *tm</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>978.0</double> 
-     <double>998.0</double> 
+     <double>1267.0</double> 
+     <double>889.0</double> 
     </void> 
    </object> 
   </void> 
@@ -54,8 +54,8 @@ TextureManager *tm</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1089.0</double> 
-     <double>1003.0</double> 
+     <double>1383.0</double> 
+     <double>887.0</double> 
     </void> 
    </object> 
   </void> 
@@ -69,8 +69,8 @@ TextureManager *tm</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1416.0</double> 
-     <double>996.0</double> 
+     <double>1711.0</double> 
+     <double>891.0</double> 
     </void> 
    </object> 
   </void> 
@@ -90,8 +90,8 @@ Patch[WIDTH][DEPTH]</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1035.0</double> 
-     <double>861.0</double> 
+     <double>982.0</double> 
+     <double>757.0</double> 
     </void> 
    </object> 
   </void> 
@@ -112,8 +112,8 @@ int TYPE;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1271.0</double> 
-     <double>841.0</double> 
+     <double>1391.0</double> 
+     <double>740.0</double> 
     </void> 
    </object> 
   </void> 
@@ -127,8 +127,8 @@ int TYPE;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1204.0</double> 
-     <double>999.0</double> 
+     <double>1488.0</double> 
+     <double>893.0</double> 
     </void> 
    </object> 
   </void> 
@@ -142,8 +142,8 @@ int TYPE;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1310.0</double> 
-     <double>1002.0</double> 
+     <double>1595.0</double> 
+     <double>886.0</double> 
     </void> 
    </object> 
   </void> 
@@ -151,7 +151,9 @@ int TYPE;</string>
    <object id="ClassNode7" class="com.horstmann.violet.ClassNode"> 
     <void property="attributes"> 
      <void property="text"> 
-      <string>bool Black;</string> 
+      <string>bool Black;
+//feramone handling here
+// (ants are only creature that use it)</string> 
      </void> 
     </void> 
     <void property="name"> 
@@ -162,13 +164,13 @@ int TYPE;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1111.0</double> 
-     <double>614.0</double> 
+     <double>1278.0</double> 
+     <double>494.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode8" class="com.horstmann.violet.ClassNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
     <void property="attributes"> 
      <void property="text"> 
       <string>// Coordinates the 3D calls
@@ -189,13 +191,13 @@ draw(Patch*);</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>436.0</double> 
-     <double>398.0</double> 
+     <double>646.0</double> 
+     <double>18.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode9" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode8" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Worker</string> 
@@ -204,13 +206,13 @@ draw(Patch*);</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>991.0</double> 
-     <double>762.0</double> 
+     <double>1230.0</double> 
+     <double>643.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode10" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode9" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Breeder</string> 
@@ -219,13 +221,13 @@ draw(Patch*);</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1104.0</double> 
-     <double>757.0</double> 
+     <double>1343.0</double> 
+     <double>638.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode11" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode10" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Soldier</string> 
@@ -234,13 +236,13 @@ draw(Patch*);</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1212.0</double> 
-     <double>758.0</double> 
+     <double>1451.0</double> 
+     <double>639.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode12" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode11" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Main.</string> 
@@ -255,7 +257,7 @@ draw(Patch*);</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode13" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode12" class="com.horstmann.violet.ClassNode"> 
     <void property="attributes"> 
      <void property="text"> 
       <string>float x, y;
@@ -283,7 +285,7 @@ void Ortho();</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode14" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode13" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Creature</string> 
@@ -292,13 +294,13 @@ void Ortho();</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1115.0</double> 
-     <double>366.0</double> 
+     <double>1330.0</double> 
+     <double>307.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode15" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode14" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Spider</string> 
@@ -307,13 +309,13 @@ void Ortho();</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1028.0</double> 
-     <double>476.0</double> 
+     <double>1237.0</double> 
+     <double>413.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode16" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode15" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Worm</string> 
@@ -322,8 +324,8 @@ void Ortho();</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>1212.0</double> 
-     <double>482.0</double> 
+     <double>1424.0</double> 
+     <double>411.0</double> 
     </void> 
    </object> 
   </void> 
@@ -337,7 +339,7 @@ void Ortho();</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode17" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode16" class="com.horstmann.violet.ClassNode"> 
     <void property="attributes"> 
      <void property="text"> 
       <string>// Extended Interface
@@ -353,13 +355,13 @@ void initGrid = 0;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>650.0</double> 
-     <double>394.0</double> 
+     <double>434.0</double> 
+     <double>737.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode18" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode17" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Underground</string> 
@@ -368,13 +370,13 @@ void initGrid = 0;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>626.0</double> 
-     <double>588.0</double> 
+     <double>935.0</double> 
+     <double>892.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode19" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode18" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Surface</string> 
@@ -383,13 +385,13 @@ void initGrid = 0;</string>
    </object> 
    <object class="java.awt.geom.Point2D$Double"> 
     <void method="setLocation"> 
-     <double>712.0</double> 
-     <double>673.0</double> 
+     <double>1058.0</double> 
+     <double>889.0</double> 
     </void> 
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode20" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode19" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>TextureManager</string> 
@@ -404,7 +406,7 @@ void initGrid = 0;</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode21" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode20" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>UndergroundTextures</string> 
@@ -419,7 +421,7 @@ void initGrid = 0;</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode22" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode21" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>SurfaceTextures</string> 
@@ -434,7 +436,7 @@ void initGrid = 0;</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode23" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode22" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Input</string> 
@@ -449,7 +451,7 @@ void initGrid = 0;</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode24" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode23" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>Lighting</string> 
@@ -464,7 +466,7 @@ void initGrid = 0;</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode25" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode24" class="com.horstmann.violet.ClassNode"> 
     <void property="attributes"> 
      <void property="text"> 
       <string>vector &lt;Creature*&gt; ants
@@ -501,7 +503,7 @@ virtual bool winCondition()</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode26" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode25" class="com.horstmann.violet.ClassNode"> 
     <void property="attributes"> 
      <void property="text"> 
       <string>Ant* playerAnt;</string> 
@@ -521,7 +523,7 @@ virtual bool winCondition()</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode27" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode26" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>LevelOne</string> 
@@ -536,7 +538,7 @@ virtual bool winCondition()</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode28" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode27" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>LevelTwo</string> 
@@ -551,7 +553,7 @@ virtual bool winCondition()</string>
    </object> 
   </void> 
   <void method="addNode"> 
-   <object id="ClassNode29" class="com.horstmann.violet.ClassNode"> 
+   <object id="ClassNode28" class="com.horstmann.violet.ClassNode"> 
     <void property="name"> 
      <void property="text"> 
       <string>LevelThree</string> 
@@ -588,6 +590,79 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
   </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.NoteNode"> 
+    <void property="text"> 
+     <void property="text"> 
+      <string>MapDraw uses Static draw
+for making the 3D drawing
+and texture calls.
+In the &quot;MVC&quot; pattern this would
+be the &quot;View&quot;</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>784.0</double> 
+     <double>63.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.NoteNode"> 
+    <void property="text"> 
+     <void property="text"> 
+      <string>Underground &amp; Surface initialize the grid
+depending on the type of Map it is going to
+be.  They don&apos;t know about the textures, those
+still need to be setup elsewhere.
+In the &quot;MVC&quot; pattern these would be the &quot;Model&quot;.</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>920.0</double> 
+     <double>959.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object id="ClassNode29" class="com.horstmann.violet.ClassNode"> 
+    <void property="attributes"> 
+     <void property="text"> 
+      <string>// There may be some refactoring
+// needed, but implementing the Map
+// interface should be enough to create
+// new effects.</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>MapDrawFisheye</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>655.0</double> 
+     <double>739.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
+    <void property="bentStyle"> 
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
+    </void> 
+    <void property="endArrowHead"> 
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
+    </void> 
+   </object> 
+   <object idref="ClassNode8"/> 
+   <object idref="ClassNode7"/> 
+  </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
     <void property="bentStyle"> 
@@ -610,18 +685,6 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode10"/> 
-   <object idref="ClassNode7"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
-    </void> 
-    <void property="endArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
-    </void> 
-   </object> 
-   <object idref="ClassNode11"/> 
    <object idref="ClassNode7"/> 
   </void> 
   <void method="connect"> 
@@ -669,8 +732,8 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
     </void> 
    </object> 
-   <object idref="ClassNode15"/> 
    <object idref="ClassNode14"/> 
+   <object idref="ClassNode13"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -681,8 +744,8 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
     </void> 
    </object> 
-   <object idref="ClassNode16"/> 
-   <object idref="ClassNode14"/> 
+   <object idref="ClassNode15"/> 
+   <object idref="ClassNode13"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -694,7 +757,7 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode7"/> 
-   <object idref="ClassNode14"/> 
+   <object idref="ClassNode13"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -705,7 +768,7 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
     </void> 
    </object> 
-   <object idref="ClassNode17"/> 
+   <object idref="ClassNode16"/> 
    <object idref="ClassNode0"/> 
   </void> 
   <void method="connect"> 
@@ -717,20 +780,8 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
     </void> 
    </object> 
-   <object idref="ClassNode18"/> 
-   <object idref="ClassNode17"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
-    </void> 
-    <void property="endArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
-    </void> 
-   </object> 
+   <object idref="ClassNode20"/> 
    <object idref="ClassNode19"/> 
-   <object idref="ClassNode17"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -742,19 +793,7 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode21"/> 
-   <object idref="ClassNode20"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
-    </void> 
-    <void property="endArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
-    </void> 
-   </object> 
-   <object idref="ClassNode22"/> 
-   <object idref="ClassNode20"/> 
+   <object idref="ClassNode19"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -766,7 +805,7 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode0"/> 
-   <object idref="ClassNode20"/> 
+   <object idref="ClassNode19"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -803,18 +842,6 @@ against red ants for 10 minutes.</string>
    </object> 
    <object idref="ClassNode0"/> 
    <object idref="ClassNode4"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/> 
-    </void> 
-    <void property="endArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="V"/> 
-    </void> 
-   </object> 
-   <object idref="ClassNode17"/> 
-   <object idref="ClassNode8"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -849,8 +876,8 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/> 
     </void> 
    </object> 
+   <object idref="ClassNode24"/> 
    <object idref="ClassNode25"/> 
-   <object idref="ClassNode18"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -861,8 +888,8 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/> 
     </void> 
    </object> 
-   <object idref="ClassNode25"/> 
-   <object idref="ClassNode19"/> 
+   <object idref="ClassNode24"/> 
+   <object idref="ClassNode22"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -873,43 +900,7 @@ against red ants for 10 minutes.</string>
      <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/> 
     </void> 
    </object> 
-   <object idref="ClassNode25"/> 
-   <object idref="ClassNode26"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/> 
-    </void> 
-    <void property="startArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/> 
-    </void> 
-   </object> 
-   <object idref="ClassNode25"/> 
-   <object idref="ClassNode23"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/> 
-    </void> 
-    <void property="startArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/> 
-    </void> 
-   </object> 
-   <object idref="ClassNode25"/> 
-   <object idref="ClassNode13"/> 
-  </void> 
-  <void method="connect"> 
-   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
-    <void property="bentStyle"> 
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/> 
-    </void> 
-    <void property="endArrowHead"> 
-     <object class="com.horstmann.violet.ArrowHead" field="V"/> 
-    </void> 
-   </object> 
-   <object idref="ClassNode25"/> 
+   <object idref="ClassNode24"/> 
    <object idref="ClassNode12"/> 
   </void> 
   <void method="connect"> 
@@ -922,7 +913,31 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode24"/> 
-   <object idref="ClassNode12"/> 
+   <object idref="ClassNode11"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
+    <void property="bentStyle"> 
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/> 
+    </void> 
+    <void property="endArrowHead"> 
+     <object class="com.horstmann.violet.ArrowHead" field="V"/> 
+    </void> 
+   </object> 
+   <object idref="ClassNode23"/> 
+   <object idref="ClassNode11"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
+    <void property="bentStyle"> 
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
+    </void> 
+    <void property="endArrowHead"> 
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
+    </void> 
+   </object> 
+   <object idref="ClassNode26"/> 
+   <object idref="ClassNode24"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -934,7 +949,7 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode27"/> 
-   <object idref="ClassNode25"/> 
+   <object idref="ClassNode24"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -946,7 +961,31 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode28"/> 
-   <object idref="ClassNode25"/> 
+   <object idref="ClassNode24"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
+    <void property="bentStyle"> 
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
+    </void> 
+    <void property="endArrowHead"> 
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
+    </void> 
+   </object> 
+   <object idref="ClassNode17"/> 
+   <object idref="ClassNode4"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
+    <void property="bentStyle"> 
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/> 
+    </void> 
+    <void property="endArrowHead"> 
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/> 
+    </void> 
+   </object> 
+   <object idref="ClassNode18"/> 
+   <object idref="ClassNode4"/> 
   </void> 
   <void method="connect"> 
    <object class="com.horstmann.violet.ClassRelationshipEdge"> 
@@ -958,7 +997,19 @@ against red ants for 10 minutes.</string>
     </void> 
    </object> 
    <object idref="ClassNode29"/> 
-   <object idref="ClassNode25"/> 
+   <object idref="ClassNode0"/> 
+  </void> 
+  <void method="connect"> 
+   <object class="com.horstmann.violet.ClassRelationshipEdge"> 
+    <void property="bentStyle"> 
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/> 
+    </void> 
+    <void property="startArrowHead"> 
+     <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/> 
+    </void> 
+   </object> 
+   <object idref="ClassNode24"/> 
+   <object idref="ClassNode0"/> 
   </void> 
  </object> 
 </java> 
