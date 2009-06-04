@@ -423,7 +423,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
   else if (EMPTY(p))
   {
     int cl = p->chemLevel;
-    if (cl > 31)
+    if (cl > 100)
       cl = 31;
     material(31,31-cl,31-cl); // make it easier to see ants...
     // Check top, bottom, left, right and draw

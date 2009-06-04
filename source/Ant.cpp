@@ -3,7 +3,9 @@
 void Ant::handleFeramone()
 {
 //  INCREASE_FERAMONE(getPatch(), feramoneOutput);
-  SET_FERAMONE(getPatch(), feramoneOutput);
+  // only update feramone if it will be to more than it already is.
+  if (getPatch()->chemLevel < feramoneOutput)
+    SET_FERAMONE(getPatch(), feramoneOutput);
 }
 
 // This one should work as follows:
@@ -42,8 +44,13 @@ void Ant::forage()
       if ( cache != '\0' )
       {
 printf("drop");
+        // drop food, setup to go back on the prowl.
         if(drop(cache))
-           set_portaled( false );
+        {
+          feramoneOutput = 100;
+          set_portaled( false );
+          takePortals = true;
+        }
       }
       // if there was no place to put the food, wander till there is.
       else
@@ -56,7 +63,6 @@ printf("drop");
     else
     {
       goHome();
-      //wander();
       return;
     }
     //   drop food some place
@@ -65,7 +71,6 @@ printf("drop");
   }
 
   // Step 3. Not on surface, wander till on surface.
-  takePortals = false;
   // Wander around underground till get to surface
   if (this->getLocation() != GAMEWORLD_STATE_SURFACE)
   {

@@ -14,12 +14,16 @@ include $(DEVKITARM)/ds_rules
 # SOURCES is a list of directories containing source code
 # DATA is a list of directories containing data files
 # INCLUDES is a list of directories containing header files
+# GRAPHICS is a list of directories containing files to be processed by grit
+# AUDIO is a list of directories containing files to be processed by mmutil
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
+GRAPHICS	:=	gfx
+AUDIO	:= audio
 GDBLINE := 0x0200215C
 MOUNTDIR := /media/disk
 #---------------------------------------------------------------------------------
@@ -64,7 +68,10 @@ ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+			$(foreach dir,$(DATA),$(CURDIR)/$(dir))	\
+			$(foreach dir,$(GRAPHICS),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(AUDIO),$(CURDIR)/$(dir))
+
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
@@ -72,6 +79,7 @@ CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+PNGFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -88,7 +96,10 @@ endif
 #---------------------------------------------------------------------------------
 
 export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
-			$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+			$(PNGFILES:.png=.o) \
+			$(CPPFILES:.cpp=.o) \
+			$(CFILES:.c=.o) \
+			$(SFILES:.s=.o)
 
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
@@ -142,8 +153,21 @@ $(OUTPUT).elf	:	$(OFILES)
 	@echo $(notdir $<)
 	@$(bin2o)
 
+#---------------------------------------------------------------------------------
+# This rule creates assembly source files using grit.
+# grit takes an image file and a .grit file describing how the file is to be
+# processed.
+#---------------------------------------------------------------------------------
+%.s %.h	:	%.png %.grit
+#---------------------------------------------------------------------------------
+	grit $< -fts -o$*
+
+#---------------------------------------------------------------------------------
 
 -include $(DEPENDS)
+
+
+
 
 #---------------------------------------------------------------------------------------
 endif
