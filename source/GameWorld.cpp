@@ -375,8 +375,10 @@ void GameWorld::createAnt( Patch* pat, int location )
 {
     Ant *t = new WorkerAnt( pat, location);
     t->setAction( ANT_ACTION_WANDER );
-    // set home:
-    t->setHome( GAMEWORLD_STATE_UNDERGROUND );
+    // set home to the location:
+    t->setHome( location );
+
+    // find which to use based on location
     black.push_back(t);
 }
 
@@ -425,6 +427,7 @@ void GameWorld::update(int value)
   {
     // add a new ant on press.
     Ant *t = new WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+    t->setHome( GAMEWORLD_STATE_UNDERGROUND );
 //    t->setAction( ANT_ACTION_WANDER );
     t->setTakePortals(true);
     t->setAction( ANT_ACTION_FORAGE );

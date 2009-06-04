@@ -35,15 +35,16 @@ void Ant::forage()
   // 1. If carrying food, go home.
   if (FOODi(getCarrying()))
   {
-    // 2.   If in base, drop food or look for a spot to drop food.
-//    if (this->getLocation() == getHome())
-    if (getLocation() != GAMEWORLD_STATE_SURFACE)
+    // 2. If in home base, drop food or look for a spot to drop food.
+    if (getLocation() == getHome())
     {
+      // Have food, in Base, don't take a portal until the food is dropped.
+      takePortals=false;
+
       // if we are home, look for a spot to drop the food.
       cache = findFoodDropAdjacent();
       if ( cache != '\0' )
       {
-printf("drop");
         // drop food, setup to go back on the prowl.
         if(drop(cache))
         {
@@ -65,9 +66,6 @@ printf("drop");
       goHome();
       return;
     }
-    //   drop food some place
-    //   not carrying anymore, lower feramone output.
-    //   feramoneOutput = 100;
   }
 
   // Step 3. Not on surface, wander till on surface.
@@ -163,60 +161,6 @@ printf("drop");
   direction = dir[(4-cold_dirs)+randDir];
   // We are done, so AI is no longer needed.
   setAI(false);
-/*
-  int randWiggle = 2;
-  int followChem = -1;
-  // If it is walkable, and not turned around, see if other criteria are met
-  if ((cache->bottom) && directionIsOk(0, directionOld, cache->bottom))
-  {
-    // if cache is greater than the wiggle value, set the direction.
-    if (randWiggle < cache->bottom->chemLevel)
-    {
-      followChem = cache->bottom->chemLevel;
-      direction = 0;
-    }
-  }
-  if ((cache->right) && directionIsOk(1, directionOld, cache->right))
-  {
-    // if this chemLevel is greater than the current trail.
-    if (cache->right->chemLevel > followChem)
-    {
-      if (randWiggle < cache->right->chemLevel)
-      {
-        followChem = cache->right->chemLevel;
-        direction = 1;
-      }
-    }
-  }
-  if ((cache->left) && directionIsOk(2, directionOld, cache->left))
-  {
-    if (cache->left->chemLevel > followChem)
-    {
-      if (randWiggle < cache->left->chemLevel)
-      {
-        followChem = cache->left->chemLevel;
-        direction = 2;
-      }
-    }
-  }
-  if ((cache->top) && directionIsOk(3, directionOld, cache->top))
-  {
-    if (cache->top->chemLevel > followChem)
-    {
-      if (randWiggle < cache->top->chemLevel)
-      {
-        followChem = cache->top->chemLevel;
-        direction = 3;
-      }
-    }
-  }
-
-  // if no trail to follow, go random.
-  if (followChem == -1)
-    wander();
-  else
-    setAI(false);
-*/
 }
 
 // Two possible ways to do this...
