@@ -22,6 +22,9 @@ class Creature;
 #define FOODi(X) ((X == PATCH_FOOD1) ||(X == PATCH_FOOD2) ||(X == PATCH_FOOD3) ||(X == PATCH_FOOD4) || (X == PATCH_FOOD5)\
  ||(X == PATCH_FOOD6) ||(X == PATCH_FOOD7) ||(X == PATCH_FOOD8) ||(X == PATCH_FOOD9) ||(X == PATCH_FOOD10))
 
+#define FOODFULL(X) (FOODFULLi(X->TYPE))
+#define FOODFULLi(X) (X == PATCH_FOOD10)
+
 // Is an egg
 #define EGG(X) EGGi(X->TYPE)
 #define EGGi(X) ((X == PATCH_EGG1) ||(X == PATCH_EGG2) ||(X == PATCH_EGG3) ||(X == PATCH_EGG4) || (X == PATCH_EGG5))

@@ -367,6 +367,8 @@ void GameWorld::createAnt( Patch* pat, int location )
 {
     Ant *t = new WorkerAnt( pat, location);
     t->setAction( ANT_ACTION_WANDER );
+    // set home:
+    t->setHome( GAMEWORLD_STATE_UNDERGROUND );
     black.push_back(t);
 }
 

@@ -133,12 +133,17 @@ class Creature
     //#ifdef __DEBUG
     void printDebug();
     //#endif
+    inline void set_portaled(bool b){ portaled = b; }
 
     // save the direction between steps to prevent re-calculation.
     int direction;
     int directionOld; // ant wants to avoid turning around.
     // if false, will not go through portals.
     bool takePortals;
+
+    // utility:
+    Patch* findEmptyAdjacent();
+    Patch* findFoodDropAdjacent();
   private:
     // these are used to change offsetX / offsetY and keep the direction correct.
     void incrementOffsetX();

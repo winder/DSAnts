@@ -33,15 +33,35 @@ void Ant::forage()
   // 1. If carrying food, go home.
   if (FOODi(getCarrying()))
   {
-    // 2.   If in base, drop food.
-
-    // if (this->getLocation() == mah base)
+    // 2.   If in base, drop food or look for a spot to drop food.
+//    if (this->getLocation() == getHome())
+    if (getLocation() != GAMEWORLD_STATE_SURFACE)
+    {
+      // if we are home, look for a spot to drop the food.
+      cache = findFoodDropAdjacent();
+      if ( cache != '\0' )
+      {
+printf("drop");
+        if(drop(cache))
+           set_portaled( false );
+      }
+      // if there was no place to put the food, wander till there is.
+      else
+      {
+        wander();
+        return;
+      }
+    }
+    // otherwise we are on the surface with food, so go home.
+    else
+    {
+      goHome();
+      //wander();
+      return;
+    }
     //   drop food some place
     //   not carrying anymore, lower feramone output.
     //   feramoneOutput = 100;
-    goHome();
-    //wander();
-    return;
   }
 
   // Step 3. Not on surface, wander till on surface.
@@ -65,6 +85,7 @@ void Ant::forage()
       // 4. If food, pickup, set feramone output = 1000:
       // 5.   Pickup food, mark food spot with feramone, go home
       pickup( cache );
+      set_portaled( false );
       feramoneOutput = 1000;
       SET_FERAMONE( cache, feramoneOutput);
       takePortals = true;

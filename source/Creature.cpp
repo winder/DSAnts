@@ -607,6 +607,69 @@ void Creature::decrementOffsetY()
   clampDirections();
 }
 
+// I'm seeing a lot of repeat code doing this, a helper function will reduce
+// chance of errors later on.
+Patch* Creature::findEmptyAdjacent()
+{
+  Patch* cache = getPatch();
+  if( EMPTY(cache) )
+    return cache;
+  else if( EMPTY(cache->right) )
+    return cache->right;
+  else if( EMPTY(cache->left) )
+    return cache->left;
+  else if( cache->top && EMPTY(cache->top) )
+      return cache->top;
+  else if( cache->bottom && EMPTY(cache->bottom) )
+    return cache->bottom;
+  // top right
+  else if ( (WALKABLE(cache->right) || WALKABLE(cache->top)) && EMPTY(cache->right->top) )
+    return cache->right->top;
+  // bottom right
+  else if ( (WALKABLE(cache->right) || WALKABLE(cache->bottom)) && EMPTY(cache->right->bottom) )
+    return cache->right->bottom;
+  // top left
+  else if ( (WALKABLE(cache->left) || WALKABLE(cache->top)) && EMPTY(cache->left->top) )
+    return cache->left->top;
+  // bottom left
+  else if ( (WALKABLE(cache->left) || WALKABLE(cache->bottom)) && EMPTY(cache->left->bottom) )
+    return cache->left->bottom;
+  return '\0';
+}
+
+Patch* Creature::findFoodDropAdjacent()
+{
+  Patch* cache = getPatch();
+
+  if( (FOOD(cache) && !FOODFULL(cache)) || EMPTY(cache) )
+    return cache;
+  else if((FOOD(cache->right) && !FOODFULL(cache->right)) || EMPTY(cache->right) )
+    return cache->right;
+  else if((FOOD(cache->left) && !FOODFULL(cache->left)) || EMPTY(cache->left) )
+    return cache->left;
+  else if( cache->top && ((FOOD(cache->top) && !FOODFULL(cache->top)) || EMPTY(cache->top) ))
+      return cache->top;
+  else if( cache->bottom && ((FOOD(cache->bottom) && !FOODFULL(cache->bottom)) || EMPTY(cache->bottom) ))
+    return cache->bottom;
+  // top right
+  else if ( (WALKABLE(cache->right) || WALKABLE(cache->top)) && 
+    ((FOOD(cache->right->top) && !FOODFULL(cache->right->top)) || (EMPTY(cache->right->top))))
+    return cache->right->top;
+  // bottom right
+  else if ( (WALKABLE(cache->right) || WALKABLE(cache->bottom)) &&
+    ((FOOD(cache->right->bottom) && !FOODFULL(cache->right->bottom)) || EMPTY(cache->right->bottom)))
+    return cache->right->bottom;
+  // top left
+  else if ( (WALKABLE(cache->left) || WALKABLE(cache->top)) &&
+    ((FOOD(cache->left->top) && !FOODFULL(cache->left->top)) || EMPTY(cache->left->top)))
+    return cache->left->top;
+  // bottom left
+  else if ( (WALKABLE(cache->left) || WALKABLE(cache->bottom)) &&
+    ((FOOD(cache->left->bottom) && !FOODFULL(cache->left->bottom)) || EMPTY(cache->left->bottom)))
+    return cache->left->bottom;
+  return '\0';
+}
+
 //#ifdef __DEBUG
 void Creature::printDebug()
 {

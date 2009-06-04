@@ -18,7 +18,6 @@ class QueenAnt: public Ant
     //virtual void forage();
 
   private:
-    Patch* findEmptyAdjacent();
     short gestation;
 };
 
