@@ -1,11 +1,38 @@
 #include "Ant.h"
 
+// Feramone's "splash"
 void Ant::handleFeramone()
 {
+  Patch* cur = getPatch();
+
 //  INCREASE_FERAMONE(getPatch(), feramoneOutput);
   // only update feramone if it will be to more than it already is.
-  if (getPatch()->chemLevel < feramoneOutput)
-    SET_FERAMONE(getPatch(), feramoneOutput);
+  if (cur->chemLevel < feramoneOutput)
+//    INCREASE_FERAMONE(cur, feramoneOutput);
+    INCREASE_FERAMONE(cur, feramoneOutput);
+
+  // chemical "splash" to each side as ant moves:
+  // * = ants trail
+  // - = chemical "splash" once
+  // + = chemical "splash" twice
+  //  | |-|+|*|-|
+  //  |-|*|*|*|-|
+  //  |-|*|+|-| |
+
+  Patch* last = lastVisited(1);
+  Patch* last2 = lastVisited(2);
+
+  int splash = feramoneOutput * 0.5;
+
+  // If it isn't the current, next node (cur) or last node (last2) splash it.
+  if ((last->top!=last2) && (last->top!=cur))
+    INCREASE_FERAMONE(last->top, splash);
+  if ((last->bottom!=last2) && (last->bottom!=cur))
+    INCREASE_FERAMONE(last->bottom, splash);
+  if ((last->left!=last2) && (last->left!=cur))
+    INCREASE_FERAMONE(last->left, splash);
+  if ((last->right!=last2) && (last->right!=cur))
+    INCREASE_FERAMONE(last->right, splash);
 }
 
 // This one should work as follows:
@@ -28,6 +55,8 @@ void Ant::handleFeramone()
 // 8.   If on surface and no HOT trail, go to a spot with no feramone
 // 9.     Move to spot with no feramone, Mark feramone (output = 100)
 // 10.  If no spot with no feramone, wander
+
+// TODO: just call forage recursively when the state changes, there is a little repeat code in there right now.
 void Ant::forage()
 {
   Patch *cache;
@@ -48,7 +77,7 @@ void Ant::forage()
         // drop food, setup to go back on the prowl.
         if(drop(cache))
         {
-          feramoneOutput = 100;
+          feramoneOutput = FERAMONE_LOW;
           set_portaled( false );
           takePortals = true;
         }
@@ -74,16 +103,18 @@ void Ant::forage()
   {
     // TODO: set these as little as necessary.
     takePortals = true;
-    feramoneOutput = 100;
+    feramoneOutput = FERAMONE_LOW;
     wander();
     return;
   }
   // If we aren't underground, look for food
   else
   {
+    // not on surface, no food
+    takePortals = false;
     // sometimes the Ant will eat the food before it gets home, so need to
     // make sure the feramone is set correctly.
-    feramoneOutput = 100;
+    feramoneOutput = FERAMONE_LOW;
     cache = checkForFood();
     // Found food, pick it up.
     if (cache != '\0')
@@ -92,15 +123,18 @@ void Ant::forage()
       // 5.   Pickup food, mark food spot with feramone, go home
       pickup( cache );
       set_portaled( false );
-      feramoneOutput = 1000;
+      feramoneOutput = FERAMONE_HIGH;
 
-      // set feramone where standing.
+      // set feramone (with new output) where standing.
       handleFeramone();
       // set feramone at food (so ants will move there once the
       // pile is gone).
-      SET_FERAMONE( cache, feramoneOutput);
+      INCREASE_FERAMONE( cache, feramoneOutput+1);
       takePortals = true;
 
+      // TODO: clear memory or follow it?
+      // finally, we're turning around, so reset the ants memory.
+      clearVisited();
       // go Home.
       goHome();
       //wander();
@@ -119,7 +153,21 @@ void Ant::forage()
 
   // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
   // TODO: this, very important, but see if I can get them to find food first.
-
+  if (sort[0]->chemLevel > HOT_TRAIL_LIMIT)
+  {
+    if ( !checkVisited(sort[0]) )
+    {
+      direction = dir[0];
+      setAI(false);
+      return;
+    }
+    else if ( (sort[1]->chemLevel > HOT_TRAIL_LIMIT) && !checkVisited(sort[1]) )
+    {
+      direction = dir[1];
+      setAI(false);
+      return;
+    }
+  }  
 
   // count how many cold trails there are.
   int cold_dirs = 0;
@@ -176,6 +224,37 @@ void Ant::forage()
 // 3.   remember general direction and walk that way
 void Ant::goHome()
 {
+/*
+  Patch* cache = findPortalAdjacent();
+  if (cache != '\0')
+  {
+    setPatch(cache);
+    handlePortal();
+  }
+ 
+
+  // sort all adjacent patches by chemical level.
+  Patch* sort[4];
+  int dir[4] = {0,1,2,3};
+  sortAdjacentPatchByChem(cache, sort, dir); 
+
+
+  // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
+  // TODO: this, very important, but see if I can get them to find food first.
+  if ( !checkVisited(sort[0]) )
+  {
+    direction = dir[0];
+    setAI(false);
+    return;
+  }
+  else if ( (sort[1]->chemLevel > HOT_TRAIL_LIMIT) && !checkVisited(sort[1]) )
+  {
+    direction = dir[1];
+    setAI(false);
+    return;
+  }
+*/
+  // if no hot trail...
   goHomeCheating();
 }
 

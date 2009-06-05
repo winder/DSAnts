@@ -26,6 +26,7 @@ class Map
       }
     virtual ~Map(){ delete grid; }
 
+    void gameTick(int num){ grid->gameTick(num); }
     //virtual void initGrid() = 0;
 
     // Adds an ant in a random location.

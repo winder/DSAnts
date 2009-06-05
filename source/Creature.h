@@ -70,6 +70,21 @@ class Creature
           visited_index = 0;
       }
 
+    // go back in the ants "memory" i places
+    // 1 = the prior node
+    Patch* lastVisited(int i)
+      {
+        // can't go back too far.
+        if (i > MAX_VISIT_MEMORY-1) return '\0';
+
+        // loop circular array.
+        if (visited_index-i < 0)
+          return visited[MAX_VISIT_MEMORY + (visited_index - i)];
+
+        // no loop needed
+        return visited[visited_index-i];
+      }
+
     virtual void handleFeramone();
     // This lets the ant move on its own accord, influenced by:
     //    -feramone level of adjacent tiles
@@ -144,6 +159,7 @@ class Creature
     // utility:
     Patch* findEmptyAdjacent();
     Patch* findFoodDropAdjacent();
+    Patch* findPortalAdjacent();
   private:
     // these are used to change offsetX / offsetY and keep the direction correct.
     void incrementOffsetX();

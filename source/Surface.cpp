@@ -2,6 +2,7 @@
 
 Surface::Surface()
 {
+  chemicalTick = 0;
   initGrid();
 }
 
@@ -66,4 +67,23 @@ void Surface::makeFood()
     p = tl;
   }
 
+}
+
+void Surface::gameTick(int num)
+{
+  chemicalTick += num;
+  if (chemicalTick > CHEMICAL_DECAY_FREQUENCY)
+  {
+    chemicalTick -= CHEMICAL_DECAY_FREQUENCY;
+    chemicalDecay(0.9);
+  }
+}
+
+void Surface::chemicalDecay(float f)
+{
+  for (int x=0; x < WIDTH; x++)
+    for (int y=0; y < DEPTH; y++)
+    {
+      dd[x][y]->chemLevel *= f;
+    }
 }

@@ -138,7 +138,6 @@ bool Creature::moveTo(Patch *pat, bool force)
     REMOVE_SPOT(p, this);
     t = true;
     p = pat;
-    handleFeramone();
   }
   // This is what it looks like with macro's
   else if (AVAILABLE_SPOT(pat))
@@ -508,6 +507,7 @@ void Creature::wander()
            (!WALKABLE(cache->left)   || checkVisited(cache->left))  &&
            (!WALKABLE(cache->bottom) || checkVisited(cache->bottom)) )
       {
+        // TODO: call the "hugWall" algorithm.
         clearVisited();
         wander();
         return;
@@ -667,6 +667,41 @@ Patch* Creature::findFoodDropAdjacent()
   else if ( (WALKABLE(cache->left) || WALKABLE(cache->bottom)) &&
     ((FOOD(cache->left->bottom) && !FOODFULL(cache->left->bottom)) || EMPTY(cache->left->bottom)))
     return cache->left->bottom;
+  return '\0';
+}
+
+Patch* Creature::findPortalAdjacent()
+{
+  Patch* cache = getPatch();
+
+  if( PORTAL(cache) )
+    return cache;
+  else if((PORTAL(cache->right)))
+    return cache->right;
+  else if((PORTAL(cache->left)))
+    return cache->left;
+  else if( cache->top && ((PORTAL(cache->top))))
+      return cache->top;
+  else if( cache->bottom && ((PORTAL(cache->bottom))))
+    return cache->bottom;
+/*
+  // top right
+  else if ( (WALKABLE(cache->right) || WALKABLE(cache->top)) && 
+    ((PORTAL(cache->right->top))))
+    return cache->right->top;
+  // bottom right
+  else if ( (WALKABLE(cache->right) || WALKABLE(cache->bottom)) &&
+    ((PORTAL(cache->right->bottom))))
+    return cache->right->bottom;
+  // top left
+  else if ( (WALKABLE(cache->left) || WALKABLE(cache->top)) &&
+    ((PORTAL(cache->left->top))))
+    return cache->left->top;
+  // bottom left
+  else if ( (WALKABLE(cache->left) || WALKABLE(cache->bottom)) &&
+    ((PORTAL(cache->left->bottom))))
+    return cache->left->bottom;
+*/
   return '\0';
 }
 

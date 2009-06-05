@@ -426,33 +426,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
   }
   else if (EMPTY(p))
   {
-    int cl = p->chemLevel;
-    if (cl > 100)
-      cl = 31;
-    material(31,31-cl,31-cl); // make it easier to see ants...
-    // Check top, bottom, left, right and draw
-    // empty patch with paths that can link to
-    // whichever are missing, this will either be a bunch of call lists
-    // or, more likely, something I do procedurally:
-    //     EMPTY_LEFT
-    //     EMPTY_RIGHT
-    //     EMPTY_UP
-    //     EMPTY_DOWN
-    //     EMPTY_LEFT_RIGHT
-    //     EMPTY_LEFT_UP
-    //     EMPTY_LEFT_DOWN
-    //     EMPTY_RIGHT_UP
-    //     EMPTY_RIGHT_DOWN
-    //     EMPTY_UP_DOWN
-    //     EMPTY_LEFT_RIGHT_UP
-    //     EMPTY_LEFT_RIGHT_DOWN
-    //     EMPTY_LEFT_UP_DOWN
-    //     EMPTY_UP_RIGHT_DOWN
-    //     EMPTY_UP_RIGHT_LEFT_DOWN
-
-    // this rectangle is assuming I will go with the looking-at-wrong-side approach.
-    StaticDraw::drawRect(x, y, 0, s, s, tm);
-
+    drawGroundPatch(x, y, p);
     // special drawing for this now....
     return;
   }
@@ -470,8 +444,7 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
     }
     else
     {
-      material(31,31,31); // make it easier to see ants...
-      StaticDraw::drawRect(x, y, 0, s, s, tm);
+      drawGroundPatch(x, y, p);
       return;
     }
   }
@@ -512,8 +485,8 @@ void MapDraw::drawPatch(float x, float y, Patch *p)
 void MapDraw::drawEggPatch(float x, float y, Patch *p)
 {
   // draw empty at bottom.
-  material(31,31,31);
-  StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+  drawGroundPatch(x, y, p);
+
   material(31,21,10);
   int factor = 1;
   switch(p->TYPE)
@@ -551,8 +524,8 @@ void MapDraw::drawEggPatch(float x, float y, Patch *p)
 void MapDraw::drawFoodPatch(float x, float y, Patch *p)
 {
   // draw empty at bottom.
-  material(31,31,31);
-  StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+  drawGroundPatch(x, y, p);
+
   material(1,31,1);
   int factor = 1;
   switch(p->TYPE)
@@ -603,6 +576,36 @@ void MapDraw::drawFoodPatch(float x, float y, Patch *p)
   }
   
   StaticDraw::drawBox(x, y, 0, (2+factor)*(MODEL_SCALE/14), (2+factor)*(MODEL_SCALE/14), (MODEL_SCALE/15), tm);
+}
+
+void MapDraw::drawGroundPatch(float x, float y, Patch *p)
+{
+  int cl = p->chemLevel * 0.01;
+  if (cl > 31)
+    cl = 31;
+  material(31,31-cl,31-cl); // make it easier to see ants...
+  // Check top, bottom, left, right and draw
+  // empty patch with paths that can link to
+  // whichever are missing, this will either be a bunch of call lists
+  // or, more likely, something I do procedurally:
+  //     EMPTY_LEFT
+  //     EMPTY_RIGHT
+  //     EMPTY_UP
+  //     EMPTY_DOWN
+  //     EMPTY_LEFT_RIGHT
+  //     EMPTY_LEFT_UP
+  //     EMPTY_LEFT_DOWN
+  //     EMPTY_RIGHT_UP
+  //     EMPTY_RIGHT_DOWN
+  //     EMPTY_UP_DOWN
+  //     EMPTY_LEFT_RIGHT_UP
+  //     EMPTY_LEFT_RIGHT_DOWN
+  //     EMPTY_LEFT_UP_DOWN
+  //     EMPTY_UP_RIGHT_DOWN
+  //     EMPTY_UP_RIGHT_LEFT_DOWN
+
+  // this rectangle is assuming I will go with the looking-at-wrong-side approach.
+  StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
 }
 
 void MapDraw::material(int r, int g, int b)

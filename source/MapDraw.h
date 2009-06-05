@@ -56,6 +56,7 @@ class MapDraw: public Map
     void drawPatch(float x, float y, Patch *p);
     void drawFoodPatch(float x, float y, Patch *p);
     void drawEggPatch(float x, float y, Patch *p);
+    void drawGroundPatch(float x, float y, Patch *p);
 
     // This function does picking to find out where in the grid the touch occurred.
     bool pickPoint(int x, int y, Camera &cam);

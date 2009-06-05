@@ -62,11 +62,15 @@ enum PATCH_types
 // Number of ticks the ant will try to walk in a direction that is not clear
 #define WALK_RETRY_NUM 100
 // The number of tiles the ant will remember not to re-walk on
-#define MAX_VISIT_MEMORY 5
+#define MAX_VISIT_MEMORY 9
 
 // Feramone magic numbers
-#define HOT_TRAIL_LIMIT 100
-#define COLD_TRAIL 10
+#define HOT_TRAIL_LIMIT 1000
+#define COLD_TRAIL 100
+#define FERAMONE_LOW 1
+#define FERAMONE_HIGH 1000
+// 60 = 1 second
+#define CHEMICAL_DECAY_FREQUENCY 600
 
 // Draw scale and animation between grid stuff.
 // ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes

@@ -37,12 +37,15 @@ class Creature;
 #define EMPTY(X) (EMPTYi(X->TYPE))
 #define EMPTYi(X) ((X == PATCH_EMPTY))
 
+// A Portal
+#define PORTAL(X) (X->portal && WALKABLE(cache->portal))
+
 // Collision detection checks
 #define NOANTS(X) ((X->occupant_one == '\0') && (X->occupant_two == '\0'))
 
 // swap these to disable collision detection
-//#define AVAILABLE_SPOT(X) (true)
-#define AVAILABLE_SPOT(X) ((X->occupant_one == '\0') || (X->occupant_two == '\0'))
+#define AVAILABLE_SPOT(X) (true)
+//#define AVAILABLE_SPOT(X) ((X->occupant_one == '\0') || (X->occupant_two == '\0'))
 #define SET_SPOT(X, Y) {if(AVAILABLE_SPOT_ONE(X)) SET_SPOT_ONE(X, Y); else if (AVAILABLE_SPOT_TWO(X)) SET_SPOT_TWO(X, Y);}
 #define REMOVE_SPOT(X, Y) {if(SPOT_ONE_IS(X, Y)) SET_SPOT_ONE(X, '\0'); else if (SPOT_TWO_IS(X, Y)) SET_SPOT_TWO(X, '\0');}
 

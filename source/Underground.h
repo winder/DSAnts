@@ -21,6 +21,10 @@ class Underground: public Grid
     // Sets up the Patches for the underground.
     void setupUnderground();
 
+    // This will generate a random nest with 'size' connected empty spaces
+    // It will have one entrance which is always at (0,20,0)
+    void generateNest(int size);
+
     // Adds an ant in a random location.
 //    void addAnt(Ant *a);
 

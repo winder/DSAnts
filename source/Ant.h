@@ -48,6 +48,9 @@ class Ant: public Creature
     virtual void setHome(int h){ location_home = h; }
     virtual int getHome(){ return location_home; }
 
+    void setFeramoneOutput(int f){ feramoneOutput = f; }
+    int getFeramoneOutput(){ return feramoneOutput; }
+
     // return as argument.
     void sortAdjacentPatchByChem(Patch* center, Patch* sort[], int direction[]);
 

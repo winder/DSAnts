@@ -20,6 +20,9 @@ class Grid
     // Default initializes Grid to underground.
     Grid();
 
+    // if the map needs to keep track of the game speed.
+    virtual void gameTick(int num){ }
+
     // Make the grid loop on the Y axis.
     void setLoopY();
 
@@ -44,10 +47,6 @@ class Grid
     Patch* getLeft(int x, int y);
     Patch* getTop(int x, int y);
     Patch* getBottom(int x, int y);
-
-    // This will generate a random nest with 'size' connected empty spaces
-    // It will have one entrance which is always at (0,20,0)
-    void generateNest(int size);
 
     // Keep track of cleared tiles in a vector.
     void clear(Patch* p);

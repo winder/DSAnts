@@ -36,6 +36,7 @@ GameWorld::GameWorld()
   tmp->setLocation( STATE );
   tmp->setCarrying(PATCH_FOOD1);  
   tmp->setTakePortals( true );
+  tmp->setFeramoneOutput(100);
   p = new Player(tmp);
 
 
@@ -352,6 +353,10 @@ void GameWorld::stepForward(int num)
     STATE = p->getPlayerAnt()->getLocation();
     curMap = getMap(STATE);
   }
+
+  // update the maps.
+  ug->gameTick(num);
+  surf->gameTick(num);
 
   // Shift the map to center the player (normal circumstances)
   if (followingPlayer)
