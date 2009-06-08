@@ -60,7 +60,8 @@ enum PATCH_types
 #define GRID_SIZE 8
 
 // Number of ticks the ant will try to walk in a direction that is not clear
-#define WALK_RETRY_NUM 100
+//#define WALK_RETRY_NUM 100
+#define WALK_RETRY_NUM 1
 // The number of tiles the ant will remember not to re-walk on
 #define MAX_VISIT_MEMORY 9
 

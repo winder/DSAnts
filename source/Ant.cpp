@@ -52,6 +52,7 @@ void Ant::handleFeramone()
 // 5.   Pickup food, mark food spot with feramone, go home
 // 6. If no food, set feramone output = 100:
 // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
+// 7.5.   If following a HOT trail, don't turn unless must turn.
 // 8.   If on surface and no HOT trail, go to a spot with no feramone
 // 9.     Move to spot with no feramone, Mark feramone (output = 100)
 // 10.  If no spot with no feramone, wander
@@ -150,23 +151,12 @@ void Ant::forage()
   sortAdjacentPatchByChem(cache, sort, dir); 
 
 
-  // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
-  // TODO: this, very important, but see if I can get them to find food first.
-  if (sort[0]->chemLevel > HOT_TRAIL_LIMIT)
-  {
-    if ( !checkVisited(sort[0]) )
-    {
-      direction = dir[0];
-      setAI(false);
-      return;
-    }
-    else if ( (sort[1]->chemLevel > HOT_TRAIL_LIMIT) && !checkVisited(sort[1]) )
-    {
-      direction = dir[1];
-      setAI(false);
-      return;
-    }
-  }  
+  // 7. and 7.5
+  // if there is a trail to follow, all is handled.
+  if (followTrail(sort, dir))
+    return;
+  // else... need to follow a cold trail
+
 
   // count how many cold trails there are.
   int cold_dirs = 0;
@@ -223,38 +213,54 @@ void Ant::forage()
 // 3.   remember general direction and walk that way
 void Ant::goHome()
 {
-/*
-  Patch* cache = findPortalAdjacent();
-  if (cache != '\0')
-  {
-    setPatch(cache);
-    handlePortal();
-  }
- 
+//  Patch* cache = findPortalAdjacent();
+//  if (cache != '\0')
+//  {
+//    setPatch(cache);
+//    handlePortal();
+//  }
 
-  // sort all adjacent patches by chemical level.
+//  if (followTrail())
+//    return;
+//  else
+    // if no hot trail...
+  goHomeCheating();
+}
+
+bool Ant::followTrail()
+{
   Patch* sort[4];
   int dir[4] = {0,1,2,3};
-  sortAdjacentPatchByChem(cache, sort, dir); 
+  sortAdjacentPatchByChem(getPatch(), sort, dir); 
+  return followTrail(sort, dir);
+}
 
+bool Ant::followTrail(Patch* sort[], int dir[])
+{
+
+  //7.5: If following a HOT trail, don't turn unless must turn.
+  // check if the direction ant is already heading is HOT and the direction is OK.
+  int lastDir = reverseDirection( directionOld );
+  for(int i=0; i<4; i++)
+    if((dir[i] == lastDir) && ( sort[i]->chemLevel > HOT_TRAIL_LIMIT ))
+      {
+        direction = dir[i];
+        setAI(false);
+        return true;
+      }
 
   // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
-  // TODO: this, very important, but see if I can get them to find food first.
-  if ( !checkVisited(sort[0]) )
+  for (int i=0; i< 4 && (sort[i]->chemLevel > HOT_TRAIL_LIMIT); i++)
   {
-    direction = dir[0];
-    setAI(false);
-    return;
+    if (!checkVisited(sort[i]))
+    {
+      direction = dir[i];
+      setAI(false);
+      return true;
+    }
   }
-  else if ( (sort[1]->chemLevel > HOT_TRAIL_LIMIT) && !checkVisited(sort[1]) )
-  {
-    direction = dir[1];
-    setAI(false);
-    return;
-  }
-*/
-  // if no hot trail...
-  goHomeCheating();
+
+  return false;
 }
 
 // This way is cheating, because it uses a memory of where the entrance is.

@@ -150,6 +150,13 @@ class Creature
     //#endif
     inline void set_portaled(bool b){ portaled = b; }
 
+    static int reverseDirection(int d)
+      {
+        if (d == 0) return 3;
+        else if (d == 1) return 2;
+        else if (d == 2) return 1;
+        else return 0;
+      }
     // save the direction between steps to prevent re-calculation.
     int direction;
     int directionOld; // ant wants to avoid turning around.

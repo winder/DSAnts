@@ -354,7 +354,7 @@ void Creature::move()
     }
     return;
   }
-/*
+
   // if AI needs to be run, but it hasn't gotten to the center yet, keep moving.
   if ((direction == 0) && (getOffsetY() != 0))
   {
@@ -376,7 +376,7 @@ void Creature::move()
     moveUp();
     return;
   }
-*/
+
   // if the tile changed, reset.
   if (getAI())
   {
@@ -388,10 +388,7 @@ void Creature::move()
   if (direction != -1) return;
 
   // DirectionOld to reverse dir.
-  if (directionOld == 0) directionOld = 3;
-  else if (directionOld == 1) directionOld = 2;
-  else if (directionOld == 2) directionOld = 1;
-  else if (directionOld == 3) directionOld = 0;
+  directionOld = reverseDirection(directionOld);
 
   moveAI();
 }

@@ -140,11 +140,11 @@ int main()
 
   //put 3D on top/bottom
   lcdMainOnBottom();
-  lcdMainOnTop();
+  //lcdMainOnTop();
 
   //setup the sub screen for basic printing
   // TODO: this is said to be very heavy weight for basic console needs.
-//  consoleDemoInit();
+  consoleDemoInit();
 
 /*
   //set mode 0, enable BG0 and set it to 3D
