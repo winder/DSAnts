@@ -152,10 +152,10 @@ class Creature
 
     static int reverseDirection(int d)
       {
-        if (d == 0) return 3;
-        else if (d == 1) return 2;
-        else if (d == 2) return 1;
-        else return 0;
+        if (d == AI_DOWN) return AI_TOP;
+        else if (d == AI_RIGHT) return AI_LEFT;
+        else if (d == AI_LEFT) return AI_RIGHT;
+        else return AI_DOWN;
       }
     // save the direction between steps to prevent re-calculation.
     int direction;

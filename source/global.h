@@ -67,8 +67,8 @@ enum PATCH_types
 
 // Feramone magic numbers
 #define HOT_TRAIL_LIMIT 1000
-#define COLD_TRAIL 100
-#define FERAMONE_LOW 1
+#define COLD_TRAIL 50
+#define FERAMONE_LOW 20
 #define FERAMONE_HIGH 1000
 // 60 = 1 second
 #define CHEMICAL_DECAY_FREQUENCY 600
@@ -143,4 +143,11 @@ enum Creature_TYPE
   ENEMY_WORM
 };
 
+enum AI_DIRECTION
+{
+  AI_RIGHT=1,
+  AI_LEFT=2,
+  AI_TOP=3,
+  AI_DOWN=0
+};
 #endif

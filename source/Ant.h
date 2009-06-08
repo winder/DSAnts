@@ -61,6 +61,9 @@ class Ant: public Creature
     // return as argument.
     void sortAdjacentPatchByChem(Patch* center, Patch* sort[], int direction[]);
 
+    bool wayToHome(int &x_dist, int &y_dist, bool &right, bool &up);
+    bool awayFromHome(int dir);
+
   private:
     short feramoneOutput;
     int location_home;

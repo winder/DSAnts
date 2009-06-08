@@ -337,13 +337,13 @@ void Creature::move()
   // Run without checking, AI figured everything out until the tile changes.
   if (!getAI())
   {
-    if (direction == 0)
+    if (direction == AI_DOWN)
       setAI(moveDown());
-    else if (direction == 1)
+    else if (direction == AI_RIGHT)
       setAI(moveRight());
-    else if (direction == 2)
+    else if (direction == AI_LEFT)
       setAI(moveLeft());
-    else if (direction == 3)
+    else if (direction == AI_TOP)
       setAI(moveUp());
     // if couldn't move in desired direction, reset.  This shouldn't happen.
     else
@@ -356,22 +356,22 @@ void Creature::move()
   }
 
   // if AI needs to be run, but it hasn't gotten to the center yet, keep moving.
-  if ((direction == 0) && (getOffsetY() != 0))
+  if ((direction == AI_DOWN) && (getOffsetY() != 0))
   {
     moveDown();
     return;
   }
-  else if ((direction == 1) && (getOffsetX() != 0))
+  else if ((direction == AI_RIGHT) && (getOffsetX() != 0))
   {
     moveRight();
     return;
   }
-  else if ((direction == 2) && (getOffsetX() != 0))
+  else if ((direction == AI_LEFT) && (getOffsetX() != 0))
   {
     moveLeft();
     return;
   }
-  else if ((direction == 3) && (getOffsetY() != 0))
+  else if ((direction == AI_TOP) && (getOffsetY() != 0))
   {
     moveUp();
     return;
@@ -476,13 +476,13 @@ void Creature::wander()
 
   for (int four=0; !newDir; four++)
   {
-    if ((direction == 0) && directionIsOk(direction, directionOld, cache->bottom))
+    if ((direction == AI_DOWN) && directionIsOk(direction, directionOld, cache->bottom))
       newDir = true;
-    else if ((direction == 1) && directionIsOk(direction, directionOld, cache->right))
+    else if ((direction == AI_RIGHT) && directionIsOk(direction, directionOld, cache->right))
       newDir = true;
-    else if ((direction == 2) && directionIsOk(direction, directionOld, cache->left))
+    else if ((direction == AI_LEFT) && directionIsOk(direction, directionOld, cache->left))
       newDir = true;
-    else if ((direction == 3) && directionIsOk(direction, directionOld, cache->top))
+    else if ((direction == AI_TOP) && directionIsOk(direction, directionOld, cache->top))
       newDir = true;
 
     if (!newDir)
@@ -525,13 +525,13 @@ void Creature::clampDirections()
 {
   if (directionX > 20)
     directionX = 20;
-  else if (directionX < -20)
-    directionX = -20;
+  else if (directionX < (-1 *20))
+    directionX = (-1 *20);
 
   if (directionY > 20)
     directionY = 20;
-  else if (directionY < -20)
-    directionY = -20;
+  else if (directionY < (-1 *20))
+    directionY = (-1 *20);
 }
 
 int Creature::use()

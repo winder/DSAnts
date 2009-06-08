@@ -6,9 +6,20 @@ void Ant::handleFeramone()
   Patch* cur = getPatch();
 
 //  INCREASE_FERAMONE(getPatch(), feramoneOutput);
-  // only update feramone if it will be to more than it already is.
-  if (cur->chemLevel < feramoneOutput)
+//  // only update feramone if it will be to more than it already is.
+//  if (cur->chemLevel < feramoneOutput)
 //    INCREASE_FERAMONE(cur, feramoneOutput);
+//    INCREASE_FERAMONE(cur, feramoneOutput);
+
+  // if the ant is not hot, don't increase tile too much.
+  // and don't do splash.
+  if ((feramoneOutput == FERAMONE_LOW) && (cur->chemLevel < (HOT_TRAIL_LIMIT / 2)))
+  {
+    INCREASE_FERAMONE(cur, feramoneOutput);
+    return;
+  }
+  // ant is hot, don't increase tile too much either.
+  else if ((feramoneOutput == FERAMONE_HIGH) && (cur->chemLevel > (HOT_TRAIL_LIMIT * 4)))
     INCREASE_FERAMONE(cur, feramoneOutput);
 
   // chemical "splash" to each side as ant moves:
@@ -105,6 +116,8 @@ void Ant::forage()
     // TODO: set these as little as necessary.
     takePortals = true;
     feramoneOutput = FERAMONE_LOW;
+
+    // TODO: wander away from home.
     wander();
     return;
   }
@@ -175,6 +188,21 @@ void Ant::forage()
     }
   }
 
+/*
+  // This is no good, since if there are equal ones it will always go, in the same direction.
+  // Take the COLDEST available trail.
+  for (int i=3; i>=0; i--)
+  {
+    if (directionIsOk(dir[i], directionOld, sort[i]))
+    {
+printf("COLD");
+      direction=dir[i];
+      setAI(false);
+      return;
+    }
+  }
+*/
+
   // 10.  If no spot with no feramone, wander
   // note: don't need a check for if the last one was the directionOld
   //       it isn't a cold dir because you just marked it HOT_TRAIL_LIMIT.
@@ -237,22 +265,29 @@ bool Ant::followTrail()
 
 bool Ant::followTrail(Patch* sort[], int dir[])
 {
-
   //7.5: If following a HOT trail, don't turn unless must turn.
-  // check if the direction ant is already heading is HOT and the direction is OK.
+
+  // check if the direction the ant is already
+  // heading is HOT and the direction is OK.
   int lastDir = reverseDirection( directionOld );
   for(int i=0; i<4; i++)
-    if((dir[i] == lastDir) && ( sort[i]->chemLevel > HOT_TRAIL_LIMIT ))
+    if((dir[i] == lastDir) && ( sort[i]->chemLevel >= HOT_TRAIL_LIMIT ))
       {
-        direction = dir[i];
-        setAI(false);
-        return true;
+        // If the direction we're heading in is "warm" compared to an alternative.. take a hotter one.
+        if (i>0)
+          if ( (sort[i]->chemLevel + 100) > sort[0]->chemLevel)
+          {
+            direction = dir[i];
+            setAI(false);
+            return true;
+          }
       }
 
   // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
-  for (int i=0; i< 4 && (sort[i]->chemLevel > HOT_TRAIL_LIMIT); i++)
+  for (int i=0; i< 4 && (sort[i]->chemLevel >= HOT_TRAIL_LIMIT); i++)
   {
-    if (!checkVisited(sort[i]))
+    // check if the node has already been visited and is facing away from home.
+    if (!checkVisited(sort[i]) && awayFromHome(dir[i]))
     {
       direction = dir[i];
       setAI(false);
@@ -269,57 +304,8 @@ void Ant::goHomeCheating()
   // Cheating:
   int x_dist, y_dist;
   bool up, right;
-  Patch* cache = getPatch();
 
-  // left or right to get there?
-  // find X distance / direction.
-  if (cache->x > savedEntrance->x)
-  {
-    x_dist = cache->x - savedEntrance->x;
-    right = true;
-    if ( x_dist > ((savedEntrance->x + WIDTH) - cache->x ))
-    {
-      x_dist = ((savedEntrance->x + WIDTH) - cache->x );
-      right = false;
-    }
-  }
-  else
-  {
-    x_dist = savedEntrance->x - cache->x;
-    right = false;
-    if ( x_dist > ((cache->x + WIDTH) - savedEntrance->x ))
-    {
-      x_dist = ((cache->x + WIDTH) - savedEntrance->x );
-      right = true;
-    }
-  }
-
-
-  // find Y distance / direction.
-  if (cache->y > savedEntrance->y)
-  {
-    y_dist = cache->y - savedEntrance->y;
-    up = true;
-    if ( y_dist > ((savedEntrance->y + DEPTH) - cache->y ))
-    {
-      y_dist = ((savedEntrance->y + DEPTH) - cache->y );
-      up = false;
-    }
-  }
-  else
-  {
-    y_dist = savedEntrance->y - cache->y;
-    up = false;
-    if ( y_dist > ((cache->y + DEPTH) - savedEntrance->y ))
-    {
-      y_dist = ((cache->y + DEPTH) - savedEntrance->y );
-      up = true;
-    }
-  }
-
-  // I think the y-axis was originally for depth, so invert this.
-  //up = !up;
-  right = !right;
+  wayToHome(x_dist, y_dist, right, up);
 
   // don't need to check that the other != 0, because if its 0,0 the portal will be taken.
   if (y_dist == 0)
@@ -428,4 +414,76 @@ void insertion_sort( int array[], int array_length )
   return;
 }
 */
+}
+
+bool Ant::awayFromHome(int dir)
+{
+  int x_dist, y_dist;
+  bool right, up;
+  wayToHome(x_dist, y_dist, right, up);
+
+//  if ((x_dist < 5) || (y_dist < 5))
+//    return true;
+
+  // if Walking away in X dir:
+  if ( ((dir == AI_RIGHT) && !right) || ((dir == AI_LEFT) && right) ||
+  ((dir == AI_TOP) && !up) || ((dir == AI_DOWN) && up) )
+    return true;
+  return false;
+}
+
+bool Ant::wayToHome(int &x_dist, int &y_dist, bool &right, bool &up)
+{
+  Patch* cache = getPatch();
+
+  // left or right to get there?
+  // find X distance / direction.
+  if (cache->x > savedEntrance->x)
+  {
+    x_dist = cache->x - savedEntrance->x;
+    right = true;
+    if ( x_dist > ((savedEntrance->x + WIDTH) - cache->x ))
+    {
+      x_dist = ((savedEntrance->x + WIDTH) - cache->x );
+      right = false;
+    }
+  }
+  else
+  {
+    x_dist = savedEntrance->x - cache->x;
+    right = false;
+    if ( x_dist > ((cache->x + WIDTH) - savedEntrance->x ))
+    {
+      x_dist = ((cache->x + WIDTH) - savedEntrance->x );
+      right = true;
+    }
+  }
+
+  // find Y distance / direction.
+  if (cache->y > savedEntrance->y)
+  {
+    y_dist = cache->y - savedEntrance->y;
+    up = true;
+    if ( y_dist > ((savedEntrance->y + DEPTH) - cache->y ))
+    {
+      y_dist = ((savedEntrance->y + DEPTH) - cache->y );
+      up = false;
+    }
+  }
+  else
+  {
+    y_dist = savedEntrance->y - cache->y;
+    up = false;
+    if ( y_dist > ((cache->y + DEPTH) - savedEntrance->y ))
+    {
+      y_dist = ((cache->y + DEPTH) - savedEntrance->y );
+      up = true;
+    }
+  }
+
+  // I think the y-axis was originally for depth, so invert this.
+  //up = !up;
+  right = !right;
+
+  return true;
 }
