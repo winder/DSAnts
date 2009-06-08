@@ -10,8 +10,8 @@ Creature::Creature()
   directionY = 20;
   portaled = false;
   failCount = 0;
-//  carrying = NOTHING;
-  carrying = 5;
+  carrying = NOTHING;
+//  carrying = 5;
   ai = true;
   ACTION=0;
   direction=-1;

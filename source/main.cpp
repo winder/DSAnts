@@ -27,139 +27,74 @@
 //      if I get to the point where things are too complicated
 //      to draw, things still feel like they move in real time.
 
-
-
-#ifdef PATATER_TUTORIAL_BACKGROUNDS
-// This is from Patater's tutorial, will setup video and stuff using backgrounds.
-
-#include "starField.h"
-#include "planet.h"
-#include "splash.h"
-
-static const int DMA_CHANNEL = 3;
-
-void displayStarField() {
-    dmaCopyHalfWords(DMA_CHANNEL,
-                     starFieldBitmap, /* This variable is generated for us by
-                                       * grit. */
-                     (uint16 *)BG_BMP_RAM(0), /* Our address for main
-                                               * background 3 */
-                     starFieldBitmapLen); /* This length (in bytes) is generated
-                                           * from grit. */
+void DrawLine(u16* framebuffer, int x1, int y1, int x2, int y2, unsigned short color)
+{
+    int yStep = SCREEN_WIDTH;
+    int xStep = 1;      
+    int xDiff = x2 - x1;
+    int yDiff = y2 - y1;
+ 
+    int errorTerm = 0;
+    int offset = y1 * SCREEN_WIDTH + x1; 
+    int i; 
+    
+    //need to adjust if y1 > y2
+    if (yDiff < 0)       
+    {                  
+       yDiff = -yDiff;   //absolute value
+       yStep = -yStep;   //step up instead of down   
+    }
+    
+    //same for x
+    if (xDiff < 0) 
+    {           
+       xDiff = -xDiff;            
+       xStep = -xStep;            
+    }        
+ 
+    //case for changes more in X than in Y   
+    if (xDiff > yDiff) 
+    {                            
+       for (i = 0; i < xDiff + 1; i++)
+       {                           
+          framebuffer[offset] = color;  
+          framebuffer[offset+1] = color;  
+          framebuffer[offset+2] = color;  
+ 
+          offset += xStep;           
+ 
+          errorTerm += yDiff;     
+ 
+          if (errorTerm > xDiff) 
+          {  
+             errorTerm -= xDiff;     
+             offset += yStep;        
+          }
+       }
+    }//end if xdiff > ydiff
+    //case for changes more in Y than in X
+    else 
+    {                       
+       for (i = 0; i < yDiff + 1; i++) 
+       {  
+          framebuffer[offset] = color;  
+          framebuffer[offset+1] = color;  
+          framebuffer[offset+2] = color;  
+ 
+          offset += yStep;           
+ 
+          errorTerm += xDiff;    
+ 
+          if (errorTerm > yDiff) 
+          {     
+             errorTerm -= yDiff;  
+             offset += xStep;     
+ 
+          }
+       }
+    }
+ 
 }
-
-void displayPlanet() {
-    dmaCopyHalfWords(DMA_CHANNEL,
-                     planetBitmap, /* This variable is generated for us by
-                                    * grit. */
-                     (uint16 *)BG_BMP_RAM(8), /* Our address for main
-                                               * background 2 */
-                     planetBitmapLen); /* This length (in bytes) is generated
-                                        * from grit. */
-}
-
-void displaySplash() {
-    dmaCopyHalfWords(DMA_CHANNEL,
-                     splashBitmap, /* This variable is generated for us by
-                                    * grit. */
-                     (uint16 *)BG_BMP_RAM_SUB(0), /* Our address for sub
-                                                   * background 3 */
-                     splashBitmapLen); /* This length (in bytes) is generated
-                                        * from grit. */
-}
-            
-
-void initVideo() {
-    /*
-     *  Map VRAM to display a background on the main and sub screens.
-     * 
-     *  The vramSetMainBanks function takes four arguments, one for each of the
-     *  major VRAM banks. We can use it as shorthand for assigning values to
-     *  each of the VRAM bank's control registers.
-     *
-     *  We map banks A and B to main screen  background memory. This gives us
-     *  256KB, which is a healthy amount for 16-bit graphics.
-     *
-     *  We map bank C to sub screen background memory.
-     *
-     *  We map bank D to LCD. This setting is generally used for when we aren't
-     *  using a particular bank.
-     */
-    vramSetMainBanks(VRAM_A_MAIN_BG_0x06000000,
-                     VRAM_B_MAIN_BG_0x06020000,
-                     VRAM_C_SUB_BG_0x06200000,
-                     VRAM_D_LCD);
-
-    /*  Set the video mode on the main screen. */
-    videoSetMode(MODE_5_2D | // Set the graphics mode to Mode 5
-                 DISPLAY_BG2_ACTIVE | // Enable BG2 for display
-                 DISPLAY_BG3_ACTIVE); //Enable BG3 for display
-
-    /*  Set the video mode on the sub screen. */
-    videoSetModeSub(MODE_5_2D | // Set the graphics mode to Mode 5
-                    DISPLAY_BG3_ACTIVE); // Enable BG3 for display
-}
-
-void initBackgrounds() {
-    /*  Set up affine background 3 on main as a 16-bit color background. */
-    REG_BG3CNT = BG_BMP16_256x256 |
-                 BG_BMP_BASE(0) | // The starting place in memory
-                 BG_PRIORITY(3); // A low priority
-
-    /*  Set the affine transformation matrix for the main screen background 3
-     *  to be the identity matrix.
-     */
-    REG_BG3PA = 1 << 8;
-    REG_BG3PB = 0;
-    REG_BG3PC = 0;
-    REG_BG3PD = 1 << 8;
-
-    /*  Place main screen background 3 at the origin (upper left of the
-     *  screen).
-     */
-    REG_BG3X = 0;
-    REG_BG3Y = 0;
-
-    /*  Set up affine background 2 on main as a 16-bit color background. */
-    REG_BG2CNT = BG_BMP16_128x128 |
-                 BG_BMP_BASE(8) | // The starting place in memory
-                 BG_PRIORITY(2);  // A higher priority
-
-    /*  Set the affine transformation matrix for the main screen background 3
-     *  to be the identity matrix.
-     */
-    REG_BG2PA = 1 << 8;
-    REG_BG2PB = 0;
-    REG_BG2PC = 0;
-    REG_BG2PD = 1 << 8;
-
-    /*  Place main screen background 2 in an interesting place. */
-    REG_BG2X = -(SCREEN_WIDTH / 2 - 32) << 8;
-    REG_BG2Y = -32 << 8;
-
-    /*  Set up affine background 3 on the sub screen as a 16-bit color
-     *  background.
-     */
-    REG_BG3CNT_SUB = BG_BMP16_256x256 |
-                     BG_BMP_BASE(0) | // The starting place in memory
-                     BG_PRIORITY(3); // A low priority
-
-    /*  Set the affine transformation matrix for the sub screen background 3
-     *  to be the identity matrix.
-     */
-    REG_BG3PA_SUB = 1 << 8;
-    REG_BG3PB_SUB = 0;
-    REG_BG3PC_SUB = 0;
-    REG_BG3PD_SUB = 1 << 8;
-
-    /*
-     *  Place main screen background 3 at the origin (upper left of the screen)
-     */
-    REG_BG3X_SUB = 0;
-    REG_BG3Y_SUB = 0;
-}
-#endif
-
 
 // FPS calculation.
 int frameCounter=0;
@@ -193,24 +128,6 @@ void vBlank(void){
 int main()
 {  
 
-#ifdef PATATER_TUTORIAL_BACKGROUNDS
-    /*  Turn on the 2D graphics core. */
-    powerOn(POWER_ALL_2D);
-
-    /*  Configure the VRAM and background control registers. */
-    lcdMainOnBottom(); // Place the main screen on the bottom physical screen
-    initVideo(); 
-    initBackgrounds(); 
-
-    /*  Display the backgrounds. */
-    displayStarField(); 
-//    displayPlanet();
-    displaySplash();
-#endif
-
-
-
-
   // Set vBlank callback.
   irqSet(IRQ_VBLANK,vBlank);
 
@@ -219,16 +136,63 @@ int main()
   srand(time(NULL));
 
   //UndergroundDrawGrid *ug = new UndergroundDrawGrid();
-//  GameWorld *gw = new GameWorld();
   GameWorld *gw = GameWorldSingleton::getInstance();
 
   //put 3D on top/bottom
   lcdMainOnBottom();
-  //lcdMainOnTop();
+  lcdMainOnTop();
 
   //setup the sub screen for basic printing
   // TODO: this is said to be very heavy weight for basic console needs.
-  consoleDemoInit();
+//  consoleDemoInit();
+
+/*
+  //set mode 0, enable BG0 and set it to 3D
+  videoSetMode(MODE_0_3D);
+
+//  videoSetModeSub(MODE_5_2D);
+  videoSetModeSub(MODE_5_2D | DISPLAY_BG3_ACTIVE);
+  vramSetBankC(VRAM_C_SUB_BG);
+//  vramSetBankH(VRAM_H_SUB_BG);
+//  vramSetBankI(VRAM_I_SUB_BG_0x06208000);
+  //initialize the sub background
+  BACKGROUND_SUB.control[3] = BG_BMP16_256x256 | BG_BMP_BASE(0);
+  
+  BACKGROUND_SUB.bg3_rotation.xdy = 0;
+  BACKGROUND_SUB.bg3_rotation.xdx = 1 << 8;
+  BACKGROUND_SUB.bg3_rotation.ydx = 0;
+  BACKGROUND_SUB.bg3_rotation.ydy = 1 << 8;
+
+  u16* video_buffer_sub = (u16*)BG_BMP_RAM_SUB(0);
+  for(int y=0; y < 256; y++)
+  {
+     for(int x=0; x < 256; x++)
+        video_buffer_sub[x + y * 256] = RGB15(0,0,x%31) | BIT(15);
+  }
+  //paint the sub screen blue
+//  for(int i = 0; i < 256 * 256; i++)
+//    video_buffer_sub[i] = RGB15(0,0,31) | BIT(15);
+
+  DrawLine(video_buffer_sub, 0, 0, 250, 192, rand());       
+  DrawLine(video_buffer_sub, 250, 0, 0, 192, rand());       
+*/
+/*
+  int SubPtr = bgInitSub(2, BgType_Bmp8, BgSize_B8_256x256, 0, 0);
+  for(int i=0; i < 256; i++)
+  {
+     BG_PALETTE_SUB[i] = RGB15(i & 0x1F, i & 0x1F, i & 0x1F);
+  }
+
+  u16 *SubData = bgGetGfxPtr(SubPtr);
+  for(int y=0; y < 128; y++)
+  {
+     for(int x=0; x < 192; x++)
+        SubData[x + y * 192] = ((x * 2) & 0xFF) | (((x * 2 + 1) << 8) & 0xFF00);
+
+      DrawLine(SubData, 0, 0, 250, 192, rand());       
+      DrawLine(SubData, 250, 0, 0, 192, rand());       
+  }
+*/
 
   // Exception handler.
   defaultExceptionHandler();
@@ -273,9 +237,6 @@ int main()
     while(true){};
   }
 */
-
-  //set mode 0, enable BG0 and set it to 3D
-  videoSetMode(MODE_0_3D);
 
   // Camera needs to be initialized.
   gw->initCam();

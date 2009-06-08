@@ -110,7 +110,6 @@ void Ant::forage()
   // If we aren't underground, look for food
   else
   {
-    // not on surface, no food
     takePortals = false;
     // sometimes the Ant will eat the food before it gets home, so need to
     // make sure the feramone is set correctly.
