@@ -41,11 +41,11 @@ class Ant: public Creature
     virtual void forage();
     // Attempts to follow a chemical trail
     // returns true/false if there is a trail to follow
-    virtual bool followTrail();
+    virtual bool followTrail(bool h);
     // because the sorted patch surrounding the ant may have
     // been calculated already, a version of the function will accept
     // that array.
-    virtual bool followTrail(Patch* sort[], int direction[]);
+    virtual bool followTrail(Patch* sort[], int direction[], bool h);
     virtual void goHome();
     virtual void goHomeCheating();
     // check adjacent Patches for food.

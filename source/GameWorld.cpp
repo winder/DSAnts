@@ -36,7 +36,7 @@ GameWorld::GameWorld()
   tmp->setLocation( STATE );
   tmp->setCarrying(PATCH_FOOD1);  
   tmp->setTakePortals( true );
-  tmp->setFeramoneOutput(100);
+  tmp->setFeramoneOutput(1000);
   p = new Player(tmp);
 
 

@@ -46,6 +46,19 @@ class Creature
     // checks whether the patch is in the recent visited memory
     virtual bool checkVisited(Patch* newPatch)
       {
+      
+        /*// Print out the memory... in case debugging is needed.
+        printf("{");
+        int i=visited_index;
+        for (int x=0; x < MAX_VISIT_MEMORY; x++)
+        {
+          printf("mem[%i](%i,%i),",x, visited[i]->x, visited[i]->y);
+          i--;
+          if (i < 0)
+            i = MAX_VISIT_MEMORY-1;
+        }
+        printf("}");
+        */
         if (!use_visit_memory)
           return true;
 
@@ -64,10 +77,13 @@ class Creature
     // of the array overwriting the first one.
     virtual void addVisited(Patch* newPatch)
       {
-        if (!checkVisited(newPatch))
-          visited[visited_index++] = newPatch;
+        visited_index++;
         if (visited_index == MAX_VISIT_MEMORY)
           visited_index = 0;
+
+// if they backtrack.. go ahead and save the memory.
+//        if (!checkVisited(newPatch))
+          visited[visited_index] = newPatch;
       }
 
     // go back in the ants "memory" i places
