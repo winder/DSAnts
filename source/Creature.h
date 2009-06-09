@@ -161,10 +161,24 @@ class Creature
     inline bool getUseVisitMemory(){ return use_visit_memory; }
     inline void setUseVisitMemory(bool uvm){ use_visit_memory = uvm; }
 
+    inline void set_portaled(bool b){ portaled = b; }
+
     //#ifdef __DEBUG
     void printDebug();
     //#endif
-    inline void set_portaled(bool b){ portaled = b; }
+
+    // save the direction between steps to prevent re-calculation.
+    int direction;
+    int directionOld; // ant wants to avoid turning around.
+    // if false, will not go through portals.
+    bool takePortals;
+
+    //-------------------//
+    // utility functions //
+    //-------------------//
+    Patch* findEmptyAdjacent();
+    Patch* findFoodDropAdjacent();
+    Patch* findPortalAdjacent();
 
     static int reverseDirection(int d)
       {
@@ -173,16 +187,81 @@ class Creature
         else if (d == AI_LEFT) return AI_RIGHT;
         else return AI_DOWN;
       }
-    // save the direction between steps to prevent re-calculation.
-    int direction;
-    int directionOld; // ant wants to avoid turning around.
-    // if false, will not go through portals.
-    bool takePortals;
 
-    // utility:
-    Patch* findEmptyAdjacent();
-    Patch* findFoodDropAdjacent();
-    Patch* findPortalAdjacent();
+    int getLastDirection()
+      {
+        Patch* cur = getPatch();
+        Patch* last = lastVisited(1);
+        if (cur->left == last) return AI_LEFT;
+        else if (cur->right == last) return AI_RIGHT;
+        else if (cur->top == last) return AI_TOP;
+        else if (cur->bottom == last) return AI_DOWN;
+        return '\0';
+      }
+
+    // Convert the direction into the patch in that direction.
+    Patch* getDirectionPatch(int d)
+      {
+        switch(d)
+        {
+          case AI_LEFT:
+            return getPatch()->left;
+          case AI_RIGHT:
+            return getPatch()->right;
+          case AI_TOP:
+            return getPatch()->top;
+          case AI_DOWN:
+            return getPatch()->bottom;
+          default:
+            return '\0';
+        }
+      }
+
+    // the patch relatively to the left of the ant depending on the direction.
+    // its been going int.
+    Patch* lookRelativeLeft()
+      {
+        switch(getLastDirection())
+        {
+          case AI_LEFT:
+            return getPatch()->top;
+          case AI_RIGHT:
+            return getPatch()->bottom;
+          case AI_TOP:
+            return getPatch()->right;
+          case AI_DOWN:
+            return getPatch()->left;
+          default:
+            return '\0';
+        }
+      }
+    Patch* lookRelativeRight()
+      {
+        switch(getLastDirection())
+        {
+          case AI_LEFT:
+            return getPatch()->bottom;
+          case AI_RIGHT:
+            return getPatch()->top;
+          case AI_TOP:
+            return getPatch()->left;
+          case AI_DOWN:
+            return getPatch()->right;
+          default:
+            return '\0';
+        }
+      }
+    Patch* lookRelativeBack()
+      {
+        return getDirectionPatch(
+                 reverseDirection(
+                    getLastDirection() ) );
+      }
+    Patch* lookRelativeForward()
+      {
+        return getDirectionPatch(
+                 getLastDirection() );
+      }
   private:
     // these are used to change offsetX / offsetY and keep the direction correct.
     void incrementOffsetX();

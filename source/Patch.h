@@ -86,6 +86,8 @@ struct Patch
   Creature* occupant_one;
   Creature* occupant_two;
 
+  // TODO: it may make sense to have the chemLevel be applied to EDGES
+  //       so each patch would have 4 chemLevels
   // the feramone level the ants use to move around.
   unsigned short chemLevel;
 };

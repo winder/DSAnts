@@ -23,8 +23,11 @@ void Ant::handleFeramone()
     INCREASE_FERAMONE(cur, feramoneOutput);
 */
 
-  // set a max of 5000
-  INCREASE_FERAMONE_LIMIT(cur, feramoneOutput, 5000);
+  // if chemLevel is very high, don't put down too much
+  if (cur->chemLevel > 5000)
+    INCREASE_FERAMONE(cur, feramoneOutput*0.7);
+  else
+    INCREASE_FERAMONE_LIMIT(cur, feramoneOutput, 5000);
 
   // chemical "splash" to each side as ant moves:
   // * = ants trail
@@ -34,37 +37,40 @@ void Ant::handleFeramone()
   //  |-|*|*|*|-|
   //  |-|*|+|-| |
 
-  int splash = feramoneOutput * 0.5;
+  int splash = feramoneOutput * 0.3;
+  int splashLow = feramoneOutput * 0.1;
   Patch* last = lastVisited(1);
 
   // can't do this if the ant has no memory (i.e. just spawned).
   if (last == '\0') return;
 
-  int lastDir;
-  if (cur->left == last) lastDir = AI_LEFT;
-  else if (cur->right == last) lastDir = AI_RIGHT;
-  else if (cur->top == last) lastDir = AI_TOP;
-  else if (cur->bottom == last) lastDir = AI_DOWN;
+  int lastDir = getLastDirection();
 
-  if (lastDir == AI_LEFT)
+  // if LEFT or RIGHT, mark top and bottom of last.
+  if ((lastDir == AI_LEFT) || (lastDir == AI_RIGHT))
   {
-    INCREASE_FERAMONE_LIMIT(last->top, splash, 5000);
-    INCREASE_FERAMONE_LIMIT(last->bottom, splash, 5000);
+    if ((last->top != '\0') && (last->top->chemLevel < 5000))
+      INCREASE_FERAMONE(last->top, splash);
+    else if (last->top->chemLevel < 10000)
+      INCREASE_FERAMONE(last->top, splashLow);
+
+    if ((last->bottom != '\0') && (last->bottom->chemLevel < 5000))
+      INCREASE_FERAMONE(last->bottom, splash);
+    else if (last->left->chemLevel < 10000)
+      INCREASE_FERAMONE(last->bottom, splashLow);
   }
-  else if (lastDir == AI_RIGHT)
+  // if TOP or BOTTOM, mark left and right of last
+  else if ((lastDir == AI_TOP) || (lastDir == AI_DOWN))
   {
-    INCREASE_FERAMONE_LIMIT(last->top, splash, 5000);
-    INCREASE_FERAMONE_LIMIT(last->bottom, splash, 5000);
-  }
-  else if (lastDir == AI_TOP)
-  {
-    INCREASE_FERAMONE_LIMIT(last->left, splash, 5000);
-    INCREASE_FERAMONE_LIMIT(last->right, splash, 5000);
-  }
-  else if (lastDir == AI_DOWN)
-  {
-    INCREASE_FERAMONE_LIMIT(last->left, splash, 5000);
-    INCREASE_FERAMONE_LIMIT(last->right, splash, 5000);
+    if ((last->left != '\0') && (last->left->chemLevel < 5000))
+      INCREASE_FERAMONE(last->left, splash);
+    else if (last->left->chemLevel < 10000)
+      INCREASE_FERAMONE(last->left, splashLow);
+
+    if ((last->right != '\0') && (last->right->chemLevel < 5000))
+      INCREASE_FERAMONE(last->right, splash);
+    else if (last->right->chemLevel < 10000)
+      INCREASE_FERAMONE(last->right, splashLow);
   }
 /*
   // If it isn't the current, next node (cur) or last node (last2) splash it.
@@ -96,10 +102,9 @@ void Ant::handleFeramone()
 // 5.   Pickup food, mark food spot with feramone, go home
 // 6. If no food, set feramone output = 100:
 // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
-// 7.5.   If following a HOT trail, don't turn unless must turn.
 // 8.   If on surface and no HOT trail, go to a spot with no feramone
 // 9.     Move to spot with no feramone, Mark feramone (output = 100)
-// 10.  If no spot with no feramone, wander
+// 10.  If no spot with no feramone, wander away from home.
 
 // TODO: just call forage recursively when the state changes, there is a little repeat code in there right now.
 void Ant::forage()
@@ -173,9 +178,12 @@ void Ant::forage()
 
       // set feramone (with new output) where standing.
       handleFeramone();
+
       // set feramone at food (so ants will move there once the
       // pile is gone).
-      INCREASE_FERAMONE( cache, feramoneOutput+1);
+      // Note: this might not work, since it will create a big block of
+      //        high if there are adjacent food pieces.
+//      INCREASE_FERAMONE( cache, feramoneOutput+1);
       takePortals = true;
 
       // TODO: clear memory or follow it?
@@ -287,17 +295,131 @@ bool Ant::followTrail(bool home)
   return followTrail(sort, dir, home);
 }
 
-// 1. Near Home:
-// 1.away - take random hot path, try not to turn
-// 1.home - go home.
-// 2. if we are far from home, try to head away from home
+// TODO: Implement all situations, the "followTrail" algorithm turns out to be the most complex!
 
+// Drew out a new algorithm... there are a lot of cases that need to be handled so here it goes:
+// Variables to keep in mind:
+//    Turning?  does the ant need to turn.  Binary (yes/no)
+//    Multiple choices?  how many directions can the ant move in? 1-3, ant never turns around unless necessary
+
+// So there are 8 cases. Using these, but I decided on 5 important ones to handle specific situations.
+//    One other thing to consider is the ants "memory"
+//      Which brings it up to much more than 8 cases, but these may be generalized somehow.
 //
+// Key:
+//  *, ant hill
+//  =, high chemical level
+//  -, medium chemical level
+//  0, ant
+//  ., ants last location, 2 dots so I can use the same pic for 'TO_HOME' and 'FROM_HOME'
+//  new, keyword, means square is not in memory.
+//
+// Situation 1: the ant has 3 new directions to move in, and 4 hot ways
+//
+// | | | | | | | |=|
+// | | | | | | | |=|
+// | | |=|.|=|=|=|=|
+// | | |=|0|=|=| | |
+// | | | |.| | | | |
+// | | | |*| | | | |
+// | | | | | | | | |
+//
+//  solution: take hottest trail without turning around, the way you *were* going should
+//            be opposite the way your heading so don't need to consider 'bool home'
+//
+//  possible problem: loop?  If we take the hottest trail, will hopefully be more than the rest.
+//
+//  |=|=|=|=|
+//  |=|=|=|=|
+//  |=|=|=|=|
+//  |=|=|=|=|
+//
+
+// Situation 2: 2 new ways to go, 3 hot ways
+//
+// | | | | | | | |=|
+// | | | | | | | |=|
+// | | |=|0|.|=|=|=|
+// | | |=|.|=|=| | |
+// | | | |=| | | | |
+// | | | |*| | | | |
+// | | | | | | | | |
+//
+//  solution: take hottest trail
+//  possible problem: in above, the ant goes left, that shouldn't happen because
+//                    that direction wont go anywhere, but using memory in dead end
+//                    scenarios should get it out of it.
+
+// Situation 2: 2 new ways to go, 3 hot ways, actually this is covered above.
+//
+// | | | | | | | |=|
+// | | | | | | | |=|
+// | | |=|.|0|.|=|=|
+// | | |=|=|=|=| | |
+// | | | |=| | | | |
+// | | | |*| | | | |
+// | | | | | | | | |
+
+// Situation 3: 1 new ways to go, 2 hot ways.
+//
+// | | | | | | | |=|
+// | | | | | | | |=|
+// | | |=|=|=|.|0|.|
+// | | |=|=|=|=| | |
+// | | | |=| | | | |
+// | | | |*| | | | |
+// | | | | | | | | |
+//
+// solution: take new way.
+// possible problem: dead end?  See Situation 7
+//
+
+// Situation 3: 1 new way, 2 hot ways.
+//
+// | | | | | | | |=|
+// | | |0|.|=|=|=|=|
+// | | |=|=|=|=| | |
+// | | | |=| | | | |
+//
+// solution: see above, memory will make the ant go down, right, right:
+// | | | | | | | |=|
+// | | |.|.|=|=|=|=|
+// | | |.|0|=|=| | |
+// | | | |.| | | | |
+
+// Situation 4: 2 new ways to go, 2 hot ways.
+//
+// | | | | | | | |
+// |=|=|=|=|0|=|*|
+// | | | | |.| | |
+//
+// solution: head towards home.
+//           this is the one case where we need to use the "cheat"
+//           but I will attribute this to "talking" since ant can check to see
+//           what direction other nearby ants are going and what their goals are.
+
+// Situation 5: 0 new ways to go, 2 hot ways to go.
+//
+// | | | | | | | |=|
+// | | |.|.|=|=|=|=|
+// | | |0|.|=|=| | |
+// | | | |.| | | | |
+//
+// solution: don't turn around.  in above, goes right.
+
+// Situation 6:
+// | | | | | | | |
+// |=|=|=|.|0| |*|
+// | | | | | | | |
 bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 {
 
-  // exit early if there is no trail to follow.
+  // 1. If there is no trail to follow, return false.
   if (sort[0]->chemLevel < HOT_TRAIL_LIMIT) return false;
+
+  int x_dist, y_dist;
+  bool up, right;
+  wayToHome(x_dist, y_dist, right, up);
 
 /*
   // 1. If following a HOT trail, don't turn unless must turn.
@@ -333,9 +455,6 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   }
 */
 
-  int x_dist, y_dist;
-  bool up, right;
-  wayToHome(x_dist, y_dist, right, up);
   
 /*
   // 1. Near Home
