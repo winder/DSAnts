@@ -480,7 +480,7 @@ void GameWorld::printDebugFiveLines()
 
   if (picked)
   {
-    printf("\nPatch:");
+    printf("\nPatch: level(%i)", picked->chemLevel);
 
     printf("\n Occupants: ");
     if (picked->occupant_one)

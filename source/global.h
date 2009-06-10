@@ -70,7 +70,7 @@ enum PATCH_types
 #define COLD_TRAIL 5
 #define FERAMONE_LOW 10
 #define FERAMONE_HIGH 100
-#define FERAMONE_MAX 3000
+#define FERAMONE_MAX 300
 // 60 = 1 second
 #define CHEMICAL_DECAY_FREQUENCY 600
 

@@ -24,10 +24,15 @@ void Ant::handleFeramone()
 */
 
   // if chemLevel is very high, don't put down too much
-  if (cur->chemLevel > FERAMONE_MAX-feramoneOutput)
+  if ((feramoneOutput > FERAMONE_LOW) && cur->chemLevel > FERAMONE_MAX-feramoneOutput)
     SET_FERAMONE(cur, FERAMONE_MAX);
-  else
+  else if (feramoneOutput > FERAMONE_LOW)
     INCREASE_FERAMONE(cur, feramoneOutput);
+  // if feramone output is low, and tile level is low, set.
+  else if ((feramoneOutput == FERAMONE_LOW) && (cur->chemLevel <= COLD_TRAIL))
+    SET_FERAMONE(cur, feramoneOutput);
+
+// no splash.  
 return;
   // chemical "splash" to each side as ant moves:
   // * = ants trail
@@ -143,7 +148,8 @@ void Ant::forage()
     else
     {
       // "follow trail" towards home.
-      followTrail(true);
+      if( !followTrail(true) )
+        goHome();
       //goHome();
       return;
     }
@@ -217,24 +223,22 @@ void Ant::forage()
   // if there is a trail to follow, all is handled.
   if (followTrail(sort, dir, false))
   {
-    printf("f");
     return;
   }
   // else... need to follow a cold trail
-
 
   // count how many cold trails there are.
   int cold_dirs = 0;
   if (sort[3]->chemLevel < COLD_TRAIL)
   {
     cold_dirs++;
-    if (sort[3]->chemLevel < COLD_TRAIL)
+    if (sort[2]->chemLevel < COLD_TRAIL)
     {
       cold_dirs++;
-      if (sort[3]->chemLevel < COLD_TRAIL)
+      if (sort[1]->chemLevel < COLD_TRAIL)
       {
         cold_dirs++;
-        if (sort[3]->chemLevel < COLD_TRAIL)
+        if (sort[0]->chemLevel < COLD_TRAIL)
         { cold_dirs++; }
       }
     }
@@ -430,31 +434,142 @@ bool Ant::followTrail(bool home)
 // | | | | | | | |
 //
 // solution: call "goHome"
+
+
+// Problem: Got a shape like the following and the ants follow around the perimiter forever.
+// | | | | | | |
+// | | | |=|=| |
+// | |=|=|=|=| |
+// | |=|=|=|=| |
+// | | | | | | |
+//
+// Generalized: they have trouble getting off the trail when they need to
+//
+// Solution: if there are 3 or more ways, figure out if we're at a crossroad,
+//           along the edge, or in the middle of everything:
+// crossroad: | |=| | edge:| |=|=| | middle:|=|=|=| corner: | |=|=| |
+//            |=|0|=|      | |=|0| |        |=|0|=| (edge)  |=|0|=| |
+//            | |.| |      | |=|.| |        |=|.|=|         |=|=|0| |
+//
+//  crossroads work great.
+//  edges need to be treated as a single path (ignore left in above)
+//  middle needs to move in the direction they're heading and find an edge
+
+
 bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 {
 
   // 1. If there is no trail to follow, return false.
   if (sort[0]->chemLevel < HOT_TRAIL_LIMIT) return false;
 
-  int next = -1;
+  int next;
+  Patch *cache;
+
+  // remove prior direction (stick it at end):
+  for(int i=0; i<3; i++)
+    // swap with next
+    if (dir[i] == directionOld)
+    {
+      cache=sort[i];
+      next=dir[i];
+
+      sort[i] = sort[i+1];
+      dir[i] = dir[i+1];
+
+      sort[i+1] = cache;
+      dir[i+1] = next;
+    }
+      
+  next = -1;
+  cache = getPatch();
 
   // We are only interested in the hot trails, get rid of the rest
   int numHot = 0;
-  for(int i=0; i<4; i++)
+  for(int i=0; i<3; i++)
     if (sort[i]->chemLevel >= HOT_TRAIL_LIMIT)
       numHot++;
-    else
-      sort[i] = '\0';
+//    else
+//      sort[i] = '\0';
 
+  // Figure out how many of those paths are new.
   int numNew = 0;
   for(int i=numHot; i>=0; i--)
     if (! (checkVisited(sort[i])) )
       numNew++;
 
+  // Figure out how many diagonals are hot so we know if we're in the middle of something or along a path.
+  int numDiag = 0;
+  if (cache->left)
+  {
+    if(cache->left->top && (cache->left->top->chemLevel >= HOT_TRAIL_LIMIT))
+      numDiag++;
+    if(cache->left->bottom && (cache->left->bottom->chemLevel >= HOT_TRAIL_LIMIT))
+      numDiag++;
+  }
+  if (cache->right)
+  {
+    if(cache->right->top && (cache->right->top->chemLevel >= HOT_TRAIL_LIMIT))
+      numDiag++;
+    if(cache->right->bottom && (cache->right->bottom->chemLevel >= HOT_TRAIL_LIMIT))
+      numDiag++;
+  }
+
   // now we have the variables:
   //  *number new directions.
   //  *number hot directions.
   //  *"wayToHome" variables.
+
+  // Situation 0: not on a trail, but see one
+  if ((numHot == 1) && (numNew == 1))
+  {
+//    direction = dir[0];
+//    setAI(false);
+//    return true;
+  }
+
+  // Situation 6: 0 new ways to go, 1 old way.
+  // solution: nothing to follow, let the caller do its thing
+  if ((numHot == 1) && (numNew == 0))
+  {
+    return false;
+  }
+
+// Problem: Got a shape like the following and the ants follow around the perimiter forever.
+// | | | | | | |
+// | | | |=|=| |
+// | |=|=|=|=| |
+// | |=|=|=|=| |
+// | | | | | | |
+//
+// Generalized: they have trouble getting off the trail when they need to
+//
+// Solution: if there are 3 or more ways, figure out if we're at a crossroad,
+//           along the edge, or in the middle of everything:
+// crossroad: | |=| | edge:| |=|=| | middle:|=|=|=| corner: | |=|=| |
+//            |=|0|=|      | |=|0| |        |=|0|=| (edge)  |=|0|=| |
+//            | |.| |      | |=|.| |        |=|.|=|         |=|=|0| |
+//                                                          | | | | |
+//  crossroads work great.
+//  edges need to be treated as a single path (ignore left in above)
+//  middle needs to move in the direction they're heading and find an edge
+
+
+  //-------------------------------//
+  // FIGURE OUT IF ON NARROW TRAIL //
+  //   if not, prune till it is    //
+  //-------------------------------//
+
+  //if (numDiag >= 1)
+
+
+
+  //---------------------------//
+  // BELOW, SINGLE LINE STUFF: // (know a single line because "numDiag <= 1"
+  //---------------------------//
+  // i.e. | | |=|=|
+  //      | | |=| |
+  //      |=|=|=| |
+  //      |=| | | |
 
   // Situation 1: the ant has 3 new directions to move in, and 4 hot ways
   // Situation 2: 2 new ways to go, 3 hot ways
@@ -465,16 +580,19 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   //    solution: take new way (followHotNotVisited will pick the new way).
   if ((numHot >= 2) && (numNew >= 1))
   {
+    int numEqual = 1;
     next = followHotNotVisited(sort);
-    if (next != -1)
+
+    // If they are equal, head towards 'bool home'
+    for(int i=0; i<=numNew-1; i++)
+      if (sort[i]->chemLevel == sort[i+1]->chemLevel)
+        numEqual++;
+      
+    if ((next != -1) && (numEqual < 2))
     {
       direction = dir[next];
       setAI(false);
       return true;
-    }
-    else
-    {
-      //TODO: error?
     }
   }
 
@@ -482,6 +600,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   // solution: don't turn around.  in above, goes right.
   if ((numHot == 2) && (numNew == 0))
   {
+printf("shouldn't be here");
     if (sort[0] == lastVisited(1))
     {
       direction=dir[1];
@@ -494,20 +613,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
       setAI(false);
       return true;
     }
-  }
-
-  // Situation 6: 0 new ways to go, 1 old way.
-  // solution: call "goHome"
-  if (numHot <= 1)
-  {
-printf("gh");
-    if (home)
-      goHome();
-    else
-      wander();
-    return true;
-  }
-  
+  } 
 
   int x_dist, y_dist;
   bool up, right;
@@ -515,56 +621,58 @@ printf("gh");
   // goHome, home = true, right & up = direction home is in
   // otherwise, opposite of that.
 
-  // Note: this comes last because it is the most uncommon and most costly.
-  // Situation 4: 2 new ways to go, 2 hot ways.
-  // solution: head towards 'bool home'.
-  if ((numHot == 2) && (numNew == 2))
+
+printf("r");
+  bool dirX[numHot];
+  int num = 0;
+  for(int i=0; i<numHot; i++)
   {
-    // cases:                                      | |.| |
-    // |.|0|=|   | |=| |    | |=| |    |=|0|.|     |=|0|=|
-    // | |=| |   |.|0|=|    |=|0|.|    | |=| |     | |.| |
-
-    bool dir0 = false;
-    bool dir1 = false;
-
-    // if dir[0] is in the right direction to go home
-    if (((dir[0] == AI_RIGHT) &&  right) || ((dir[0] == AI_TOP)  &&  up) ||
-        ((dir[0] == AI_LEFT)  && !right) || ((dir[0] == AI_DOWN) && !up))
-      dir0 = true;
-
-    // if dir[1] is in the right direction to go home
-    if (((dir[1] == AI_RIGHT) &&  right) || ((dir[1] == AI_TOP)  &&  up) ||
-        ((dir[1] == AI_LEFT)  && !right) || ((dir[1] == AI_DOWN) && !up))
-      dir1 = true;
-
-    // if we're not going home, invert dir0 and dir1
-    if (!home)
+    if (((dir[i] == AI_RIGHT) &&  right) || ((dir[i] == AI_TOP)  &&  up) ||
+        ((dir[i] == AI_LEFT)  && !right) || ((dir[i] == AI_DOWN) && !up))
     {
-      dir0 = !dir0;
-      dir1 = !dir1;
+      // don't want to turn around (!home because it will be inverted for normal cases):
+      if ((dir[i] != directionOld) || !home)
+      {
+        dirX[i] = true;
+        num++;
+      }
     }
+  }
+  // if not going home, invert:
+  if (!home)
+  {
+    // invert for each direction
+    for(int i=0; i<numHot; i++)
+      dirX[i] = !dirX[i];
+    // invert count
+    num = numHot - num;
+  }
 
-    // pick the direction we're heading in.
-    if (dir0 && !dir1)
+  // one choice, take it.
+  if (num == 1)
+  {
+    for(int i=0; i<numHot; i++)
+      if(dirX[i])
+      {
+        direction=dir[i];
+        setAI(false);
+        return true;
+      }
+  }
+  // multiple choices, pick one at random
+  else
+  {
+    int choice=rand()%num;
+    for(int i=0; i<numHot; i++)
     {
-      direction=dir[0];
-      setAI(false);
-      return true;
-    }
-    else if (dir1 && !dir0)
-    {
-      direction=dir[1];
-      setAI(false);
-      return true;
-    }
-    // Note: if both are in the right direction, or neither are, pick at random
-    // TODO: might want to handle this differently
-    //else if (dir1 && dir0)
-    else
-    {
-      direction=dir[rand()%2];
-      setAI(false);
-      return true;
+      if (dirX[i] && (choice!=0))
+        choice--;
+      else if (dirX[i] && (choice==0))
+      {
+        direction=dir[i];
+        setAI(false);
+        return true;
+      }
     }
   }
 
