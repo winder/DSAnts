@@ -24,11 +24,11 @@ void Ant::handleFeramone()
 */
 
   // if chemLevel is very high, don't put down too much
-  if (cur->chemLevel > 5000)
-    INCREASE_FERAMONE(cur, feramoneOutput*0.7);
+  if (cur->chemLevel > FERAMONE_MAX-feramoneOutput)
+    SET_FERAMONE(cur, FERAMONE_MAX);
   else
-    INCREASE_FERAMONE_LIMIT(cur, feramoneOutput, 5000);
-
+    INCREASE_FERAMONE(cur, feramoneOutput);
+return;
   // chemical "splash" to each side as ant moves:
   // * = ants trail
   // - = chemical "splash" once
@@ -142,7 +142,9 @@ void Ant::forage()
     // otherwise we are on the surface with food, so go home.
     else
     {
-      goHome();
+      // "follow trail" towards home.
+      followTrail(true);
+      //goHome();
       return;
     }
   }
@@ -189,9 +191,14 @@ void Ant::forage()
       // TODO: clear memory or follow it?
       // finally, we're turning around, so reset the ants memory.
       clearVisited();
+
       // go Home.
-      goHome();
+      //goHome();
       //wander();
+
+      // turn around!!
+      direction = directionOld;
+      setAI(false);
       return;
     }
   }
@@ -282,6 +289,8 @@ void Ant::goHome()
 //    return;
 //  else
     // if no hot trail...
+
+  // followTrail now calls goHome, so goHome is goHomeCheating
   goHomeCheating();
 }
 
@@ -393,10 +402,18 @@ bool Ant::followTrail(bool home)
 // |=|=|=|=|0|=|*|
 // | | | | |.| | |
 //
-// solution: head towards home.
+// solution: head towards 'bool home'.
 //           this is the one case where we need to use the "cheat"
 //           but I will attribute this to "talking" since ant can check to see
 //           what direction other nearby ants are going and what their goals are.
+// problem: neither way is toward home, or neither way is away from home.
+//
+// | | | | | |     | |*| | |=| |
+// |*| |.|0|=|     | | | | |=| |
+// | | | |=| |     | | |=|=|0|.|
+//
+// solution: head random way in this case.
+
 
 // Situation 5: 0 new ways to go, 2 hot ways to go.
 //
@@ -407,19 +424,149 @@ bool Ant::followTrail(bool home)
 //
 // solution: don't turn around.  in above, goes right.
 
-// Situation 6:
+// Situation 6: 0 new ways to go, 1 old way.
 // | | | | | | | |
 // |=|=|=|.|0| |*|
 // | | | | | | | |
+//
+// solution: call "goHome"
 bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 {
 
   // 1. If there is no trail to follow, return false.
   if (sort[0]->chemLevel < HOT_TRAIL_LIMIT) return false;
 
+  int next = -1;
+
+  // We are only interested in the hot trails, get rid of the rest
+  int numHot = 0;
+  for(int i=0; i<4; i++)
+    if (sort[i]->chemLevel >= HOT_TRAIL_LIMIT)
+      numHot++;
+    else
+      sort[i] = '\0';
+
+  int numNew = 0;
+  for(int i=numHot; i>=0; i--)
+    if (! (checkVisited(sort[i])) )
+      numNew++;
+
+  // now we have the variables:
+  //  *number new directions.
+  //  *number hot directions.
+  //  *"wayToHome" variables.
+
+  // Situation 1: the ant has 3 new directions to move in, and 4 hot ways
+  // Situation 2: 2 new ways to go, 3 hot ways
+  //    solution: take hottest trail without turning around, the way you *were* going should
+  //              be opposite the way your heading so don't need to consider 'bool home'
+
+  // Situation 3: 1 new ways to go, 2 hot ways.
+  //    solution: take new way (followHotNotVisited will pick the new way).
+  if ((numHot >= 2) && (numNew >= 1))
+  {
+    next = followHotNotVisited(sort);
+    if (next != -1)
+    {
+      direction = dir[next];
+      setAI(false);
+      return true;
+    }
+    else
+    {
+      //TODO: error?
+    }
+  }
+
+  // Situation 5: 0 new ways to go, 2 hot ways to go.
+  // solution: don't turn around.  in above, goes right.
+  if ((numHot == 2) && (numNew == 0))
+  {
+    if (sort[0] == lastVisited(1))
+    {
+      direction=dir[1];
+      setAI(false);
+      return true;
+    }
+    else if (sort[1] == lastVisited(1))
+    {
+      direction=dir[0];
+      setAI(false);
+      return true;
+    }
+  }
+
+  // Situation 6: 0 new ways to go, 1 old way.
+  // solution: call "goHome"
+  if (numHot <= 1)
+  {
+printf("gh");
+    if (home)
+      goHome();
+    else
+      wander();
+    return true;
+  }
+  
+
   int x_dist, y_dist;
   bool up, right;
   wayToHome(x_dist, y_dist, right, up);
+  // goHome, home = true, right & up = direction home is in
+  // otherwise, opposite of that.
+
+  // Note: this comes last because it is the most uncommon and most costly.
+  // Situation 4: 2 new ways to go, 2 hot ways.
+  // solution: head towards 'bool home'.
+  if ((numHot == 2) && (numNew == 2))
+  {
+    // cases:                                      | |.| |
+    // |.|0|=|   | |=| |    | |=| |    |=|0|.|     |=|0|=|
+    // | |=| |   |.|0|=|    |=|0|.|    | |=| |     | |.| |
+
+    bool dir0 = false;
+    bool dir1 = false;
+
+    // if dir[0] is in the right direction to go home
+    if (((dir[0] == AI_RIGHT) &&  right) || ((dir[0] == AI_TOP)  &&  up) ||
+        ((dir[0] == AI_LEFT)  && !right) || ((dir[0] == AI_DOWN) && !up))
+      dir0 = true;
+
+    // if dir[1] is in the right direction to go home
+    if (((dir[1] == AI_RIGHT) &&  right) || ((dir[1] == AI_TOP)  &&  up) ||
+        ((dir[1] == AI_LEFT)  && !right) || ((dir[1] == AI_DOWN) && !up))
+      dir1 = true;
+
+    // if we're not going home, invert dir0 and dir1
+    if (!home)
+    {
+      dir0 = !dir0;
+      dir1 = !dir1;
+    }
+
+    // pick the direction we're heading in.
+    if (dir0 && !dir1)
+    {
+      direction=dir[0];
+      setAI(false);
+      return true;
+    }
+    else if (dir1 && !dir0)
+    {
+      direction=dir[1];
+      setAI(false);
+      return true;
+    }
+    // Note: if both are in the right direction, or neither are, pick at random
+    // TODO: might want to handle this differently
+    //else if (dir1 && dir0)
+    else
+    {
+      direction=dir[rand()%2];
+      setAI(false);
+      return true;
+    }
+  }
 
 /*
   // 1. If following a HOT trail, don't turn unless must turn.

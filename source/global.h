@@ -66,10 +66,11 @@ enum PATCH_types
 #define MAX_VISIT_MEMORY 9
 
 // Feramone magic numbers
-#define HOT_TRAIL_LIMIT 1000
-#define COLD_TRAIL 50
-#define FERAMONE_LOW 20
-#define FERAMONE_HIGH 1000
+#define HOT_TRAIL_LIMIT 90
+#define COLD_TRAIL 5
+#define FERAMONE_LOW 10
+#define FERAMONE_HIGH 100
+#define FERAMONE_MAX 3000
 // 60 = 1 second
 #define CHEMICAL_DECAY_FREQUENCY 600
 

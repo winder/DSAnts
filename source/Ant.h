@@ -64,6 +64,18 @@ class Ant: public Creature
     bool wayToHome(int &x_dist, int &y_dist, bool &right, bool &up);
     bool awayFromHome(int dir);
 
+    // assumes they are sorted by chemical level.
+    // returns the index for the array.
+    int followHotNotVisited(Patch* choices[])
+      {
+        for(int i=0; i<4; i++)
+          if (choices[i] != '\0')
+            if (!checkVisited(choices[i]))
+              return i;
+
+        return -1;
+      }
+
   private:
     short feramoneOutput;
     int location_home;
