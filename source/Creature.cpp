@@ -317,7 +317,9 @@ void Creature::stateStep(int num)
   else
     hp=0;
 
-  if ((hp < 10) && FOODi(carrying))
+//  if ((hp < 10) && FOODi(carrying))
+  // if carrying something, see if it needs to be used.
+  if (carrying != NOTHING)
     use();
 }
 
@@ -536,12 +538,18 @@ void Creature::clampDirections()
 
 int Creature::use()
 {
-  if ((hp <= 10) && FOODi(carrying))
+  // Use food:
+  if (FOODi(carrying))
   {
+    // if hp is low, eat the food.
+    if (hp < 300)
+      carrying = NOTHING;
+    // otherwise "nibble" on it. (by not setting it to NOTHING)
+
     hp = 1000;
-    carrying = NOTHING;
     return 1; // TODO: object action enum, i.e. PLAYER_USED_FOOD
   }
+  // otherwise nibble on it.
   // if not usable.
   return 0;
 }
@@ -667,40 +675,96 @@ Patch* Creature::findFoodDropAdjacent()
   return '\0';
 }
 
-Patch* Creature::findPortalAdjacent()
+Patch* Creature::checkForFood()
 {
+
   Patch* cache = getPatch();
 
-  if( PORTAL(cache) )
-    return cache;
-  else if((PORTAL(cache->right)))
-    return cache->right;
-  else if((PORTAL(cache->left)))
-    return cache->left;
-  else if( cache->top && ((PORTAL(cache->top))))
-      return cache->top;
-  else if( cache->bottom && ((PORTAL(cache->bottom))))
+  // If it is walkable, and not turned around, see if other criteria are met
+  if ((cache->bottom) && FOOD(cache->bottom))
+  {
     return cache->bottom;
-/*
-  // top right
-  else if ( (WALKABLE(cache->right) || WALKABLE(cache->top)) && 
-    ((PORTAL(cache->right->top))))
-    return cache->right->top;
-  // bottom right
-  else if ( (WALKABLE(cache->right) || WALKABLE(cache->bottom)) &&
-    ((PORTAL(cache->right->bottom))))
-    return cache->right->bottom;
-  // top left
-  else if ( (WALKABLE(cache->left) || WALKABLE(cache->top)) &&
-    ((PORTAL(cache->left->top))))
-    return cache->left->top;
-  // bottom left
-  else if ( (WALKABLE(cache->left) || WALKABLE(cache->bottom)) &&
-    ((PORTAL(cache->left->bottom))))
-    return cache->left->bottom;
-*/
+  }
+  else if ((cache->right) && FOOD(cache->right))
+  {
+    return cache->right;
+  }
+  else if ((cache->left) && FOOD(cache->left))
+  {
+    return cache->left;
+  }
+  else if ((cache->top) && FOOD(cache->top))
+  {
+    return cache->top;
+  }
+  // two tiles away.
+
+  if ((cache->bottom->bottom) && FOOD(cache->bottom->bottom))
+  {
+    return cache->bottom;
+  }
+  else if ((cache->right->right) && FOOD(cache->right->right))
+  {
+    return cache->right;
+  }
+  else if ((cache->left->left) && FOOD(cache->left->left))
+  {
+    return cache->left;
+  }
+  else if ((cache->top->top) && FOOD(cache->top->top))
+  {
+    return cache->top;
+  }
+  
+
   return '\0';
 }
+
+Patch* Creature::checkForPortal()
+{
+
+  Patch* cache = getPatch();
+
+  // If it is walkable, and not turned around, see if other criteria are met
+  if ((cache->bottom) && PORTAL(cache->bottom))
+  {
+    return cache->bottom;
+  }
+  else if ((cache->right) && PORTAL(cache->right))
+  {
+    return cache->right;
+  }
+  else if ((cache->left) && PORTAL(cache->left))
+  {
+    return cache->left;
+  }
+  else if ((cache->top) && PORTAL(cache->top))
+  {
+    return cache->top;
+  }
+  // two tiles away.
+
+  if ((cache->bottom->bottom) && PORTAL(cache->bottom->bottom))
+  {
+    return cache->bottom;
+  }
+  else if ((cache->right->right) && PORTAL(cache->right->right))
+  {
+    return cache->right;
+  }
+  else if ((cache->left->left) && PORTAL(cache->left->left))
+  {
+    return cache->left;
+  }
+  else if ((cache->top->top) && PORTAL(cache->top->top))
+  {
+    return cache->top;
+  }
+  
+
+  return '\0';
+}
+
 
 //#ifdef __DEBUG
 void Creature::printDebug()

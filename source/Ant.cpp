@@ -32,7 +32,7 @@ void Ant::handleFeramone()
   else if ((feramoneOutput == FERAMONE_LOW) && (cur->chemLevel <= COLD_TRAIL))
     SET_FERAMONE(cur, feramoneOutput);
 
-// no splash.  
+// no splash, it seems to confuse things more than it helps.
 return;
   // chemical "splash" to each side as ant moves:
   // * = ants trail
@@ -147,10 +147,7 @@ void Ant::forage()
     // otherwise we are on the surface with food, so go home.
     else
     {
-      // "follow trail" towards home.
-      if( !followTrail(true) )
-        goHome();
-      //goHome();
+      goHome();
       return;
     }
   }
@@ -175,37 +172,39 @@ void Ant::forage()
     // make sure the feramone is set correctly.
     feramoneOutput = FERAMONE_LOW;
     cache = checkForFood();
-    // Found food, pick it up.
+    // Found nearby food, get over there.
     if (cache != '\0')
     {
-      // 4. If food, pickup, set feramone output = 1000:
-      // 5.   Pickup food, mark food spot with feramone, go home
-      pickup( cache );
-      set_portaled( false );
-      feramoneOutput = FERAMONE_HIGH;
+      // if the patch IS NOT food, head towards it.
+      if (!FOOD(cache))
+      {
+        direction = getDirectionPatch( cache );
+        setAI(false);
+        return;
+      }
+      // otherwise it is food, pick it up.
+      else
+      {
+        // 4. If food, pickup, set feramone output = 1000:
+        // 5.   Pickup food, mark food spot with feramone, go home
+        pickup( cache );
+        set_portaled( false );
+        feramoneOutput = FERAMONE_HIGH;
 
-      // set feramone (with new output) where standing.
-      handleFeramone();
+        // set feramone (with new output) where standing.
+        handleFeramone();
 
-      // set feramone at food (so ants will move there once the
-      // pile is gone).
-      // Note: this might not work, since it will create a big block of
-      //        high if there are adjacent food pieces.
-//      INCREASE_FERAMONE( cache, feramoneOutput+1);
-      takePortals = true;
+        takePortals = true;
 
-      // TODO: clear memory or follow it?
-      // finally, we're turning around, so reset the ants memory.
-      clearVisited();
+        // TODO: clear memory or follow it?
+        // finally, we're turning around, so reset the ants memory.
+        clearVisited();
 
-      // go Home.
-      //goHome();
-      //wander();
-
-      // turn around!!
-      direction = directionOld;
-      setAI(false);
-      return;
+        // turn around!!
+        direction = directionOld;
+        setAI(false);
+        return;
+      }
     }
   }
 
@@ -282,20 +281,26 @@ void Ant::forage()
 // 3.   remember general direction and walk that way
 void Ant::goHome()
 {
-//  Patch* cache = findPortalAdjacent();
-//  if (cache != '\0')
-//  {
-//    setPatch(cache);
-//    handlePortal();
-//  }
+  // TODO: check for nearby ant hill
+  Patch* cache = checkForPortal();
+  if (cache != '\0')
+  {
+    direction = getDirectionPatch(cache);
+    if (direction != -1)
+    {
+      setAI(false);
+      return;
+    }
+  }
 
-//  if (followTrail())
-//    return;
-//  else
+  // try to follow a trail home.
+  if( !followTrail(true) )
+  {
     // if no hot trail...
+    goHomeCheating();
 
-  // followTrail now calls goHome, so goHome is goHomeCheating
-  goHomeCheating();
+    // TODO: go home without cheating
+  }
 }
 
 // 1. Need to sort the adjacent tiles to see what we're dealing with,
@@ -433,7 +438,7 @@ bool Ant::followTrail(bool home)
 // |=|=|=|.|0| |*|
 // | | | | | | | |
 //
-// solution: call "goHome"
+// solution: no trail to follow, return false
 
 
 // Problem: Got a shape like the following and the ants follow around the perimiter forever.
@@ -499,18 +504,18 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 
   // Figure out how many diagonals are hot so we know if we're in the middle of something or along a path.
   int numDiag = 0;
-  if (cache->left)
+  if (Grid::getLeft(cache))
   {
-    if(cache->left->top && (cache->left->top->chemLevel >= HOT_TRAIL_LIMIT))
+    if(Grid::getLeft(cache)->top && (Grid::getLeft(cache)->top->chemLevel >= HOT_TRAIL_LIMIT))
       numDiag++;
-    if(cache->left->bottom && (cache->left->bottom->chemLevel >= HOT_TRAIL_LIMIT))
+    if(Grid::getLeft(cache)->bottom && (Grid::getLeft(cache)->bottom->chemLevel >= HOT_TRAIL_LIMIT))
       numDiag++;
   }
-  if (cache->right)
+  if (Grid::getRight(cache))
   {
-    if(cache->right->top && (cache->right->top->chemLevel >= HOT_TRAIL_LIMIT))
+    if(Grid::getRight(cache)->top && (Grid::getRight(cache)->top->chemLevel >= HOT_TRAIL_LIMIT))
       numDiag++;
-    if(cache->right->bottom && (cache->right->bottom->chemLevel >= HOT_TRAIL_LIMIT))
+    if(Grid::getRight(cache)->bottom && (Grid::getRight(cache)->bottom->chemLevel >= HOT_TRAIL_LIMIT))
       numDiag++;
   }
 
@@ -559,8 +564,46 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   //   if not, prune till it is    //
   //-------------------------------//
 
-  //if (numDiag >= 1)
+  // Edge, want to continue forward.
+  if ((numDiag == 2) && (numHot == 3))
+  {
+    bool ud_edge = false;
+    bool lr_edge = false;
+    // Up-Down edge
+    if ( ((Grid::getUpRight(cache)->chemLevel > HOT_TRAIL_LIMIT) && (Grid::getDownRight(cache)->chemLevel > HOT_TRAIL_LIMIT)) ||
+         ((Grid::getUpLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)  && (Grid::getDownLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)) )
+      ud_edge=true;
 
+    // Left-Right edge
+    else if ( ((Grid::getUpRight(cache)->chemLevel > HOT_TRAIL_LIMIT)     && (Grid::getUpLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)) ||
+              ((Grid::getDownRight(cache)->chemLevel > HOT_TRAIL_LIMIT) && (Grid::getDownLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)) )
+      lr_edge=true;
+
+    // if neither of those, moving diagonal
+    // | |=|=|
+    // | |0| |
+    // |=|=| |
+
+    // we're removing *one* hot value, so when we find it, just swap it with the last one.
+    for(int i=0; (i < (numHot-1)) && (lr_edge || ud_edge); i++)
+    {
+      if (lr_edge && ((dir[i] == AI_TOP) || (dir[i] == AI_DOWN)))
+      {
+        sort[i] = sort[2];
+        dir[i] = dir[2];
+        lr_edge = false;
+      }
+      else if (ud_edge && ((dir[i] == AI_RIGHT) || (dir[i] == AI_DOWN)))
+      {
+        sort[i] = sort[2];
+        dir[i] = dir[2];
+        ud_edge = false;
+      }
+    }
+
+    sort[2] = '\0';
+    numHot-=1;
+  }
 
 
   //---------------------------//
@@ -578,7 +621,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 
   // Situation 3: 1 new ways to go, 2 hot ways.
   //    solution: take new way (followHotNotVisited will pick the new way).
-  if ((numHot >= 2) && (numNew >= 1))
+  if ((numHot >= 2) && (numNew >= 1) && (numDiag !=4))
   {
     int numEqual = 1;
     next = followHotNotVisited(sort);
@@ -615,6 +658,11 @@ printf("shouldn't be here");
     }
   } 
 
+  //----------------------------------------------//
+  // Finally: if all else fails,                  //
+  //          take the direction that heads home. //
+  //----------------------------------------------//
+
   int x_dist, y_dist;
   bool up, right;
   wayToHome(x_dist, y_dist, right, up);
@@ -622,7 +670,6 @@ printf("shouldn't be here");
   // otherwise, opposite of that.
 
 
-printf("r");
   bool dirX[numHot];
   int num = 0;
   for(int i=0; i<numHot; i++)
@@ -676,56 +723,6 @@ printf("r");
     }
   }
 
-/*
-  // 1. If following a HOT trail, don't turn unless must turn.
-  // check if the direction the ant is already
-  // heading is HOT and the direction is OK.
-  int lastDir = reverseDirection( directionOld );
-  for(int i=0; i<4; i++)
-    if((dir[i] == lastDir) && ( sort[i]->chemLevel >= HOT_TRAIL_LIMIT ))
-      {
-        // If the direction we're heading in is "warm" compared to an alternative.. take a hotter one.
-        if (i>0)
-          // TODO: if there is a good reason to turn, turn.
-          if ( true )//(sort[i]->chemLevel) > sort[0]->chemLevel)
-          {
-            direction = dir[i];
-            setAI(false);
-            return true;
-          }
-      }
-*/
-
-/*
-  // 7.   If on surface and HOT trail, follow (hot == feramone > 100)
-  for (int i=0; i< 4 && (sort[i]->chemLevel >= HOT_TRAIL_LIMIT); i++)
-  {
-    // check if the node has already been visited and is facing away from home.
-    if (!checkVisited(sort[i]) && awayFromHome(dir[i]))
-    {
-      direction = dir[i];
-      setAI(false);
-      return true;
-    }
-  }
-*/
-
-  
-/*
-  // 1. Near Home
-  if ((x_dist < 5) && (y_dist < 5))
-  {
-    if (home)
-    {
-      
-      return;
-    }
-    else
-    {
-
-    }
-  }
-*/
   return false;
 }
 
@@ -777,32 +774,6 @@ void Ant::goHomeCheating()
   setAI(false);
 }
 
-Patch* Ant::checkForFood()
-{
-
-  Patch* cache = getPatch();
-
-  // If it is walkable, and not turned around, see if other criteria are met
-  if ((cache->bottom) && FOOD(cache->bottom))
-  {
-    return cache->bottom;
-  }
-  else if ((cache->right) && FOOD(cache->right))
-  {
-    return cache->right;
-  }
-  else if ((cache->left) && FOOD(cache->left))
-  {
-    return cache->left;
-  }
-  else if ((cache->top) && FOOD(cache->top))
-  {
-    return cache->top;
-  }
-
-  return '\0';
-}
-
 // adjacent[0] is highest, adjacent[3] is lowest.
 // also keeps track of the direction so we don't need extra compares.
 void Ant::sortAdjacentPatchByChem(Patch* center, Patch* adjacent[], int direction[])
@@ -829,22 +800,6 @@ void Ant::sortAdjacentPatchByChem(Patch* center, Patch* adjacent[], int directio
     adjacent[i+1] = key;
     direction[i+1] = dirKey;
   }
-/* Note: tested this in stand alone program:
-void insertion_sort( int array[], int array_length )
-{
-  int i, j, key;
-  for(j = 1; j < array_length; j++)
-  {
-    key = array[j];
-    for(i = j - 1; (i >= 0) && (array[i] < key); i--)
-    {
-      array[i+1] = array[i];
-    }
-    array[i+1] = key;
-  }
-  return;
-}
-*/
 }
 
 bool Ant::awayFromHome(int dir)

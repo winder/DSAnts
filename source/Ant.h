@@ -48,9 +48,6 @@ class Ant: public Creature
     virtual bool followTrail(Patch* sort[], int direction[], bool h);
     virtual void goHome();
     virtual void goHomeCheating();
-    // check adjacent Patches for food.
-    Patch* checkForFood();
-
 
     virtual void setHome(int h){ location_home = h; }
     virtual int getHome(){ return location_home; }

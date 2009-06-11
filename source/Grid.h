@@ -42,6 +42,10 @@ class Grid
     static Patch* getLeft(Patch* p);
     static Patch* getUp(Patch* p);
     static Patch* getDown(Patch* p);
+    static Patch* getUpLeft(Patch* p){ return Grid::getUp( Grid::getLeft(p)); }
+    static Patch* getUpRight(Patch* p){ return Grid::getUp( Grid::getRight(p)); }
+    static Patch* getDownLeft(Patch* p){ return Grid::getDown( Grid::getLeft(p)); }
+    static Patch* getDownRight(Patch* p){ return Grid::getDown( Grid::getRight(p)); }
 
     Patch* getRight(int x, int y);
     Patch* getLeft(int x, int y);

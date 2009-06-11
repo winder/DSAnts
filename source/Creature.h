@@ -178,7 +178,12 @@ class Creature
     //-------------------//
     Patch* findEmptyAdjacent();
     Patch* findFoodDropAdjacent();
-    Patch* findPortalAdjacent();
+
+    // TODO: make this check generic: check for nearby ____
+    // check nearby Patches for food.
+    Patch* checkForFood();
+    // check nearby Patches for entrance.
+    Patch* checkForPortal();
 
     static int reverseDirection(int d)
       {
@@ -215,6 +220,20 @@ class Creature
           default:
             return '\0';
         }
+      }
+
+    int getDirectionPatch(Patch* p)
+      {
+        Patch* cache = getPatch();
+        if (p == Grid::getUp(cache))
+          return AI_TOP;
+        else if (Grid::getDown(cache))
+          return AI_DOWN;
+        else if (Grid::getLeft(cache))
+          return AI_LEFT;
+        else if (Grid::getRight(cache))
+          return AI_RIGHT;
+        return -1;
       }
 
     // the patch relatively to the left of the ant depending on the direction.

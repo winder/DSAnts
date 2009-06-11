@@ -240,6 +240,19 @@ void Player::update(int value)
     moveDown();
 //    automove = false;
   }
+
+  else if (value == PLAYER_PRESSED_X)
+  {
+    if (p->getFeramoneOutput() == 0)
+      p->setFeramoneOutput(1000);
+    else
+      p->setFeramoneOutput(0);
+  }
+  else if (value == PLAYER_PRESSED_Y)
+  {
+
+  }
+  
 }
 
 
