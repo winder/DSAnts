@@ -151,12 +151,13 @@ bool Creature::moveTo(Patch *pat, bool force)
     REMOVE_SPOT(p, this);
     SET_SPOT(pat, this);
 
+    // even if we're not using the visited value, keep it updated
+    addVisited( p );
+
     t = true;
     // move old spot to new spot.
     p = pat;
 
-    // even if we're not using the visited value, keep it updated
-    addVisited( pat );
 
     // if the ant successfully moved to a new patch.... leave a mark.
     handleFeramone();
@@ -677,7 +678,6 @@ Patch* Creature::findFoodDropAdjacent()
 
 Patch* Creature::checkForFood()
 {
-
   Patch* cache = getPatch();
 
   // If it is walkable, and not turned around, see if other criteria are met
@@ -699,7 +699,7 @@ Patch* Creature::checkForFood()
   }
   // two tiles away.
 
-  if ((cache->bottom->bottom) && FOOD(cache->bottom->bottom))
+  else if ((cache->bottom->bottom) && FOOD(cache->bottom->bottom))
   {
     return cache->bottom;
   }
@@ -722,7 +722,6 @@ Patch* Creature::checkForFood()
 
 Patch* Creature::checkForPortal()
 {
-
   Patch* cache = getPatch();
 
   // If it is walkable, and not turned around, see if other criteria are met
@@ -744,7 +743,7 @@ Patch* Creature::checkForPortal()
   }
   // two tiles away.
 
-  if ((cache->bottom->bottom) && PORTAL(cache->bottom->bottom))
+  else if ((cache->bottom->bottom) && PORTAL(cache->bottom->bottom))
   {
     return cache->bottom;
   }

@@ -60,7 +60,7 @@ class Creature
         printf("}");
         */
         if (!use_visit_memory)
-          return true;
+          return false;
 
         for (int i = 0; i < MAX_VISIT_MEMORY; i++)
           if ( newPatch == visited[i] ) return true;
@@ -227,11 +227,11 @@ class Creature
         Patch* cache = getPatch();
         if (p == Grid::getUp(cache))
           return AI_TOP;
-        else if (Grid::getDown(cache))
+        else if (p == Grid::getDown(cache))
           return AI_DOWN;
-        else if (Grid::getLeft(cache))
+        else if (p == Grid::getLeft(cache))
           return AI_LEFT;
-        else if (Grid::getRight(cache))
+        else if (p == Grid::getRight(cache))
           return AI_RIGHT;
         return -1;
       }

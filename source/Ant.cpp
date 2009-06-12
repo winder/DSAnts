@@ -281,10 +281,11 @@ void Ant::forage()
 // 3.   remember general direction and walk that way
 void Ant::goHome()
 {
-  // TODO: check for nearby ant hill
+  // check for nearby ant hill
   Patch* cache = checkForPortal();
   if (cache != '\0')
   {
+    // if found, move towards it.
     direction = getDirectionPatch(cache);
     if (direction != -1)
     {
@@ -463,10 +464,27 @@ bool Ant::followTrail(bool home)
 
 bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 {
-
   // 1. If there is no trail to follow, return false.
   if (sort[0]->chemLevel < HOT_TRAIL_LIMIT) return false;
 
+  // We are only interested in the hot trails, get rid of the rest
+  int numHot = 0;
+  int numNew = 0;
+  for(int i=0; i<4; i++)
+    if (sort[i]->chemLevel >= HOT_TRAIL_LIMIT)
+    {
+      numHot++;
+      if (!checkVisited(sort[i]))
+        numNew++;
+    }
+//    else
+//      sort[i] = '\0';
+/*
+  // Figure out how many of those paths are new.
+  for(int i=numHot; i>=0; i--)
+    if (! (checkVisited(sort[i])) )
+      numNew++;
+*/
   int next;
   Patch *cache;
 
@@ -487,20 +505,6 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
       
   next = -1;
   cache = getPatch();
-
-  // We are only interested in the hot trails, get rid of the rest
-  int numHot = 0;
-  for(int i=0; i<3; i++)
-    if (sort[i]->chemLevel >= HOT_TRAIL_LIMIT)
-      numHot++;
-//    else
-//      sort[i] = '\0';
-
-  // Figure out how many of those paths are new.
-  int numNew = 0;
-  for(int i=numHot; i>=0; i--)
-    if (! (checkVisited(sort[i])) )
-      numNew++;
 
   // Figure out how many diagonals are hot so we know if we're in the middle of something or along a path.
   int numDiag = 0;
@@ -525,11 +529,11 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   //  *"wayToHome" variables.
 
   // Situation 0: not on a trail, but see one
-  if ((numHot == 1) && (numNew == 1))
+  if ((numHot == 2) && (numNew == 1))
   {
-//    direction = dir[0];
-//    setAI(false);
-//    return true;
+    direction = dir[0];
+    setAI(false);
+    return true;
   }
 
   // Situation 6: 0 new ways to go, 1 old way.
@@ -559,13 +563,13 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 //  middle needs to move in the direction they're heading and find an edge
 
 
-  //-------------------------------//
-  // FIGURE OUT IF ON NARROW TRAIL //
-  //   if not, prune till it is    //
-  //-------------------------------//
+  //-----------------------------//
+  // FIGURE OUT IF ON EDGE TRAIL //
+  //   if not, prune till it is  //
+  //-----------------------------//
 
   // Edge, want to continue forward.
-  if ((numDiag == 2) && (numHot == 3))
+  if ((numDiag == 2) && (numHot == 3) && (numNew == 2))
   {
     bool ud_edge = false;
     bool lr_edge = false;
@@ -575,7 +579,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
       ud_edge=true;
 
     // Left-Right edge
-    else if ( ((Grid::getUpRight(cache)->chemLevel > HOT_TRAIL_LIMIT)     && (Grid::getUpLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)) ||
+    else if ( ((Grid::getUpRight(cache)->chemLevel > HOT_TRAIL_LIMIT)   && (Grid::getUpLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)) ||
               ((Grid::getDownRight(cache)->chemLevel > HOT_TRAIL_LIMIT) && (Grid::getDownLeft(cache)->chemLevel > HOT_TRAIL_LIMIT)) )
       lr_edge=true;
 
@@ -584,25 +588,57 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
     // | |0| |
     // |=|=| |
 
-    // we're removing *one* hot value, so when we find it, just swap it with the last one.
-    for(int i=0; (i < (numHot-1)) && (lr_edge || ud_edge); i++)
+    if (lr_edge || ud_edge)
     {
-      if (lr_edge && ((dir[i] == AI_TOP) || (dir[i] == AI_DOWN)))
+      // we're removing *one* hot value, so when we find it, just swap it with the last one.
+      for(int i=0; (i < (numHot-1)) && (lr_edge || ud_edge); i++)
       {
-        sort[i] = sort[2];
-        dir[i] = dir[2];
-        lr_edge = false;
+        if (lr_edge && ((dir[i] == AI_TOP) || (dir[i] == AI_DOWN)))
+        {
+          sort[i] = sort[2];
+          dir[i] = dir[2];
+          lr_edge = false;
+        }
+        else if (ud_edge && ((dir[i] == AI_RIGHT) || (dir[i] == AI_DOWN)))
+        {
+          sort[i] = sort[2];
+          dir[i] = dir[2];
+          ud_edge = false;
+        }
       }
-      else if (ud_edge && ((dir[i] == AI_RIGHT) || (dir[i] == AI_DOWN)))
-      {
-        sort[i] = sort[2];
-        dir[i] = dir[2];
-        ud_edge = false;
-      }
+    
+      printf("PRUNED");
+      sort[2] = '\0';
+      numHot-=1;
+      numNew-=1;
     }
+  }
 
-    sort[2] = '\0';
-    numHot-=1;
+  // remove prior direction (stick it at end):
+  for(int i=0; i<3; i++)
+    // swap with next
+    if (dir[i] == directionOld)
+    {
+      cache=sort[i];
+      next=dir[i];
+
+      sort[i] = sort[i+1];
+      dir[i] = dir[i+1];
+
+      sort[i+1] = cache;
+      dir[i+1] = next;
+    }
+      
+  next = -1;
+  cache = getPatch();
+
+  // do this again in case pruning was involved.
+  // Situation 0: not on a trail, but see one
+  if ((numHot == 2) && (numNew == 1))
+  {
+    direction = dir[0];
+    setAI(false);
+    return true;
   }
 
 
@@ -643,7 +679,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   // solution: don't turn around.  in above, goes right.
   if ((numHot == 2) && (numNew == 0))
   {
-printf("shouldn't be here");
+//printf("shouldn't be here");
     if (sort[0] == lastVisited(1))
     {
       direction=dir[1];
