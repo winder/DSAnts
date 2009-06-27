@@ -279,6 +279,7 @@ int main()
 
   //enable textures
   glEnable(GL_TEXTURE_2D);
+  vramSetBankA(VRAM_A_TEXTURE);
 
   // enable antialiasing
 //  glEnable(GL_ANTIALIAS);
@@ -291,7 +292,6 @@ int main()
   //this should work the same as the normal gl call
   glViewport(0,0,255,191);
 
-  vramSetBankA(VRAM_A_TEXTURE);
 
   // Init textures
   gw->initTex();

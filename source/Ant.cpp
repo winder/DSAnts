@@ -467,7 +467,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   // 1. If there is no trail to follow, return false.
   if (sort[0]->chemLevel < HOT_TRAIL_LIMIT) return false;
 
-  // We are only interested in the hot trails, get rid of the rest
+  // Figure out how many trails are hot, and how many of those are new.
   int numHot = 0;
   int numNew = 0;
   for(int i=0; i<4; i++)
@@ -479,30 +479,17 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
     }
 //    else
 //      sort[i] = '\0';
+
 /*
   // Figure out how many of those paths are new.
   for(int i=numHot; i>=0; i--)
     if (! (checkVisited(sort[i])) )
       numNew++;
 */
+
   int next;
   Patch *cache;
 
-  // remove prior direction (stick it at end):
-  for(int i=0; i<3; i++)
-    // swap with next
-    if (dir[i] == directionOld)
-    {
-      cache=sort[i];
-      next=dir[i];
-
-      sort[i] = sort[i+1];
-      dir[i] = dir[i+1];
-
-      sort[i+1] = cache;
-      dir[i+1] = next;
-    }
-      
   next = -1;
   cache = getPatch();
 
@@ -531,7 +518,11 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   // Situation 0: not on a trail, but see one
   if ((numHot == 2) && (numNew == 1))
   {
-    direction = dir[0];
+    if (checkVisited(sort[0]))
+      direction = dir[1];
+    else
+      direction = dir[0];
+
     setAI(false);
     return true;
   }
@@ -567,7 +558,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   // FIGURE OUT IF ON EDGE TRAIL //
   //   if not, prune till it is  //
   //-----------------------------//
-
+/*
   // Edge, want to continue forward.
   if ((numDiag == 2) && (numHot == 3) && (numNew == 2))
   {
@@ -613,7 +604,8 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
       numNew-=1;
     }
   }
-
+*/
+/*
   // remove prior direction (stick it at end):
   for(int i=0; i<3; i++)
     // swap with next
@@ -628,10 +620,12 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
       sort[i+1] = cache;
       dir[i+1] = next;
     }
-      
+*/      
   next = -1;
   cache = getPatch();
 
+/*
+  // TODO: does it make sense to do this again?
   // do this again in case pruning was involved.
   // Situation 0: not on a trail, but see one
   if ((numHot == 2) && (numNew == 1))
@@ -640,7 +634,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
     setAI(false);
     return true;
   }
-
+*/
 
   //---------------------------//
   // BELOW, SINGLE LINE STUFF: // (know a single line because "numDiag <= 1"
