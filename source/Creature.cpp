@@ -352,7 +352,7 @@ void Creature::move()
     else
     {
       directionOld = direction;
-      direction = -1;
+//      direction = -1;
       setAI(true);
     }
     return;
@@ -680,7 +680,6 @@ Patch* Creature::checkForFood()
 {
   Patch* cache = getPatch();
 
-  // If it is walkable, and not turned around, see if other criteria are met
   if ((cache->bottom) && FOOD(cache->bottom))
   {
     return cache->bottom;
@@ -724,7 +723,6 @@ Patch* Creature::checkForPortal()
 {
   Patch* cache = getPatch();
 
-  // If it is walkable, and not turned around, see if other criteria are met
   if ((cache->bottom) && PORTAL(cache->bottom))
   {
     return cache->bottom;

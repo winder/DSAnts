@@ -275,6 +275,8 @@ void Player::printDebug()
   printf("\nAnt HP: %i", p->getHP());
   printf("\nAnt Carrying: %i", p->getCarrying());
   printf("\nPlayer Coord: (%i, %i)", p->getX(), p->getY());
+  printf("\nLocation near FOOD(%s) PORTAL(%s)", p->checkForFood()?"X":" ",
+                                                p->checkForPortal()?"X":" ");
 
 }
 

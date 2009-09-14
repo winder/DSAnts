@@ -4,24 +4,6 @@
 void Ant::handleFeramone()
 {
   Patch* cur = getPatch();
-//  INCREASE_FERAMONE(getPatch(), feramoneOutput);
-//  // only update feramone if it will be to more than it already is.
-//  if (cur->chemLevel < feramoneOutput)
-//    INCREASE_FERAMONE(cur, feramoneOutput);
-//    INCREASE_FERAMONE(cur, feramoneOutput);
-
-/*
-  // if the ant is not hot, don't increase tile too much.
-  // and don't do splash.
-  if ((feramoneOutput == FERAMONE_LOW) && (cur->chemLevel < (HOT_TRAIL_LIMIT / 2)))
-  {
-    INCREASE_FERAMONE(cur, feramoneOutput);
-    return;
-  }
-  // ant is hot, don't increase tile too much either.
-  else if ((feramoneOutput == FERAMONE_HIGH) && (cur->chemLevel > (HOT_TRAIL_LIMIT * 4)))
-    INCREASE_FERAMONE(cur, feramoneOutput);
-*/
 
   // if chemLevel is very high, don't put down too much
   if ((feramoneOutput > FERAMONE_LOW) && cur->chemLevel > FERAMONE_MAX-feramoneOutput)
@@ -32,74 +14,11 @@ void Ant::handleFeramone()
   else if ((feramoneOutput == FERAMONE_LOW) && (cur->chemLevel <= COLD_TRAIL))
     SET_FERAMONE(cur, feramoneOutput);
 
-// no splash, it seems to confuse things more than it helps.
-return;
-  // chemical "splash" to each side as ant moves:
-  // * = ants trail
-  // - = chemical "splash" once
-  // + = chemical "splash" twice
-  //  | |-|+|*|-|
-  //  |-|*|*|*|-|
-  //  |-|*|+|-| |
-
-  int splash = feramoneOutput * 0.3;
-  int splashLow = feramoneOutput * 0.1;
-  Patch* last = lastVisited(1);
-
-  // can't do this if the ant has no memory (i.e. just spawned).
-  if (last == '\0') return;
-
-  int lastDir = getLastDirection();
-
-  // if LEFT or RIGHT, mark top and bottom of last.
-  if ((lastDir == AI_LEFT) || (lastDir == AI_RIGHT))
-  {
-    if ((last->top != '\0') && (last->top->chemLevel < 5000))
-      INCREASE_FERAMONE(last->top, splash);
-    else if (last->top->chemLevel < 10000)
-      INCREASE_FERAMONE(last->top, splashLow);
-
-    if ((last->bottom != '\0') && (last->bottom->chemLevel < 5000))
-      INCREASE_FERAMONE(last->bottom, splash);
-    else if (last->left->chemLevel < 10000)
-      INCREASE_FERAMONE(last->bottom, splashLow);
-  }
-  // if TOP or BOTTOM, mark left and right of last
-  else if ((lastDir == AI_TOP) || (lastDir == AI_DOWN))
-  {
-    if ((last->left != '\0') && (last->left->chemLevel < 5000))
-      INCREASE_FERAMONE(last->left, splash);
-    else if (last->left->chemLevel < 10000)
-      INCREASE_FERAMONE(last->left, splashLow);
-
-    if ((last->right != '\0') && (last->right->chemLevel < 5000))
-      INCREASE_FERAMONE(last->right, splash);
-    else if (last->right->chemLevel < 10000)
-      INCREASE_FERAMONE(last->right, splashLow);
-  }
-/*
-  // If it isn't the current, next node (cur) or last node (last2) splash it.
-  if ((last->top!=last2) && (last->top!=cur) && (last->top->chemLevel < 5000))
-    INCREASE_FERAMONE(last->top, splash);
-  if ((last->bottom!=last2) && (last->bottom!=cur) && (last->bottom->chemLevel < 5000))
-    INCREASE_FERAMONE(last->bottom, splash);
-  if ((last->left!=last2) && (last->left!=cur) && (last->left->chemLevel < 5000))
-    INCREASE_FERAMONE(last->left, splash);
-  if ((last->right!=last2) && (last->right!=cur) && (last->right->chemLevel < 5000))
-    INCREASE_FERAMONE(last->right, splash);
-*/
+  // no splash, it seems to confuse things more than it helps.
+  return;
 }
 
-// This one should work as follows:
-// 0. Do not turn around unless dead end or specified below.
-// 1. If in nest with food, drop food then leave.
-// 2. If outside, look for feramone, follow.
-// 3. If feramone dead end, random direction.
-// 4. If food, pick up and turn around.
-// 5. If carrying food follow feramone.
-//--------------this needs more----------------
-//-- New algorithm looks like this:
-// Easy to check for cases:
+//-- algorithm looks like this:
 // 1. If carrying food, go home.
 // 2.   If in base, drop food.
 // 3. If not on surface, wander until on surface.
@@ -477,15 +396,6 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
       if (!checkVisited(sort[i]))
         numNew++;
     }
-//    else
-//      sort[i] = '\0';
-
-/*
-  // Figure out how many of those paths are new.
-  for(int i=numHot; i>=0; i--)
-    if (! (checkVisited(sort[i])) )
-      numNew++;
-*/
 
   int next;
   Patch *cache;
@@ -515,7 +425,8 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
   //  *number hot directions.
   //  *"wayToHome" variables.
 
-  // Situation 0: not on a trail, but see one
+
+  // Situation 0: on a simple trail, stay on it.
   if ((numHot == 2) && (numNew == 1))
   {
     if (checkVisited(sort[0]))
@@ -526,6 +437,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
     setAI(false);
     return true;
   }
+
 
   // Situation 6: 0 new ways to go, 1 old way.
   // solution: nothing to follow, let the caller do its thing
@@ -651,6 +563,7 @@ bool Ant::followTrail(Patch* sort[], int dir[], bool home)
 
   // Situation 3: 1 new ways to go, 2 hot ways.
   //    solution: take new way (followHotNotVisited will pick the new way).
+
   if ((numHot >= 2) && (numNew >= 1) && (numDiag !=4))
   {
     int numEqual = 1;

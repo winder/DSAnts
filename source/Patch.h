@@ -14,49 +14,64 @@ class Creature;
 
 // Can walk
 // TODO: Seperate AVAILABLE_SPOT from this.
-#define WALKABLE(X) (WALKABLEi(X->TYPE))
-#define WALKABLEi(X) ((X == PATCH_EMPTY) || (X == PATCH_ENTRANCE) || EGGi(X) || FOODi(X))
+#define WALKABLE(X) (WALKABLEi((X)->TYPE))
+#define WALKABLEi(X) (((X) == PATCH_EMPTY) || ((X) == PATCH_ENTRANCE) || EGGi(X) || FOODi(X))
 
 // Is food
-#define FOOD(X) FOODi(X->TYPE)
-#define FOODi(X) ((X == PATCH_FOOD1) ||(X == PATCH_FOOD2) ||(X == PATCH_FOOD3) ||(X == PATCH_FOOD4) || (X == PATCH_FOOD5)\
- ||(X == PATCH_FOOD6) ||(X == PATCH_FOOD7) ||(X == PATCH_FOOD8) ||(X == PATCH_FOOD9) ||(X == PATCH_FOOD10))
+#define FOOD(X) (FOODi((X)->TYPE))
+#define FOODi(X) (((X) == PATCH_FOOD1) ||((X) == PATCH_FOOD2) ||((X) == PATCH_FOOD3) ||((X) == PATCH_FOOD4) || ((X) == PATCH_FOOD5)\
+ ||((X) == PATCH_FOOD6) ||((X) == PATCH_FOOD7) ||((X) == PATCH_FOOD8) ||((X) == PATCH_FOOD9) ||((X) == PATCH_FOOD10))
 
-#define FOODFULL(X) (FOODFULLi(X->TYPE))
-#define FOODFULLi(X) (X == PATCH_FOOD10)
+#define FOODFULL(X) (FOODFULLi((X)->TYPE))
+#define FOODFULLi(X) ((X) == PATCH_FOOD10)
 
 // Is an egg
-#define EGG(X) EGGi(X->TYPE)
+#define EGG(X) (EGGi((X)->TYPE))
 #define EGGi(X) ((X == PATCH_EGG1) ||(X == PATCH_EGG2) ||(X == PATCH_EGG3) ||(X == PATCH_EGG4) || (X == PATCH_EGG5))
 
 // Is an object
-#define OBJECT(X) OBJECTi(X->TYPE)
+#define OBJECT(X) (OBJECTi((X)->TYPE))
 #define OBJECTi(X) (FOODi(X) || EGGi(X))
 
 // Empty
-#define EMPTY(X) (EMPTYi(X->TYPE))
-#define EMPTYi(X) ((X == PATCH_EMPTY))
+#define EMPTY(X) (EMPTYi((X)->TYPE))
+#define EMPTYi(X) (((X) == PATCH_EMPTY))
 
 // A Portal
-#define PORTAL(X) (X->portal && WALKABLE(cache->portal))
+#define PORTAL(X) ((X)->portal && WALKABLE((X)->portal))
 
 // Collision detection checks
-#define NOANTS(X) ((X->occupant_one == '\0') && (X->occupant_two == '\0'))
+#define NOANTS(X) (((X)->occupant_one == '\0') && ((X)->occupant_two == '\0'))
 
 // swap these to disable collision detection
 #define AVAILABLE_SPOT(X) (true)
-//#define AVAILABLE_SPOT(X) ((X->occupant_one == '\0') || (X->occupant_two == '\0'))
-#define SET_SPOT(X, Y) {if(AVAILABLE_SPOT_ONE(X)) SET_SPOT_ONE(X, Y); else if (AVAILABLE_SPOT_TWO(X)) SET_SPOT_TWO(X, Y);}
-#define REMOVE_SPOT(X, Y) {if(SPOT_ONE_IS(X, Y)) SET_SPOT_ONE(X, '\0'); else if (SPOT_TWO_IS(X, Y)) SET_SPOT_TWO(X, '\0');}
+/*
+#define AVAILABLE_SPOT(X) (((X)->occupant_one == '\0')   || ((X)->occupant_two == '\0') ||\
+                           ((X)->occupant_three == '\0') || ((X)->occupant_four == '\0'))
+*/
+#define SET_SPOT(X, Y) {if      (AVAILABLE_SPOT_ONE(X)) SET_SPOT_ONE(X, Y);\
+                        else if (AVAILABLE_SPOT_TWO(X)) SET_SPOT_TWO(X, Y);\
+                        else if (AVAILABLE_SPOT_THREE(X)) SET_SPOT_THREE(X, Y);\
+                        else if (AVAILABLE_SPOT_FOUR(X)) SET_SPOT_FOUR(X, Y);}
+#define REMOVE_SPOT(X, Y) {if(SPOT_ONE_IS((X), (Y)))         SET_SPOT_ONE  ((X), '\0');\
+                           else if (SPOT_TWO_IS((X), (Y)))   SET_SPOT_TWO  ((X), '\0');\
+                           else if (SPOT_THREE_IS((X), (Y))) SET_SPOT_THREE((X), '\0');\
+                           else if (SPOT_FOUR_IS((X), (Y)))  SET_SPOT_FOUR ((X), '\0');}
 
-#define AVAILABLE_SPOT_ONE(X) (X->occupant_one == '\0')
-#define AVAILABLE_SPOT_TWO(X) (X->occupant_two == '\0')
+#define AVAILABLE_SPOT_ONE(X)   ((X)->occupant_one   == '\0')
+#define AVAILABLE_SPOT_TWO(X)   ((X)->occupant_two   == '\0')
+#define AVAILABLE_SPOT_THREE(X) ((X)->occupant_three == '\0')
+#define AVAILABLE_SPOT_FOUR(X)  ((X)->occupant_four  == '\0')
 
-#define SET_SPOT_ONE(X, Y) (X->occupant_one = Y)
-#define SET_SPOT_TWO(X, Y) (X->occupant_two = Y)
+#define SET_SPOT_ONE(X, Y)   ((X)->occupant_one   = (Y))
+#define SET_SPOT_TWO(X, Y)   ((X)->occupant_two   = (Y))
+#define SET_SPOT_THREE(X, Y) ((X)->occupant_three = (Y))
+#define SET_SPOT_FOUR(X, Y)  ((X)->occupant_four  = (Y))
 
-#define SPOT_ONE_IS(X, Y) (X->occupant_one == Y)
-#define SPOT_TWO_IS(X, Y) (X->occupant_two == Y)
+#define SPOT_ONE_IS(X, Y)   ((X)->occupant_one   == (Y))
+#define SPOT_TWO_IS(X, Y)   ((X)->occupant_two   == (Y))
+#define SPOT_THREE_IS(X, Y) ((X)->occupant_three == (Y))
+#define SPOT_FOUR_IS(X, Y)  ((X)->occupant_four  == (Y))
 
 #define INCREASE_FERAMONE_ONE(X) (INCREASE_FERAMONE(X, 1))
 #define INCREASE_FERAMONE(X, Y) (X->chemLevel+=(Y))
@@ -85,6 +100,8 @@ struct Patch
   // Ants can walk over each other, but I don't want big piles.
   Creature* occupant_one;
   Creature* occupant_two;
+  Creature* occupant_three;
+  Creature* occupant_four;
 
   // TODO: it may make sense to have the chemLevel be applied to EDGES
   //       so each patch would have 4 chemLevels
