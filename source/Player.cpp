@@ -277,6 +277,33 @@ void Player::printDebug()
   printf("\nPlayer Coord: (%i, %i)", p->getX(), p->getY());
   printf("\nLocation near FOOD(%s) PORTAL(%s)", p->checkForFood()?"X":" ",
                                                 p->checkForPortal()?"X":" ");
+  printf("\nAI ");
+  switch(p->getAction())
+  {
+    case ANT_ACTION_FORAGE:
+      printf("(FORAGE)");
+      break;
+    case ANT_ACTION_WANDER:
+      printf("(WANDER)");
+      break;
+  }
+  printf(" = ");
+  p->moveAI();
+  switch(p->getDirection())
+  {
+    case AI_LEFT:
+        printf("LEFT");
+        break;
+    case AI_RIGHT:
+        printf("RIGHT");
+        break;
+    case AI_TOP:
+        printf("TOP");
+        break;
+    case AI_DOWN:
+        printf("DOWN");
+        break;
+  }
 
 }
 

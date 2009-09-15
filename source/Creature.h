@@ -139,6 +139,7 @@ class Creature
 
     inline short getFacingX(){ return directionX; }
     inline short getFacingY(){ return directionY; }
+    inline int getDirection(){ return direction; }
 
     inline int getCarrying(){ return carrying; }
     inline void setCarrying(int x){ carrying = x; }
