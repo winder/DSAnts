@@ -121,6 +121,7 @@ class GameWorld: public Observer, public Subject
     // in most cases this will be true, but there may be cases where
     // I want to follow something else (another ant, spider, etc).
     bool followingPlayer;
+    Creature *following;
     // Camera
     Camera *cam;
 

@@ -2,18 +2,12 @@
 
 GameWorld::GameWorld()
 {
-  followingPlayer = true;
   eggTimer = 0;
 
   in = new Input();
 
   cam = new Camera();
   //cam->translateZinc(2.2);
-
-//  ug = new Underground();
-//  surf = new Surface();
-//  ug = new MapDraw( new Underground() );
-//  surf = new MapDraw( new Surface() );
 
   ug = new MapDraw();
   ug->setGrid( new Underground() );
@@ -37,7 +31,12 @@ GameWorld::GameWorld()
   tmp->setCarrying(PATCH_FOOD1);  
   tmp->setTakePortals( true );
   tmp->setFeramoneOutput(1000);
+
+  // Default to following player:
+  followingPlayer = true;
   p = new Player(tmp);
+
+  following = tmp;
 
 
   // Create queen(s) and put in a random location.
@@ -249,8 +248,8 @@ void GameWorld::draw()
 {
   numAnts = 0;
   // if player is offscreen, center screen.
-  if (! curMap->isVisible( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() ) )
-    curMap->setCenter( p->getPlayerAnt()->getX(), p->getPlayerAnt()->getY() );
+  if (! curMap->isVisible( following->getX(), following->getY() ) )
+    curMap->setCenter( following->getX(), following->getY() );
 
   curMap->doMapShift();
   curMap->beginQuads();
@@ -348,9 +347,9 @@ void GameWorld::stepEggsForward()
 void GameWorld::stepForward(int num)
 {
   // The "Player" doesn't keep track of its location, so I can't do this through observer.
-  if (STATE != p->getPlayerAnt()->getLocation())
+  if (STATE != following->getLocation())
   {
-    STATE = p->getPlayerAnt()->getLocation();
+    STATE = following->getLocation();
     curMap = getMap(STATE);
   }
 
@@ -359,10 +358,9 @@ void GameWorld::stepForward(int num)
   surf->gameTick(num);
 
   // Shift the map to center the player (normal circumstances)
-  if (followingPlayer)
     for (int i = num; i > 0; i--)
     {
-      curMap->shiftCenter(p->getPlayerAnt());
+      curMap->shiftCenter(following);
       stepEggsForward();
     }
 
@@ -417,7 +415,6 @@ void GameWorld::update(int value)
     else if (OBJECT(picked))
     {
       p->pickUp();
-      //curMap->getGrid()->takeObject( p->pickUp() );
     }
   }
   else if (value == PLAYER_RELEASED_TOUCHPAD)
@@ -433,10 +430,13 @@ void GameWorld::update(int value)
     // add a new ant on press.
     Ant *t = new WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
     t->setHome( GAMEWORLD_STATE_UNDERGROUND );
-//    t->setAction( ANT_ACTION_WANDER );
     t->setTakePortals(true);
+//    t->setAction( ANT_ACTION_WANDER );
     t->setAction( ANT_ACTION_FORAGE );
     black.push_back(t);
+
+    // Can change following to any creature at any time...
+    // following = t;
   }
 
   else if (value == PLAYER_HELD_A)
