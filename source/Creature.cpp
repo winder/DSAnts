@@ -555,6 +555,21 @@ int Creature::use()
   return 0;
 }
 
+int Creature::getDirectionFacing()
+{
+  if ((directionX == 0) && (directionY == 0))
+    return -1;
+
+  // Find out if LEFT/RIGHT or TOP/BOTTOM.
+  if (fabs(directionX) > fabs(directionY))
+  {
+    if (directionX < 0) return AI_LEFT;
+    return AI_RIGHT;
+  }
+  else if (directionY < 0) return AI_DOWN;
+  return AI_TOP;
+}
+
 void Creature::incrementOffsetX()
 {
   offsetX++;

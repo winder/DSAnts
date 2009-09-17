@@ -119,6 +119,9 @@ class Creature
     // use the carrying object (i.e. eat food / egg)
     virtual int use();
 
+    // Returns the direction the ant is facing.
+    int getDirectionFacing();
+
     // True if will pickup.  False otherwise.
     void pickup(Patch *p);
 

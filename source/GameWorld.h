@@ -68,6 +68,7 @@ class GameWorld: public Observer, public Subject
     // tell classes to draw themselves
     void draw();
     void pickPoint(short x, short y);
+    void setPicked(Patch* p);
 
     // getters
     MapDraw* getUG(){ return ug; }

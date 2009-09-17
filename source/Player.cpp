@@ -1,4 +1,6 @@
 #include "Player.h"
+// Include this here to avoid circular dependencies
+#include "GameWorld.h"
 
 Player::Player()
 {
@@ -250,7 +252,28 @@ void Player::update(int value)
   }
   else if (value == PLAYER_PRESSED_Y)
   {
+    Patch* facing = getPlayerAnt()->getPatch();
+    switch(getPlayerAnt()->getDirectionFacing())
+    {
+      case AI_LEFT:
+        facing = facing->left;
+        break;
+      case AI_RIGHT:
+        facing = facing->right;
+        break;
+      case AI_TOP:
+        facing = facing->top;
+        break;
+      case AI_DOWN:
+        facing = facing->bottom;
+        break;
+    }
 
+    facing->picked = true;
+    GameWorldSingleton::getInstance()->setPicked(facing);
+    // hack.. GameWorld isn't watching player?
+    GameWorldSingleton::getInstance()->update(PLAYER_PICKED_SOMETHING);
+    facing->picked = false;
   }
   
 }

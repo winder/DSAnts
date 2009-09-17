@@ -278,12 +278,16 @@ void GameWorld::draw()
 
   curMap->end();
 }
+void GameWorld::setPicked( Patch* p)
+{
+    picked = p;
+}
 
 void GameWorld::pickPoint(short x, short y)
 {
   if (curMap->pickPoint(x, y, *cam))
   {
-    picked = curMap->getPicked();
+    setPicked( curMap->getPicked() );
     // Disabling automove for now.
     //p->setDestination(picked->x, picked->y);
     //if (WALKABLE(picked))
