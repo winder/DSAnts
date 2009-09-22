@@ -246,12 +246,13 @@ void Player::update(int value)
   else if (value == PLAYER_PRESSED_X)
   {
     if (p->getFeramoneOutput() == 0)
-      p->setFeramoneOutput(1000);
+      p->setFeramoneOutput(100);
     else
       p->setFeramoneOutput(0);
   }
   else if (value == PLAYER_PRESSED_Y)
   {
+    // Pick in front of player
     Patch* facing = getPlayerAnt()->getPatch();
     switch(getPlayerAnt()->getDirectionFacing())
     {
@@ -300,6 +301,8 @@ void Player::printDebug()
   printf("\nPlayer Coord: (%i, %i)", p->getX(), p->getY());
   printf("\nLocation near FOOD(%s) PORTAL(%s)", p->checkForFood()?"X":" ",
                                                 p->checkForPortal()?"X":" ");
+
+/*
   printf("\nAI ");
   switch(p->getAction())
   {
@@ -327,7 +330,7 @@ void Player::printDebug()
         printf("DOWN");
         break;
   }
-
+*/
 }
 
 // I'm seeing a lot of repeat code doing this, a helper function will reduce

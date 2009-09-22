@@ -9,17 +9,19 @@ class Ant: public Creature
     Ant():Creature()
     {
       feramoneOutput = 100;
+      currentPheramone = BLACK_HOME;
       location_home = -1;
       portalHome = false;
     }
     Ant(Patch *pat, int location):Creature(pat, location)
     {
       feramoneOutput = 100;
+      currentPheramone = BLACK_HOME;
       location_home = -1;
       portalHome = false;
     }
     virtual int getType() = 0;
-    virtual void handleFeramone();
+    virtual void handlePheramone();
     virtual bool handlePortal()
     {
       // will go through any portal, use super class.
@@ -53,7 +55,7 @@ class Ant: public Creature
     virtual int getHome(){ return location_home; }
 
     void setFeramoneOutput(int f){ feramoneOutput = f; }
-    int getFeramoneOutput(){ return feramoneOutput; }
+    unsigned int getFeramoneOutput(){ return feramoneOutput; }
 
     // return as argument.
     void sortAdjacentPatchByChem(Patch* center, Patch* sort[], int direction[]);
@@ -74,7 +76,8 @@ class Ant: public Creature
       }
 
   private:
-    short feramoneOutput;
+    unsigned int feramoneOutput;
+    unsigned short currentPheramone;
     int location_home;
 
     // take portal to get home, or for unknown portals?

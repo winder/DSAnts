@@ -584,10 +584,10 @@ void MapDraw::drawGroundPatch(float x, float y, Patch *p)
   int cl = 0;
 
   // if it is low, make it 10 to it so we can see something
-  if ((p->chemLevel < 100) && (p->chemLevel != 0))
+  if ((p->chemLevel[0] < 100) && (p->chemLevel[0] != 0))
     cl = 10;
-  if (p->chemLevel > 100)
-    cl = p->chemLevel * 0.1;
+  if (p->chemLevel[0] > 100)
+    cl = p->chemLevel[0] * 0.1;
 
   material(31,31-cl,31-cl); // make it easier to see ants...
   // Check top, bottom, left, right and draw

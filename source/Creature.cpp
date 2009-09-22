@@ -160,14 +160,16 @@ bool Creature::moveTo(Patch *pat, bool force)
 
 
     // if the ant successfully moved to a new patch.... leave a mark.
-    handleFeramone();
+    // TODO: move this into the Ant class, they are the only "Creature" to use
+    // it.
+    handlePheramone();
   }
 
   return t;
 }
 
 // Only ants do this.  Leave a stub in parent class.
-void Creature::handleFeramone()
+void Creature::handlePheramone()
 {
 
 }

@@ -21,7 +21,7 @@ class Grid
     Grid();
 
     // if the map needs to keep track of the game speed.
-    virtual void gameTick(int num){ }
+    virtual void gameTick(int num);
 
     // Make the grid loop on the Y axis.
     void setLoopY();
@@ -71,8 +71,15 @@ class Grid
     Patch* getRandomCleared(){ return cleared[ rand()%(cleared.size()) ]; }
     Patch* getRandomObject(){ return objects[ rand()%(objects.size()) ]; }
 
+    // The surface needs to update the chemical trails,
+    // they diminish over time.
+    virtual void chemicalDecay(float f);
+
+  protected:
     // These need to be public
     Patch* dd[WIDTH][DEPTH];
+    short chemicalTick;
+
   private:
 
     // Grids can optionally be set to loop.

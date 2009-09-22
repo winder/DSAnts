@@ -101,7 +101,9 @@ class Creature
         return visited[visited_index-i];
       }
 
-    virtual void handleFeramone();
+    // This does nothing here, but needs to be called....
+    virtual void handlePheramone();
+
     // This lets the ant move on its own accord, influenced by:
     //    -feramone level of adjacent tiles
     //    -current action

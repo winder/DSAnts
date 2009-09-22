@@ -71,6 +71,15 @@ enum PATCH_types
 #define FERAMONE_LOW 10
 #define FERAMONE_HIGH 100
 #define FERAMONE_MAX 300
+
+enum pheramones
+{
+  BLACK_HOME = 0,
+  BLACK_FOOD = 1,
+  RED_HOME = 2,
+  RED_FOOD = 3
+};
+
 // 60 = 1 second
 #define CHEMICAL_DECAY_FREQUENCY 600
 

@@ -6,6 +6,10 @@
 class Creature;
 struct Patch
 {
+  // constructor.
+  Patch();
+  Patch(int, int);
+
   // Linked in a grid.
   Patch *left;
   Patch *right;
@@ -36,13 +40,9 @@ struct Patch
   Creature* occupant_three;
   Creature* occupant_four;
 
-  // the feramone level the ants use to move around.
-  unsigned short chemLevel;
-
-  // TODO:
   // In the near future I will want 2 chemicals for each team,
   // One that is HIGH near food, one that is HIGH near an entrance.
-  //unsigned int chemLevel[4];
+  unsigned int chemLevel[4];
   //unsigned int *black = &chemLevel[0]
   //unsigned int *red   = &chemLevel[2]
 };
@@ -55,7 +55,6 @@ struct Patch
 
 static inline bool FOODi(unsigned short X)
 {
-
   return (  (X == PATCH_FOOD1) ||
             (X == PATCH_FOOD2) ||
             (X == PATCH_FOOD3) ||
@@ -170,10 +169,38 @@ static inline bool AVAILABLE_SPOT(Patch* X)
 #define SPOT_THREE_IS(X, Y) ((X)->occupant_three == (Y))
 #define SPOT_FOUR_IS(X, Y)  ((X)->occupant_four  == (Y))
 
-#define INCREASE_FERAMONE_ONE(X) (INCREASE_FERAMONE((X), 1))
-#define INCREASE_FERAMONE(X, Y) ((X)->chemLevel+=(Y))
-#define INCREASE_FERAMONE_LIMIT(X, Y, MAX) (((X)->chemLevel<MAX)?(X)->chemLevel+=(Y):(X)->chemLevel=MAX)
-#define SET_FERAMONE(X, Y) ((X)->chemLevel=(Y))
 
+// Fermamone stuff....
+//#define INCREASE_FERAMONE(X, Y) ((X)->chemLevel[0]+=(Y))
+//#define INCREASE_FERAMONE_LIMIT(X, Y, MAX) (((X)->chemLevel[0]<MAX)?(X)->chemLevel[0]+=(Y):(X)->chemLevel[0]=MAX)
+//#define SET_FERAMONE(X, Y) ((X)->chemLevel[0]=(Y))
+
+static inline void
+INCREASE_FERAMONE(Patch* X, unsigned int Amount, unsigned int pheramone)
+{
+  if (X)
+    X->chemLevel[pheramone] += Amount;
+}
+
+static inline void
+DECAY_FERAMONE(Patch* X, float percentage)
+{
+  X->chemLevel[BLACK_FOOD] *= percentage;
+  X->chemLevel[BLACK_HOME] *= percentage;
+  X->chemLevel[RED_FOOD] *= percentage;
+  X->chemLevel[RED_HOME] *= percentage;
+}
+
+static inline void
+SET_FERAMONE(Patch* X, unsigned int Amount, unsigned int pheramone)
+{
+  X->chemLevel[pheramone] = Amount;
+}
+
+static inline unsigned int
+GET_PHERAMONE(Patch* X, unsigned int pheramone)
+{
+  return X->chemLevel[pheramone];
+}
 
 #endif

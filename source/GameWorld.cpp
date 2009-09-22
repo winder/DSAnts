@@ -484,8 +484,12 @@ void GameWorld::printDebugFiveLines()
 
   if (picked)
   {
-    printf("\nPatch: level(%i)", picked->chemLevel);
+    printf("\nPatch: level(%i)", picked->chemLevel[0]);
+    printf("\nPatch bh(%i) bf(%i)\n\t rh(%i) rf(%i)",
+        GET_PHERAMONE(picked, BLACK_HOME), GET_PHERAMONE(picked, BLACK_FOOD),
+        GET_PHERAMONE(picked, RED_HOME), GET_PHERAMONE(picked, RED_FOOD));
 
+/*
     printf("\n Occupants: ");
     if (picked->occupant_one)
       printf("one(X) ");
@@ -512,7 +516,7 @@ void GameWorld::printDebugFiveLines()
       printf("\n two: \n");
       picked->occupant_two->printDebug();
     }
+*/
   }
-
 }
 //#endif

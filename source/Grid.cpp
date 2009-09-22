@@ -8,14 +8,7 @@ Grid::Grid()
   for (x=0; x < WIDTH; x++)
     for (y=0; y < DEPTH; y++)
     {
-      dd[x][y] = new Patch();
-
-      // setting it to this just so I can use the "clear" method without anything special.
-      dd[x][y]->TYPE = PATCH_DIRT;
-      dd[x][y]->x = x;
-      dd[x][y]->y = y;
-      dd[x][y]->portal = '\0';
-      dd[x][y]->chemLevel = 0;
+      dd[x][y] = new Patch(x, y);
     }
 
   // Connect the objects.
@@ -174,4 +167,23 @@ void Grid::addObject(Patch* p, int Ob)
     p->TYPE = Ob;
     objects.push_back(p);
   }
+}
+
+void Grid::gameTick(int num)
+{
+  chemicalTick += num;
+  if (chemicalTick > CHEMICAL_DECAY_FREQUENCY)
+  {
+    chemicalTick -= CHEMICAL_DECAY_FREQUENCY;
+    chemicalDecay(0.9);
+  }
+}
+
+void Grid::chemicalDecay(float f)
+{
+  for (int x=0; x < WIDTH; x++)
+    for (int y=0; y < DEPTH; y++)
+    {
+      DECAY_FERAMONE( dd[x][y] , f);
+    }
 }

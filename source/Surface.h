@@ -24,13 +24,7 @@ class Surface: public Grid
     //       Its the price I pay for not having the overhead to make extra lists of everything.
     void checkFood();
 
-    // The surface needs to update the chemical trails,
-    // they diminish over time.
-    virtual void gameTick(int num);
-    virtual void chemicalDecay(float f);
-
   private:
-    short chemicalTick;
 };
 
 #endif
