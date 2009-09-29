@@ -1,8 +1,43 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-// TODO: I should be using "enum { FIRST, SECOND, THIRD, ... };"
-//       or "enum { WIDTH=45, DEPTH=50 };"
+// Map tile size
+// TODO: have these be initialized at runtime for different map sizes.
+#define WIDTH 60
+#define DEPTH 45
+
+// Draw distance.
+#define UNDERGROUND_GRID_DRAW 7
+#define GRID_SIZE 8
+
+// Number of ticks the ant will try to walk in a direction that is not clear
+//#define WALK_RETRY_NUM 100
+#define WALK_RETRY_NUM 1
+// The number of tiles the ant will remember not to re-walk on
+#define MAX_VISIT_MEMORY 9
+
+// Feramone magic numbers
+#define HOT_TRAIL_LIMIT 90
+#define COLD_TRAIL 5
+#define FERAMONE_LOW 10
+#define FERAMONE_HIGH 100
+#define FERAMONE_MAX 300
+// 60 = 1 second
+#define CHEMICAL_DECAY_FREQUENCY 600
+
+// Draw scale and animation between grid stuff.
+// ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
+// for an ant to move 1 tile.
+#define ANIMATION_SIZE 20
+#define MODEL_SCALE 0.2
+#define MODEL_SCALE_INCREMENT MODEL_SCALE / ANIMATION_SIZE
+// there is a built in vector: "GLvector" but it uses ints...
+// I'm not that good yet.
+
+typedef struct {
+  float x, y, z, d;
+} VectorF;
+
 // GameWorld states
 enum Maps
 {
@@ -10,10 +45,6 @@ enum Maps
   GAMEWORLD_STATE_UNDERGROUND,
   GAMEWORLD_STATE_UNDERGROUND_ENEMY
 };
-
-// Map tile size
-#define WIDTH 60
-#define DEPTH 45
 
 // Ant ACTION's
 enum Ant_AI
@@ -54,37 +85,6 @@ enum PATCH_types
   // entrance to underground (hill)
   PATCH_ENTRANCE
 };
-
-// Draw distance.
-#define UNDERGROUND_GRID_DRAW 7
-#define GRID_SIZE 8
-
-// Number of ticks the ant will try to walk in a direction that is not clear
-//#define WALK_RETRY_NUM 100
-#define WALK_RETRY_NUM 1
-// The number of tiles the ant will remember not to re-walk on
-#define MAX_VISIT_MEMORY 9
-
-// Feramone magic numbers
-#define HOT_TRAIL_LIMIT 90
-#define COLD_TRAIL 5
-#define FERAMONE_LOW 10
-#define FERAMONE_HIGH 100
-#define FERAMONE_MAX 300
-// 60 = 1 second
-#define CHEMICAL_DECAY_FREQUENCY 600
-
-// Draw scale and animation between grid stuff.
-// ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
-// for an ant to move 1 tile.
-#define ANIMATION_SIZE 20
-#define MODEL_SCALE 0.2
-#define MODEL_SCALE_INCREMENT MODEL_SCALE / ANIMATION_SIZE
-// there is a built in vector: "GLvector" but it uses ints...
-// I'm not that good yet.
-typedef struct {
-  float x, y, z, d;
-} VectorF;
 
 // These are the physical inputs sent out from the Input class.
 enum Observer_states

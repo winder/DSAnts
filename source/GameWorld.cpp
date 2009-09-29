@@ -31,6 +31,7 @@ GameWorld::GameWorld()
   tmp->setCarrying(PATCH_FOOD1);  
   tmp->setTakePortals( true );
   tmp->setFeramoneOutput(1000);
+  tmp->setSpeed(20);
 
   // Default to following player:
   followingPlayer = true;
@@ -385,6 +386,8 @@ void GameWorld::createAnt( Patch* pat, int location )
     // set home to the location:
     t->setHome( location );
 
+    t->setSpeed( 20 );
+
     // find which to use based on location
     black.push_back(t);
 }
@@ -437,6 +440,7 @@ void GameWorld::update(int value)
     t->setTakePortals(true);
 //    t->setAction( ANT_ACTION_WANDER );
     t->setAction( ANT_ACTION_FORAGE );
+    t->setSpeed( 20 );
     black.push_back(t);
 
     // Can change following to any creature at any time...
