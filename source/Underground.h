@@ -14,12 +14,13 @@ class Underground: public Grid
     //        so that a huge chunk of memory for multiple "Grid's" will not
     //        be needed.
     Underground();
+    Underground(int locName);
     virtual ~Underground(){ /* superclass destructure deletes */}
 
-    virtual void initGrid();
+    virtual void initGrid(int location);
 
     // Sets up the Patches for the underground.
-    void setupUnderground();
+    void setupUnderground(int location);
 
     // This will generate a random nest with 'size' connected empty spaces
     // It will have one entrance which is always at (0,20,0)

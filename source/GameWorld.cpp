@@ -10,7 +10,11 @@ GameWorld::GameWorld()
   //cam->translateZinc(2.2);
 
   ug = new MapDraw();
-  ug->setGrid( new Underground() );
+  ug->setGrid( new Underground( GAMEWORLD_STATE_UNDERGROUND ) );
+
+  eug = new MapDraw();
+  eug->setGrid( new Underground( GAMEWORLD_STATE_UNDERGROUND_ENEMY ));
+
   surf = new MapDraw();
   surf->setGrid( new Surface() );
 
@@ -48,6 +52,14 @@ GameWorld::GameWorld()
   // Queen doesn't need an action, she just sits around making eggs
   black.push_back( tmp );
 
+  // Enemy queen
+  tmp = new QueenAnt();
+  tmp->setPatch( eug->getGrid()->getRandomCleared() );
+  tmp->setLocation( STATE );
+  tmp->setTakePortals( false );
+  // Queen doesn't need an action, she just sits around making eggs
+  black.push_back( tmp );
+
   // SETUP OBSERVERs:
 
   // Observing Player: GameWorld.
@@ -69,6 +81,7 @@ GameWorld::GameWorld()
 GameWorld::~GameWorld()
 {
   delete ug;
+  delete eug;
   delete surf;
   delete p;
   delete in;
@@ -242,7 +255,31 @@ void GameWorld::linkSurfaceAndUnderground()
     topleft = Grid::getRight( topleft );
     // until we loop all the way around.
   } while(topleft->x != 0);
-  
+
+  // TODO: Make this generic so I don't copy/paste for the enemy underground
+  topleft = eug->getGrid()->getPatch(0,1);
+  do
+  {
+    // find random locations until we get one that hasn't already been picked.
+    do
+    {
+      // This is really the only different part,
+      // make it on the right half of the map.
+      randX = (rand() % (WIDTH / 2)) + (WIDTH / 2);
+      randY = rand() % DEPTH;
+      topleft->portal = surf->getGrid()->getPatch(randX, randY);
+    }while (!EMPTY(topleft->portal));
+
+    topleft->portal->TYPE = PATCH_ENTRANCE;
+
+    // make it two-way.
+    // NOTE: the surface points to just below the top level of the underground
+    topleft->portal->portal = topleft;
+    // move right
+    topleft = Grid::getRight( topleft );
+    // until we loop all the way around.
+  } while(topleft->x != 0);
+
 }
 
 void GameWorld::draw()
@@ -312,34 +349,34 @@ void GameWorld::stepAntsForward(int num)
   }
 }
 
-void GameWorld::stepEggsForward()
+void GameWorld::stepEggsForward(MapDraw* md)
 {
   // Counter for eggs:
   eggTimer++;
   if (eggTimer >= 500)
   {
     eggTimer = 0;
-    for (unsigned int i=0; i < ug->getGrid()->getCleared().size(); i++)
+    for (unsigned int i=0; i < md->getGrid()->getCleared().size(); i++)
     {
-      if (EGG(ug->getGrid()->getCleared()[i]))
+      if (EGG(md->getGrid()->getCleared()[i]))
       {
-        switch(ug->getGrid()->getCleared()[i]->TYPE)
+        switch(md->getGrid()->getCleared()[i]->TYPE)
         {
           case PATCH_EGG1:
-            ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG2;
+            md->getGrid()->getCleared()[i]->TYPE = PATCH_EGG2;
             break;
           case PATCH_EGG2:
-            ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG3;
+            md->getGrid()->getCleared()[i]->TYPE = PATCH_EGG3;
             break;
           case PATCH_EGG3:
-            ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG4;
+            md->getGrid()->getCleared()[i]->TYPE = PATCH_EGG4;
             break;
           case PATCH_EGG4:
-            ug->getGrid()->getCleared()[i]->TYPE = PATCH_EGG5;
+            md->getGrid()->getCleared()[i]->TYPE = PATCH_EGG5;
             break;
           case PATCH_EGG5:
-            ug->getGrid()->getCleared()[i]->TYPE = PATCH_EMPTY;
-            createAnt( ug->getGrid()->getCleared()[i], GAMEWORLD_STATE_UNDERGROUND );
+            md->getGrid()->getCleared()[i]->TYPE = PATCH_EMPTY;
+            createAnt( md->getGrid()->getCleared()[i], GAMEWORLD_STATE_UNDERGROUND );
             break;
         }
       }
@@ -360,13 +397,15 @@ void GameWorld::stepForward(int num)
 
   // update the maps.
   ug->gameTick(num);
+  eug->gameTick(num);
   surf->gameTick(num);
 
   // Shift the map to center the player (normal circumstances)
     for (int i = num; i > 0; i--)
     {
       curMap->shiftCenter(following);
-      stepEggsForward();
+      stepEggsForward(ug);
+      stepEggsForward(eug);
     }
 
   // process user input.
