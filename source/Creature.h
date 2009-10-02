@@ -113,6 +113,7 @@ class Creature
     virtual void moveAI();
     virtual void wander();
     virtual void attack();
+    virtual void follow(Creature *);
     virtual void forage() = 0;
     virtual void goHome();
 

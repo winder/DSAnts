@@ -121,13 +121,20 @@ bool MapDraw::pickPoint(int x, int y, Camera &cam)
   return endCheck();
 }
 
-// WOW there's gotta be something better than this...
 bool MapDraw::isVisible(short x, short y)
 {
+  int distFromCenter = 
+    getGrid()->distanceBetween(x, y, getCenterX(), getCenterY());
+
+  if (distFromCenter < (GRID_SIZE - 2 ))
+    return true;
+  else
+    return false;
+/*
 // Come on Owen, you have their X / Y.
 
   // out of array bounds.
-  if ((x<0) || (y < 0) || (y>=WIDTH) || (x>=WIDTH))
+  if ((x<0) || (y < 0) || (y>=DEPTH) || (x>=WIDTH))
     return false;
 
   float pos = positionY( y );
@@ -137,8 +144,8 @@ bool MapDraw::isVisible(short x, short y)
   pos = positionX( x );
   if (fabs(pos) > (GRID_SIZE-2))
     return false;
-
   return true;
+*/
 }
 
 // This is complicated because there's a circular array...

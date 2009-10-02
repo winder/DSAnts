@@ -2,6 +2,8 @@
 
 Grid::Grid()
 {
+  // this is always true... for now.
+  loopX = true;
   int x,y;
 
   // Create the objects.
@@ -34,28 +36,34 @@ void Grid::setLoopY()
   int x = 0;
   for(x=0; x < WIDTH;  x++)
   {
-    dd[x][0]->top            = dd[x][DEPTH-1];
+    dd[x][0]->top           = dd[x][DEPTH-1];
     dd[x][DEPTH-1]->bottom  = dd[x][0];
   }
   loopY = true;
 }
 
-void Grid::moveRight(short &x)
+bool Grid::moveRight(short &x)
 {
   // Width roll-over
   if ( x != WIDTH - 1 )
     x = x + 1;
-  else
+  else if (loopX)
     x = 0;
+  else
+    return false;
+  return true;
 }
 
-void Grid::moveLeft(short &x)
+bool Grid::moveLeft(short &x)
 {
   // Width roll-over
   if ( x >= 1 )
     x = x - 1;
-  else
+  else if (loopX)
     x = WIDTH - 1;
+  else
+    return false;
+  return true;
 }
 
 bool Grid::moveUp(short &y)
@@ -175,3 +183,25 @@ void Grid::addObject(Patch* p, int Ob)
     objects.push_back(p);
   }
 }
+#include <stdio.h>
+// Figure out the distance between two points.
+int Grid::distanceBetween(int x1, int y1, int x2, int y2)
+{
+  // out of array bounds.
+  if ((x1 < 0) || (y1 < 0) || (y1 >= DEPTH) || (x1 >= WIDTH) ||
+      (x2 < 0) || (y2 < 0) || (y2 >= DEPTH) || (x2 >= WIDTH))
+    return -1;
+
+  // Find x minimum
+  int xmin = abs(x1-x2);
+  if (loopX && ((WIDTH - xmin) < xmin))
+    xmin = WIDTH - xmin + 1;
+
+  // Find y minimum
+  int ymin = abs(y1-y2);
+  if (loopY && ((DEPTH - ymin) < ymin))
+    ymin = DEPTH - ymin + 1;
+
+  return (xmin > ymin) ? xmin : ymin;
+}
+
