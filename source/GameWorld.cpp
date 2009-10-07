@@ -478,7 +478,9 @@ void GameWorld::update(int value)
     t->setHome( GAMEWORLD_STATE_UNDERGROUND );
     t->setTakePortals(true);
 //    t->setAction( ANT_ACTION_WANDER );
-    t->setAction( ANT_ACTION_FORAGE );
+//    t->setAction( ANT_ACTION_FORAGE );
+    t->setTarget( p->getPlayerAnt() );
+    t->setAction( ANT_ACTION_FOLLOW );
     t->setSpeed( 20 );
     black.push_back(t);
 

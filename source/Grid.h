@@ -81,6 +81,8 @@ class Grid
 
     // Figure out the distance between two points.
     int distanceBetween(int x1, int y1, int x2, int y2);
+    static int distanceBetweenStatic(int x1, int y1, int x2, int y2);
+    static int directionTo(int fromx, int fromy, int tox, int toy);
 
     int getLocation(){ return location; }
 
