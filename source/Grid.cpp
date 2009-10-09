@@ -3,7 +3,7 @@
 Grid::Grid()
 {
   // this is always true... for now.
-  loopX = true;
+  loopX = false;
   int x,y;
 
   // Create the objects.
@@ -40,6 +40,16 @@ void Grid::setLoopY()
     dd[x][DEPTH-1]->bottom  = dd[x][0];
   }
   loopY = true;
+}
+
+void Grid::setLoopX()
+{
+  for( int x=0; x<DEPTH; x++ )
+  {
+    dd[0][x]->left        = dd[WIDTH-1][x];
+    dd[WIDTH-1][x]->right = dd[0][x];
+  }
+  loopX = true;
 }
 
 bool Grid::moveRight(short &x)
@@ -116,7 +126,7 @@ Patch* Grid::getDown(Patch* p)
 Patch* Grid::getRight(int x, int y)
 {
   short w = x;
-  moveRight(w);
+  if (!moveRight(w)) return '\0';
 
   // Depth max/min doesn't change moving right/left
   return dd[w][y];
@@ -125,7 +135,7 @@ Patch* Grid::getRight(int x, int y)
 Patch* Grid::getLeft(int x, int y)
 {
   short w = x;
-  moveLeft(w);
+  if (!moveLeft(w)) return '\0';
 
   // Depth max/min doesn't change moving right/left
   return dd[w][y];

@@ -25,6 +25,7 @@ class Grid
 
     // Make the grid loop on the Y axis.
     void setLoopY();
+    void setLoopX();
 
     // clamp the values just in case.
     Patch* getPatch(short width, short depth)
