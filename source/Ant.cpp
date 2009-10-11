@@ -412,45 +412,45 @@ bool Ant::wayToHome(int &x_dist, int &y_dist, bool &right, bool &up)
 
   // left or right to get there?
   // find X distance / direction.
-  if (cache->x > savedEntrance->x)
+  if (cache->x > lastPortal->x)
   {
-    x_dist = cache->x - savedEntrance->x;
+    x_dist = cache->x - lastPortal->x;
     right = true;
-    if ( x_dist > ((savedEntrance->x + WIDTH) - cache->x ))
+    if ( x_dist > ((lastPortal->x + WIDTH) - cache->x ))
     {
-      x_dist = ((savedEntrance->x + WIDTH) - cache->x );
+      x_dist = ((lastPortal->x + WIDTH) - cache->x );
       right = false;
     }
   }
   else
   {
-    x_dist = savedEntrance->x - cache->x;
+    x_dist = lastPortal->x - cache->x;
     right = false;
-    if ( x_dist > ((cache->x + WIDTH) - savedEntrance->x ))
+    if ( x_dist > ((cache->x + WIDTH) - lastPortal->x ))
     {
-      x_dist = ((cache->x + WIDTH) - savedEntrance->x );
+      x_dist = ((cache->x + WIDTH) - lastPortal->x );
       right = true;
     }
   }
 
   // find Y distance / direction.
-  if (cache->y > savedEntrance->y)
+  if (cache->y > lastPortal->y)
   {
-    y_dist = cache->y - savedEntrance->y;
+    y_dist = cache->y - lastPortal->y;
     up = true;
-    if ( y_dist > ((savedEntrance->y + DEPTH) - cache->y ))
+    if ( y_dist > ((lastPortal->y + DEPTH) - cache->y ))
     {
-      y_dist = ((savedEntrance->y + DEPTH) - cache->y );
+      y_dist = ((lastPortal->y + DEPTH) - cache->y );
       up = false;
     }
   }
   else
   {
-    y_dist = savedEntrance->y - cache->y;
+    y_dist = lastPortal->y - cache->y;
     up = false;
-    if ( y_dist > ((cache->y + DEPTH) - savedEntrance->y ))
+    if ( y_dist > ((cache->y + DEPTH) - lastPortal->y ))
     {
-      y_dist = ((cache->y + DEPTH) - savedEntrance->y );
+      y_dist = ((cache->y + DEPTH) - lastPortal->y );
       up = true;
     }
   }

@@ -37,8 +37,8 @@ class Ant: public Creature
         return false;
     }
 
-    virtual void wentThroughPortal()
-      { savedEntrance = getPatch(); }
+//    virtual void wentThroughPortal()
+//      { savedEntrance = getPatch(); }
 
     virtual void forage();
     // Attempts to follow a chemical trail
@@ -85,7 +85,7 @@ class Ant: public Creature
     bool portalHome;
 
     // the entrance you come out of is cached, for AI reference point.
-    Patch* savedEntrance;
+//    Patch* savedEntrance;
 };
 
 #endif

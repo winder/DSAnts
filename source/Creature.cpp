@@ -17,6 +17,7 @@ Creature::Creature(Patch* pat, int loc)
 
 void Creature::init()
 {
+  target = NULL;
   num_increments = 1000;
   offsetX = 0;
   offsetY = 0;
@@ -36,7 +37,7 @@ void Creature::init()
   hp = 1000;
 
   visited_index = 0;
-   use_visit_memory = true;
+  use_visit_memory = true;
 }
 
 Creature::~Creature()
@@ -392,16 +393,21 @@ void Creature::moveAI()
 {
   // If it gets here need to decide where to go.
   // Select AI pattern based on ACTION.
-  if (ACTION == ANT_ACTION_WANDER)
+  switch (ACTION)
   {
+    case ANT_ACTION_WANDER:
     wander();
+      break;
+    case ANT_ACTION_FORAGE:
+      forage();
+      break;
+    case ANT_ACTION_ATTACK:
+      attack();
+      break;
+    case ANT_ACTION_FOLLOW:
+      follow();
+      break;
   }
-  else if (ACTION == ANT_ACTION_FORAGE)
-  {
-    forage();
-  }
-  else if (ACTION == ANT_ACTION_ATTACK)
-    attack();
 }
 
 // 0. Do not turn around unless dead end or specified below.
@@ -415,14 +421,32 @@ void Creature::attack()
   wander();
 }
 
-void Creature::follow(Creature *c)
+void Creature::follow()
 {
-  if (NULL == c)
+  // If no target, wander.
+  if (NULL == target)
   {
     wander();
     return;
   }
 
+  Patch* destPatch = target->getPatch();
+  Patch* myPatch = getPatch();
+
+  // If in different locations:
+  //  maybe creature entered portal, so move to last portal.
+  if (target->getLocation() != getLocation())
+  {
+    if (PORTAL(destPatch))
+      destPatch = destPatch->portal;
+  }
+
+  if (Grid::distanceBetweenStatic( destPatch->x, destPatch->y, myPatch->x, myPatch->y ) < 2)
+    wander();
+  else
+    direction = Grid::directionTo( myPatch->x, myPatch->y, destPatch->x, destPatch->y );
+
+  setAI(false);
 }
 
 // This one should work as follows:

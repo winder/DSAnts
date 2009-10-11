@@ -217,3 +217,36 @@ int Grid::distanceBetween(int x1, int y1, int x2, int y2)
 
   return (xmin > ymin) ? xmin : ymin;
 }
+
+int Grid::distanceBetweenStatic(int x1, int y1, int x2, int y2)
+{
+  // out of array bounds.
+  if ((x1 < 0) || (y1 < 0) || (x2 < 0) || (y2 < 0))
+    return -1;
+
+  // Find x minimum
+  int xmin = abs(x1-x2);
+
+  // Find y minimum
+  int ymin = abs(y1-y2);
+
+  return (xmin > ymin) ? xmin : ymin;
+}
+
+int Grid::directionTo(int fromx, int fromy, int tox, int toy)
+{
+  // out of array bounds.
+  if ((fromx < 0) || (fromy < 0) || (tox < 0) || (toy < 0))
+    return -1;
+
+  // Right/Left
+  if (rand()%2 == 1)
+  {
+    if ((fromx - tox) < 0) return AI_RIGHT;
+    if ((fromx - tox) > 0) return AI_LEFT;
+  }
+  if ((fromy - toy) < 0) return AI_DOWN;
+  if ((fromy - toy) > 0) return AI_TOP;
+
+  return -1;
+}

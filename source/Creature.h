@@ -28,7 +28,8 @@ class Creature
     // returns true if it needed to be handled and the move needed to be stopped.
     virtual bool handlePortal();
     // if special handling is needed while going through a portal, it goes here.
-    virtual void wentThroughPortal(){ /* not needed for creatures */  };
+    virtual void wentThroughPortal()
+      { lastPortal = getPatch(); }
     virtual bool handleCollision();
     virtual bool checkCollision(Patch* pat);
     virtual bool moveTo(Patch* pat, bool force = false);
@@ -113,11 +114,16 @@ class Creature
     virtual void move(int num);
     virtual void move();
     virtual void moveAI();
-    virtual void wander();
-    virtual void attack();
-    virtual void follow(Creature *);
-    virtual void forage() = 0;
-    virtual void goHome();
+
+    // Actual AI's:
+      virtual void wander();
+      // Attack target.
+      virtual void attack();
+      // Follow target.
+      virtual void follow();
+      // Look for food.
+      virtual void forage() = 0;
+      virtual void goHome();
 
     // use the carrying object (i.e. eat food / egg)
     virtual int use();
@@ -136,6 +142,9 @@ class Creature
     //-----------------------//
     void setAction(int a){ ACTION = a; }
     int getAction(){ return ACTION; }
+
+    void setTarget(Creature *c)     { target = c; }
+    Creature* getTarget(Creature *c){ return target; }
 
     void setSpeed(int s){ num_increments = s; }
 
@@ -294,6 +303,10 @@ class Creature
         return getDirectionPatch(
                  getLastDirection() );
       }
+
+  protected:
+    Patch* lastPortal;
+
   private:
     // Basic initialization used by constructors.
     void init();
@@ -354,6 +367,8 @@ class Creature
     bool use_visit_memory;
     short visited_index;
     Patch* visited[MAX_VISIT_MEMORY];
+
+    Creature* target;
 };
 
 #endif
