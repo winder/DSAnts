@@ -176,7 +176,6 @@ void Grid::addObject(Patch* p, int Ob)
     objects.push_back(p);
   }
 }
-<<<<<<< HEAD:source/Grid.cpp
 
 void Grid::gameTick(int num)
 {
@@ -196,7 +195,7 @@ void Grid::chemicalDecay(float f)
       DECAY_FERAMONE( dd[x][y] , f);
     }
 }
-=======
+
 #include <stdio.h>
 // Figure out the distance between two points.
 int Grid::distanceBetween(int x1, int y1, int x2, int y2)
@@ -218,5 +217,3 @@ int Grid::distanceBetween(int x1, int y1, int x2, int y2)
 
   return (xmin > ymin) ? xmin : ymin;
 }
-
->>>>>>> 1ca22be5e767cd1067423d10adcd82849db783f7:source/Grid.cpp

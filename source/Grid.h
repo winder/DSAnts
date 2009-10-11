@@ -79,28 +79,20 @@ class Grid
     Patch* getRandomCleared(){ return cleared[ rand()%(cleared.size()) ]; }
     Patch* getRandomObject(){ return objects[ rand()%(objects.size()) ]; }
 
-<<<<<<< HEAD:source/Grid.h
     // The surface needs to update the chemical trails,
     // they diminish over time.
     virtual void chemicalDecay(float f);
 
-  protected:
-    // These need to be public
-    Patch* dd[WIDTH][DEPTH];
-    short chemicalTick;
-
-  private:
-=======
     // Figure out the distance between two points.
     int distanceBetween(int x1, int y1, int x2, int y2);
 
     int getLocation(){ return location; }
 
-  // This is available to subclasses.
   protected:
+    // This is available to subclasses.
     Patch* dd[WIDTH][DEPTH];
+    short chemicalTick;
     int location;
->>>>>>> 1ca22be5e767cd1067423d10adcd82849db783f7:source/Grid.h
 
   private:
     // Grids can optionally be set to loop.
