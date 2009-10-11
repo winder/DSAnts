@@ -323,12 +323,18 @@ Patch* MapDraw::draw()
   for (temp=0; ((bottomLeft) && (Grid::getDown(bottomLeft)) && (temp < GRID_SIZE)); temp++)
     bottomLeft = Grid::getDown(bottomLeft);
 
+  int offset = 0;
+  // At the bottom, offset...
+  if (temp < GRID_SIZE)
+    offset = GRID_SIZE - temp;
+    //printf("EXTREME");
+
   tp=bottomLeft;
 
   // Setup for drawing.
 //  glBegin(GL_QUADS);
 
-  for (y=GRID_SIZE*-1; (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
+  for (y=GRID_SIZE*-1 + (offset); (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
   {
     tp=bottomLeft;
     for (x=GRID_SIZE*-1; x < (GRID_SIZE+1); x+=1)
