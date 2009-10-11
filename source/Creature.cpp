@@ -415,6 +415,16 @@ void Creature::attack()
   wander();
 }
 
+void Creature::follow(Creature *c)
+{
+  if (NULL == c)
+  {
+    wander();
+    return;
+  }
+
+}
+
 // This one should work as follows:
 // 0. Do not turn around unless dead end or specified below.
 // 1. If in nest with food, drop food then leave.

@@ -32,8 +32,8 @@ class Grid
         return dd[width%WIDTH][depth%DEPTH]; }
 
     // move the x/y coord around.
-    void moveRight(short &x);
-    void moveLeft(short &x);
+    bool moveRight(short &x);
+    bool moveLeft(short &x);
     bool moveUp(short &y);
     bool moveDown(short &y);
 
@@ -52,8 +52,13 @@ class Grid
     Patch* getTop(int x, int y);
     Patch* getBottom(int x, int y);
 
+    ///////////////////
+    // Modify Tiles: //
+    ///////////////////
+
     // Keep track of cleared tiles in a vector.
     void clear(Patch* p);
+
     // Keep track of food tiles.
     void addObject(Patch* p, int Ob);
     void takeObject(Patch* p);
@@ -63,14 +68,18 @@ class Grid
     std::vector<Patch*> getCleared(){ return cleared; }
     //std::vector<Patch*> getObjects(){ return objects; }
 
-    // number of ___'s
+    ////////////////
+    // Accessors: //
+    ////////////////
     int numCleared(){ return cleared.size(); }
     int numObjects(){ return objects.size(); }
+
     // the whole reason of maintaining these lists is so we can get a random one
     // without searching the entire grid.
     Patch* getRandomCleared(){ return cleared[ rand()%(cleared.size()) ]; }
     Patch* getRandomObject(){ return objects[ rand()%(objects.size()) ]; }
 
+<<<<<<< HEAD:source/Grid.h
     // The surface needs to update the chemical trails,
     // they diminish over time.
     virtual void chemicalDecay(float f);
@@ -81,7 +90,19 @@ class Grid
     short chemicalTick;
 
   private:
+=======
+    // Figure out the distance between two points.
+    int distanceBetween(int x1, int y1, int x2, int y2);
 
+    int getLocation(){ return location; }
+
+  // This is available to subclasses.
+  protected:
+    Patch* dd[WIDTH][DEPTH];
+    int location;
+>>>>>>> 1ca22be5e767cd1067423d10adcd82849db783f7:source/Grid.h
+
+  private:
     // Grids can optionally be set to loop.
     bool loopX;
     bool loopY;

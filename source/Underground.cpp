@@ -8,6 +8,7 @@ Underground::Underground()
 }
 Underground::Underground(int locName)
 {
+  location = locName;
   tunnelSize = 160;
   initGrid(locName);
 }

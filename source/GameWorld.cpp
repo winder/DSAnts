@@ -55,7 +55,7 @@ GameWorld::GameWorld()
   // Enemy queen
   tmp = new QueenAnt();
   tmp->setPatch( eug->getGrid()->getRandomCleared() );
-  tmp->setLocation( STATE );
+  tmp->setLocation( GAMEWORLD_STATE_UNDERGROUND_ENEMY );
   tmp->setTakePortals( false );
   // Queen doesn't need an action, she just sits around making eggs
   black.push_back( tmp );
@@ -376,7 +376,7 @@ void GameWorld::stepEggsForward(MapDraw* md)
             break;
           case PATCH_EGG5:
             md->getGrid()->getCleared()[i]->TYPE = PATCH_EMPTY;
-            createAnt( md->getGrid()->getCleared()[i], GAMEWORLD_STATE_UNDERGROUND );
+            createAnt( md->getGrid()->getCleared()[i], md->getGrid()->getLocation() );
             break;
         }
       }
@@ -514,6 +514,8 @@ void GameWorld::printDebugFiveLines()
     printf("\nCurrent map: underground");
   else if (STATE == GAMEWORLD_STATE_SURFACE)
     printf("\nCurrent map: surface");
+  else if (STATE == GAMEWORLD_STATE_UNDERGROUND_ENEMY)
+    printf("\nCurrent map: enemy underground");
   else
     printf("\nCurrent map: unknown");
 //  printf("\nMap Stats: <UG> <Surf>");
