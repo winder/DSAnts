@@ -22,6 +22,7 @@ class MapDraw: public Map
     MapDraw();
     MapDraw(Grid *g);
 
+    void setPheramone(int in) { showPheramone = in; }
     // this is an abstract class too.
     // scratch that, initGrid will be done in the grid (duh)
     //void initGrid() = 0;
@@ -74,6 +75,7 @@ class MapDraw: public Map
 
     void beginQuads(){ glBegin(GL_QUADS); }
     void end(){ glEnd(); }
+
     // Adding this saves me several hundred additions / subtractions.  Cool beans.
     void doMapShift(){ glTranslatef(smoothScrollX*-1, smoothScrollY*-1, 0); }
 
@@ -103,6 +105,8 @@ class MapDraw: public Map
     bool pickMode;
     // Storage for picking.
     Patch *picked;
+
+    int showPheramone;
 
     TextureManager *tm;
 };

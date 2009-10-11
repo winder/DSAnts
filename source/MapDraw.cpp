@@ -2,6 +2,7 @@
 
 MapDraw::MapDraw()
 {
+  showPheramone = 0;
   smoothScrollX = smoothScrollY = 0;
   boxSide = 0.1;
   picked = '\0';
@@ -581,13 +582,17 @@ void MapDraw::drawFoodPatch(float x, float y, Patch *p)
 void MapDraw::drawGroundPatch(float x, float y, Patch *p)
 {
  // int cl = p->chemLevel * 0.1;
-  int cl = 0;
+  unsigned int cl = 0;
 
   // if it is low, make it 10 to it so we can see something
-  if ((p->chemLevel[0] < 100) && (p->chemLevel[0] != 0))
-    cl = 10;
-  if (p->chemLevel[0] > 100)
-    cl = p->chemLevel[0] * 0.1;
+//  if ((p->chemLevel[0] < 100) && (p->chemLevel[0] != 0))
+//    cl = 10;
+//  else if (p->chemLevel[0] > 100)
+  {
+      cl = ((int)(p->chemLevel[showPheramone] / (FERAMONE_MAX / 31)));
+      if (cl > 31) cl = 31;
+  //  cl = p->chemLevel[0] * 0.1;
+  }
 
   material(31,31-cl,31-cl); // make it easier to see ants...
   // Check top, bottom, left, right and draw

@@ -179,7 +179,13 @@ static inline void
 INCREASE_FERAMONE(Patch* X, unsigned int Amount, unsigned int pheramone)
 {
   if (X)
-    X->chemLevel[pheramone] += Amount;
+  {
+    unsigned int tmp = X->chemLevel[pheramone] + Amount;
+    if (tmp < FERAMONE_MAX)
+      X->chemLevel[pheramone] = tmp;
+    else
+      X->chemLevel[pheramone] = FERAMONE_MAX;
+  }
 }
 
 static inline void
