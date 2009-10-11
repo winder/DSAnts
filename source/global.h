@@ -86,49 +86,6 @@ enum PATCH_types
   PATCH_ENTRANCE
 };
 
-<<<<<<< HEAD:source/global.h
-// Draw distance.
-#define UNDERGROUND_GRID_DRAW 7
-#define GRID_SIZE 8
-
-// Number of ticks the ant will try to walk in a direction that is not clear
-//#define WALK_RETRY_NUM 100
-#define WALK_RETRY_NUM 1
-// The number of tiles the ant will remember not to re-walk on
-#define MAX_VISIT_MEMORY 9
-
-// Feramone magic numbers
-#define HOT_TRAIL_LIMIT 90
-#define COLD_TRAIL 5
-#define FERAMONE_LOW 10
-#define FERAMONE_HIGH 100
-#define FERAMONE_MAX 300
-
-enum pheramones
-{
-  BLACK_HOME = 0,
-  BLACK_FOOD = 1,
-  RED_HOME = 2,
-  RED_FOOD = 3
-};
-
-// 60 = 1 second
-#define CHEMICAL_DECAY_FREQUENCY 600
-
-// Draw scale and animation between grid stuff.
-// ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
-// for an ant to move 1 tile.
-#define ANIMATION_SIZE 20
-#define MODEL_SCALE 0.2
-#define MODEL_SCALE_INCREMENT MODEL_SCALE / ANIMATION_SIZE
-// there is a built in vector: "GLvector" but it uses ints...
-// I'm not that good yet.
-typedef struct {
-  float x, y, z, d;
-} VectorF;
-
-=======
->>>>>>> d24c44e54a84891cad214ff575b43135585a7987:source/global.h
 // These are the physical inputs sent out from the Input class.
 enum Observer_states
 {
@@ -194,4 +151,13 @@ enum AI_DIRECTION
   AI_TOP=3,
   AI_DOWN=0
 };
+
+enum pheramones
+{
+  BLACK_HOME = 0,
+  BLACK_FOOD = 1,
+  RED_HOME = 2,
+  RED_FOOD = 3
+};
+
 #endif
