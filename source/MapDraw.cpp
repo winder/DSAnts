@@ -218,7 +218,8 @@ bool MapDraw::drawAnt(Creature* a, bool animate)
 
   // find X/Y location by finding offset from center.
   // Then add the offset for smoothly moving between 2 squares.
-  float x = (positionX(a->getX())*MODEL_SCALE) + (a->getOffsetX()*MODEL_SCALE_INCREMENT);
+//TODO: Why do I need to add 1 to a->getX() ?!?
+  float x = (positionX(a->getX()+1)*MODEL_SCALE) + (a->getOffsetX()*MODEL_SCALE_INCREMENT);
   float y = (positionY(a->getY())*MODEL_SCALE) + (a->getOffsetY()*MODEL_SCALE_INCREMENT);
 
   if (!animate)
@@ -322,18 +323,23 @@ Patch* MapDraw::draw()
   bottomLeft = getGrid()->getPatch(getCenterX(), getCenterY());
 
   // Shift from the center to the bottomLeft.
-  // shift left a bunch of times.
-  for (temp=0; (bottomLeft && (temp < GRID_SIZE)) ; temp++)
+  // shift left a bunch of times or until we hit the left wall.
+  for (temp=0; ((bottomLeft) && (Grid::getLeft(bottomLeft)) && (temp < GRID_SIZE)); temp++)
     bottomLeft = Grid::getLeft(bottomLeft);
 
-  // shift up a bunch of times or until we hit the surface.
+  int offsetx = 0;
+  // At the bottom, offset...
+  if (temp < GRID_SIZE)
+    offsetx = GRID_SIZE - temp;
+
+  // shift up a bunch of times or until we hit the top wall.
   for (temp=0; ((bottomLeft) && (Grid::getDown(bottomLeft)) && (temp < GRID_SIZE)); temp++)
     bottomLeft = Grid::getDown(bottomLeft);
 
-  int offset = 0;
+  int offsety = 0;
   // At the bottom, offset...
   if (temp < GRID_SIZE)
-    offset = GRID_SIZE - temp;
+    offsety = GRID_SIZE - temp;
     //printf("EXTREME");
 
   tp=bottomLeft;
@@ -341,12 +347,11 @@ Patch* MapDraw::draw()
   // Setup for drawing.
 //  glBegin(GL_QUADS);
 
-  for (y=GRID_SIZE*-1 + (offset); (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
+  for (y=GRID_SIZE*-1 + (offsety); (bottomLeft && (y < (GRID_SIZE+1))); y+=1)
   {
     tp=bottomLeft;
-    for (x=GRID_SIZE*-1; x < (GRID_SIZE+1); x+=1)
+    for (x=GRID_SIZE*-1 + (offsetx); x < (GRID_SIZE+1); x+=1)
     {
-      tp=tp->right;
       if (pickMode)
         startCheck();
       // scale by *MODEL_SCALE then "translate" by adding the smooth scroll factors.
@@ -361,6 +366,7 @@ Patch* MapDraw::draw()
           //glEnd();
           return tp;
         }
+      tp=tp->right;
     }
     if (bottomLeft)
       bottomLeft = Grid::getUp(bottomLeft);
