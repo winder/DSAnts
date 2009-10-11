@@ -54,10 +54,10 @@ class GameWorld: public Observer, public Subject
          return ug;
        else if (STATE == GAMEWORLD_STATE_SURFACE)
          return surf;
-       //else if (STATE == GAMEWORLD_STATE_ENEMY_UNDERGROUND)
-       //  return eug;
-      else
-        return '\0';
+       else if (STATE == GAMEWORLD_STATE_UNDERGROUND_ENEMY)
+         return eug;
+       else
+         return '\0';
      }
 
     // Link the surface with the underground.
@@ -71,12 +71,13 @@ class GameWorld: public Observer, public Subject
     void setPicked(Patch* p);
 
     // getters
-    MapDraw* getUG(){ return ug; }
+    MapDraw* getUG(){      return ug; }
+    MapDraw* getEUG(){     return eug; }
     MapDraw* getSurface(){ return surf; }
 
     // Coordinates a step in the game.
     void stepForward(int num);
-    void stepEggsForward();
+    void stepEggsForward(MapDraw* md);
     // lets each ant know they can move forward one step.
     void stepAntsForward(int num);
 
@@ -90,6 +91,7 @@ class GameWorld: public Observer, public Subject
       {//  ug->setTextures(tex);
         // surf->setTextures(tex); }
         ug->initTextures();
+        eug->setTextures( ug->getTextures() );
         surf->setTextures( ug->getTextures() ); }
 
     void placeCamera(){ cam->render(); }
@@ -117,6 +119,7 @@ class GameWorld: public Observer, public Subject
     short STATE;
     MapDraw* curMap;
     MapDraw* ug;
+    MapDraw* eug;
     MapDraw* surf;
 
     // in most cases this will be true, but there may be cases where

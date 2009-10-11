@@ -4,24 +4,29 @@ Underground::Underground()
 {
   tunnelSize = 160;
   //setCenter(0, 0);
-  initGrid();
+  initGrid( GAMEWORLD_STATE_UNDERGROUND );
+}
+Underground::Underground(int locName)
+{
+  tunnelSize = 160;
+  initGrid(locName);
 }
 
-void Underground::initGrid()
+void Underground::initGrid(int location)
 {
   // move this function to this class
-  setupUnderground();
+  setupUnderground(location);
   // move this function to this class
   generateNest(tunnelSize);
 }
 
-void Underground::setupUnderground()
+void Underground::setupUnderground(int location)
 {
   int x,y;
   for (x=0; x < WIDTH; x++)
     for (y=0; y < DEPTH; y++)
     {
-      dd[x][y]->location = GAMEWORLD_STATE_UNDERGROUND;
+      dd[x][y]->location = location;
 
       // Unpassable patch at the deepest level.
       if (y == DEPTH-1)
