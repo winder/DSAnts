@@ -4,10 +4,24 @@
 
 Creature::Creature()
 {
+  init();
+}
+
+Creature::Creature(Patch* pat, int loc)
+{
+  init();
+  location = loc;
+  // what if pat already has 2 ants?  ant pile on pat until they move outta the way I guess.
+  p=pat;
+}
+
+void Creature::init()
+{
+  num_increments = 1000;
   offsetX = 0;
   offsetY = 0;
   directionX = 0;
-  directionY = 20;
+  directionY = num_increments;
   portaled = false;
   failCount = 0;
   carrying = NOTHING;
@@ -23,30 +37,6 @@ Creature::Creature()
 
   visited_index = 0;
    use_visit_memory = true;
-}
-
-Creature::Creature(Patch* pat, int loc)
-{
-  location = loc;
-  offsetX = 0;
-  offsetY = 0;
-  directionX = 0;
-  directionY = 20;
-  // what if pat already has 2 ants?  ant pile on pat until they move outta the way I guess.
-  p=pat;
-  portaled = false;
-  failCount = 0;
-  carrying = NOTHING;
-  ai = true;
-  ACTION = ANT_ACTION_FORAGE;
-  direction=-1;
-  directionOld=-1;
-  takePortals=false;
-
-  hp = 1000;
-
-  visited_index = 0;
-  use_visit_memory = true;
 }
 
 Creature::~Creature()
@@ -204,12 +194,12 @@ bool Creature::moveRight()
     incrementOffsetX();
 
   // if we are half way towards the next way, swap to the next one.
-  if (offsetX >= (ANIMATION_SIZE / 2))
+  if (offsetX >= (num_increments / 2))
   {
     // Check if there is an empty spot
     if (moveTo(next))
     {
-      offsetX=-1 * (ANIMATION_SIZE / 2);
+      offsetX=-1 * (num_increments / 2);
       return true;
     }
   }
@@ -234,12 +224,12 @@ bool Creature::moveLeft()
   else if ((offsetX <= 0) && (offsetY < 0) && (p->left && !WALKABLE(p->left->bottom))) incrementOffsetY();
   else
     decrementOffsetX();
-  if (offsetX <= (-1 * (ANIMATION_SIZE / 2)))
+  if (offsetX <= (-1 * (num_increments / 2)))
   {
     // Check if there is an empty spot
     if (moveTo(next))//checkCollision(next))
     {
-      offsetX=(ANIMATION_SIZE / 2);
+      offsetX=(num_increments / 2);
       return true;
     }
   }
@@ -263,12 +253,12 @@ bool Creature::moveUp()
   else if ((offsetY >= 0) && (offsetX < 0) && (p->top && !WALKABLE(p->top->left)))  incrementOffsetX();
   else
     incrementOffsetY();
-  if (offsetY >= (ANIMATION_SIZE / 2))
+  if (offsetY >= (num_increments / 2))
   {
     // Check if there is an empty spot
     if (moveTo(next))//checkCollision(next))
     {
-      offsetY=-1 * (ANIMATION_SIZE / 2);
+      offsetY=-1 * (num_increments / 2);
       return true;
     }
   }
@@ -294,12 +284,12 @@ bool Creature::moveDown()
   else
     decrementOffsetY();
 
-  if (offsetY <= (-1 * (ANIMATION_SIZE / 2)))
+  if (offsetY <= (-1 * (num_increments / 2)))
   {
     // Check if there is an empty spot
     if (moveTo(next))//checkCollision(next))
     {
-      offsetY=(ANIMATION_SIZE / 2);
+      offsetY=(num_increments / 2);
       return true;
     }
   }
@@ -528,15 +518,15 @@ void Creature::wander()
 
 void Creature::clampDirections()
 {
-  if (directionX > 20)
-    directionX = 20;
-  else if (directionX < (-1 *20))
-    directionX = (-1 *20);
+  if (directionX > num_increments)
+    directionX = num_increments;
+  else if (directionX < (-1 *num_increments))
+    directionX = (-1 *num_increments);
 
-  if (directionY > 20)
-    directionY = 20;
-  else if (directionY < (-1 *20))
-    directionY = (-1 *20);
+  if (directionY > num_increments)
+    directionY = num_increments;
+  else if (directionY < (-1 *num_increments))
+    directionY = (-1 *num_increments);
 }
 
 int Creature::use()
@@ -576,7 +566,7 @@ void Creature::incrementOffsetX()
 {
   offsetX++;
 
-  if ( directionX < 20 )
+  if ( directionX < num_increments )
     directionX+=3;
 
   // center Y
@@ -590,7 +580,7 @@ void Creature::incrementOffsetX()
 void Creature::decrementOffsetX()
 {
   offsetX--;
-  if ( directionX > -20 )
+  if ( directionX > -num_increments )
     directionX-=3;
 
   // center Y
@@ -604,7 +594,7 @@ void Creature::decrementOffsetX()
 void Creature::incrementOffsetY()
 {
   offsetY++;
-  if ( directionY < 20 )
+  if ( directionY < num_increments )
     directionY+=3;
 
   // center X
@@ -618,7 +608,7 @@ void Creature::incrementOffsetY()
 void Creature::decrementOffsetY()
 {
   offsetY--;
-  if ( directionY > -20 )
+  if ( directionY > -num_increments )
     directionY-=3;
 
   // center X

@@ -136,14 +136,20 @@ class Creature
     void setAction(int a){ ACTION = a; }
     int getAction(){ return ACTION; }
 
-    inline int getOffsetX(){ return offsetX; }
-    inline int getOffsetY(){ return offsetY; }
+    void setSpeed(int s){ num_increments = s; }
+
+    inline float getOffsetX(){ if (num_increments == ANIMATION_SIZE) return offsetX;
+                               return offsetX * (float(ANIMATION_SIZE) / num_increments); }
+    inline float getOffsetY(){ if (num_increments == ANIMATION_SIZE) return offsetY;
+                               return offsetY * (float(ANIMATION_SIZE) / num_increments); }
 
     inline void setAI(bool inai){ ai = inai; }
     inline bool getAI(){ return ai; }
 
-    inline short getFacingX(){ return directionX; }
-    inline short getFacingY(){ return directionY; }
+    inline float getFacingX(){ if (num_increments == ANIMATION_SIZE) return directionX;
+                               return directionX * (float(ANIMATION_SIZE) / num_increments); }
+    inline float getFacingY(){ if (num_increments == ANIMATION_SIZE) return directionY;
+                               return directionY * (float(ANIMATION_SIZE) / num_increments); }
     inline int getDirection(){ return direction; }
 
     inline int getCarrying(){ return carrying; }
@@ -288,6 +294,9 @@ class Creature
                  getLastDirection() );
       }
   private:
+    // Basic initialization used by constructors.
+    void init();
+
     // these are used to change offsetX / offsetY and keep the direction correct.
     void incrementOffsetX();
     void decrementOffsetX();
@@ -325,12 +334,16 @@ class Creature
     short offsetX;
     short offsetY;
 
+    // Number of increments per tile.
+    int num_increments;
+
     // These are needed so that the ant is rotated in the right direction.
     short directionX;
     short directionY;
     
     // Status, health information.
     short hp;
+
     // what type of creature is it (ANT_WORKER, ANT_QUEEN, SPIDER, etc)
     short TYPE;
 
