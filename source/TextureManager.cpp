@@ -64,3 +64,8 @@ void TextureManager::nextTexture(int ID)
   curTex = ID;
   callNum = 0;
 }
+
+void TextureManager::resetTexture()
+{
+  callNum = 0;
+}

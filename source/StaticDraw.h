@@ -31,6 +31,10 @@ class StaticDraw
     // Squares
     static void drawRect(float x, float y, float z, float width, float height);
     static void drawRect(float x, float y, float z, float width, float height, TextureManager *tm);
+
+    // Triangles
+    static void drawTri(float x, float y, float z, float width, float height, bool topBottom);
+    static void drawTri(float x, float y, float z, float width, float height, bool topBottom, TextureManager *tm);
 };
 
 #endif

@@ -600,22 +600,16 @@ void MapDraw::drawFoodPatch(float x, float y, Patch *p)
 
 void MapDraw::drawGroundPatch(float x, float y, Patch *p)
 {
- // int cl = p->chemLevel * 0.1;
   unsigned int cl = 0;
 
   // if it is low, make it 10 to it so we can see something
-//  if ((p->chemLevel[0] < 100) && (p->chemLevel[0] != 0))
-//    cl = 10;
-//  else if (p->chemLevel[0] > 100)
   {
-      cl = ((int)(p->chemLevel[showPheramone] / (FERAMONE_MAX / 31)));
+//      cl = ((int)(p->chemLevel[showPheramone] / (FERAMONE_MAX / 31)));
+      cl = ((int)(p->chemLevel[BLACK_HOME] / (FERAMONE_MAX / 31)));
       if (cl > 31) cl = 31;
-  //  cl = p->chemLevel[0] * 0.1;
   }
 
   material(31,31-cl,31-cl); // make it easier to see ants...
-  // Check top, bottom, left, right and draw
-  // empty patch with paths that can link to
   // whichever are missing, this will either be a bunch of call lists
   // or, more likely, something I do procedurally:
   //     EMPTY_LEFT
@@ -635,7 +629,17 @@ void MapDraw::drawGroundPatch(float x, float y, Patch *p)
   //     EMPTY_UP_RIGHT_LEFT_DOWN
 
   // this rectangle is assuming I will go with the looking-at-wrong-side approach.
-  StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+  //StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+  StaticDraw::drawTri(x, y, 0, MODEL_SCALE, MODEL_SCALE, true, tm);
+
+  {
+//      cl = ((int)(p->chemLevel[showPheramone] / (FERAMONE_MAX / 31)));
+      cl = ((int)(p->chemLevel[BLACK_FOOD] / (FERAMONE_MAX / 31)));
+      if (cl > 31) cl = 31;
+  }
+
+  material(31-cl,31,31); // make it easier to see ants...
+  StaticDraw::drawTri(x, y, 0, MODEL_SCALE, MODEL_SCALE, false, tm);
 }
 
 void MapDraw::material(int r, int g, int b)

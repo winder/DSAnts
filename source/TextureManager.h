@@ -17,6 +17,9 @@ class TextureManager
     // Selects which texture setTexture will return for.
     void nextTexture(int ID);
 
+    // Reset texture
+    void resetTexture();
+
   private:
     int textureID;
     int callNum;
