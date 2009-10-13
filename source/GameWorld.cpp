@@ -37,6 +37,7 @@ GameWorld::GameWorld()
   tmp->setCarrying(PATCH_FOOD1);  
   tmp->setTakePortals( true );
   tmp->setFeramoneOutput(1000);
+  tmp->setPheramone(BLACK_FOOD);
   tmp->setSpeed(20);
 
   // Default to following player:

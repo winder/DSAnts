@@ -57,6 +57,9 @@ class Ant: public Creature
     void setFeramoneOutput(int f){ feramoneOutput = f; }
     unsigned int getFeramoneOutput(){ return feramoneOutput; }
 
+    void setPheramone(int p){ currentPheramone = p; }
+    int getPheramone(){ return currentPheramone; }
+
     // return as argument.
     void sortAdjacentPatchByChem(Patch* center, Patch* sort[], int direction[]);
 
