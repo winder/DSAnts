@@ -79,6 +79,10 @@ void Ant::forage()
           feramoneOutput = FERAMONE_LOW;
           set_portaled( false );
           takePortals = true;
+          if ( getPheramone() == BLACK_FOOD )
+            setPheramone( BLACK_HOME );
+          else
+            setPheramone( RED_HOME );
         }
       }
       // if there was no place to put the food, wander till there is.
@@ -133,6 +137,11 @@ void Ant::forage()
         // 5.   Pickup food, mark food spot with feramone, go home
         pickup( cache );
         set_portaled( false );
+        if ( getPheramone() == BLACK_HOME )
+          setPheramone( BLACK_FOOD );
+        else
+          setPheramone( RED_FOOD );
+
         feramoneOutput = FERAMONE_HIGH;
 
         // set feramone (with new output) where standing.
