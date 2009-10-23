@@ -17,7 +17,7 @@ include $(DEVKITARM)/ds_rules
 # GRAPHICS is a list of directories containing files to be processed by grit
 # AUDIO is a list of directories containing files to be processed by mmutil
 #---------------------------------------------------------------------------------
-TARGET		:=	$(shell basename $(CURDIR))
+TARGET		:=	DSAnts
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
