@@ -302,6 +302,12 @@ void Player::printDebug()
   printf("\nLocation near FOOD(%s) PORTAL(%s)", p->checkForFood()?"X":" ",
                                                 p->checkForPortal()?"X":" ");
 
+  printf("\nN(%c),S(%c),E(%c),W(%c)",
+    p->getPatch()->top?'X':' ',
+    p->getPatch()->bottom?'X':' ',
+    p->getPatch()->right?'X':' ',
+    p->getPatch()->left?'X':' ');
+          
 /*
   printf("\nAI ");
   switch(p->getAction())

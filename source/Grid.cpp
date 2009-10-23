@@ -4,6 +4,7 @@ Grid::Grid()
 {
   // this is always true... for now.
   loopX = false;
+  loopY = false;
   int x,y;
 
   // Create the objects.

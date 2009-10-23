@@ -494,59 +494,67 @@ void Creature::goHome()
 // 2. The ant will not stop.
 void Creature::wander()
 {
-  // move about randomly.
-  direction = rand()%4;
-  if (direction == directionOld)
-    direction = (direction+1)%4;
+  int validDir[4];
+  int validDirs=0;
+    Patch* cache = getPatch();
 
-  bool newDir = false;
-  // cache getPatch() so that it doesn't need a read each time.
-  Patch* cache = getPatch();
-
-  for (int four=0; !newDir; four++)
+  // I wanted to do this nicely but couldn't because of the cache->direction
+  if (directionIsOk( AI_DOWN, directionOld, cache->bottom ) )
   {
-    if ((direction == AI_DOWN) && directionIsOk(direction, directionOld, cache->bottom))
-      newDir = true;
-    else if ((direction == AI_RIGHT) && directionIsOk(direction, directionOld, cache->right))
-      newDir = true;
-    else if ((direction == AI_LEFT) && directionIsOk(direction, directionOld, cache->left))
-      newDir = true;
-    else if ((direction == AI_TOP) && directionIsOk(direction, directionOld, cache->top))
-      newDir = true;
+    validDir[validDirs++] = AI_DOWN;
+  }
+  if (directionIsOk( AI_TOP, directionOld, cache->top ) )
+  {
+    validDir[validDirs++] = AI_TOP;
+  }
+  if (directionIsOk( AI_LEFT, directionOld, cache->left ) )
+  {
+    validDir[validDirs++] = AI_LEFT;
+  }
+  if (directionIsOk( AI_RIGHT, directionOld, cache->right ) )
+  {
+    validDir[validDirs++] = AI_RIGHT;
+  }
 
-    if (!newDir)
+  // This means we hit some sort of dead end.  Turn around or hug a wall.
+  if (validDirs == 0)
+  {
+    // SPECIAL CASE: if ants are remembering recent tiles, check if we are
+    //               stuck because of it. 
+    // check if we can't go because they are all visited
+    if ( use_visit_memory &&
+         (!WALKABLE(cache->top)    || checkVisited(cache->top))  &&
+         (!WALKABLE(cache->right)  || checkVisited(cache->right)) &&
+         (!WALKABLE(cache->left)   || checkVisited(cache->left))  &&
+         (!WALKABLE(cache->bottom) || checkVisited(cache->bottom)) )
     {
-      direction += 1;
-      if (direction == 4)
-        direction = 0;
-    }
-
-    // dead end, forced to turn around.
-    if (four == 4)
-    {
-      // SPECIAL CASE: if ants are remembering recent tiles, check if we are
-      //               stuck because of it. 
-      // check if we can't go because they are all visited
-      if ( use_visit_memory &&
-           (!WALKABLE(cache->top)    || checkVisited(cache->top))  &&
-           (!WALKABLE(cache->right)  || checkVisited(cache->right)) &&
-           (!WALKABLE(cache->left)   || checkVisited(cache->left))  &&
-           (!WALKABLE(cache->bottom) || checkVisited(cache->bottom)) )
-      {
-        // TODO: call the "hugWall" algorithm.
-        clearVisited();
-        wander();
-        return;
-      }
-
-      // Otherwise, just turn around.
-      // this case will never be true unless there are a bunch of ants blocking
-      // the way.
-      direction = directionOld;
-      setAI(false);
+      // TODO: call the "hugWall" algorithm.
+      clearVisited();
+      wander();
       return;
     }
+
+    // Otherwise, just turn around.
+    // this case will never be true unless there are a bunch of ants blocking
+    // the way.
+    direction = directionOld;
+    setAI(false);
+    return;
   }
+
+  // one way to go
+  else if (validDirs == 1)
+  {
+    direction = validDir[0];
+  }
+
+  // pick from several at random.
+  else
+  {
+    // move about randomly.
+    direction = validDir[ rand() % validDirs ];
+  }
+
   setAI(false);
 }
 
