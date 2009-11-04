@@ -2,6 +2,19 @@
 
 Grid::Grid()
 {
+//  dd = (Patch**) malloc( sizeof(Patch) * WIDTH * DEPTH );
+//  Patch* buf = (Patch*)dd;
+//  int i;
+//  for (i=WIDTH-2; i >= 0; i++)
+//  { dd[i] = dd[i * DEPTH]; }
+  
+
+  // This works, but I want one malloc.
+  dd = (Patch**) malloc ( WIDTH * sizeof(*dd));
+  int i;
+  for (i=0; i < WIDTH; i++)
+  { dd[i] = (Patch*) malloc ( DEPTH * sizeof(Patch) ); }
+
   // this is always true... for now.
   loopX = false;
   loopY = false;
@@ -11,17 +24,17 @@ Grid::Grid()
   for (x=0; x < WIDTH; x++)
     for (y=0; y < DEPTH; y++)
     {
-      dd[x][y] = new Patch(x, y);
+      new (&(dd[x][y])) Patch(x, y);
     }
 
   // Connect the objects.
   for (x=0; x < WIDTH; x++)
     for (y=0; y < DEPTH; y++)
     {
-      dd[x][y]->top = getTop(x,y);
-      dd[x][y]->bottom = getBottom(x,y);
-      dd[x][y]->left = getLeft(x,y);
-      dd[x][y]->right = getRight(x,y);
+      dd[x][y].top = getTop(x,y);
+      dd[x][y].bottom = getBottom(x,y);
+      dd[x][y].left = getLeft(x,y);
+      dd[x][y].right = getRight(x,y);
     }
 }
 
@@ -30,8 +43,8 @@ void Grid::setLoopY()
   int x = 0;
   for(x=0; x < WIDTH;  x++)
   {
-    dd[x][0]->top           = dd[x][DEPTH-1];
-    dd[x][DEPTH-1]->bottom  = dd[x][0];
+    dd[x][0].top           = &dd[x][DEPTH-1];
+    dd[x][DEPTH-1].bottom  = &dd[x][0];
   }
   loopY = true;
 }
@@ -40,8 +53,8 @@ void Grid::setLoopX()
 {
   for( int x=0; x<DEPTH; x++ )
   {
-    dd[0][x]->left        = dd[WIDTH-1][x];
-    dd[WIDTH-1][x]->right = dd[0][x];
+    dd[0][x].left        = &dd[WIDTH-1][x];
+    dd[WIDTH-1][x].right = &dd[0][x];
   }
   loopX = true;
 }
@@ -123,7 +136,7 @@ Patch* Grid::getRight(int x, int y)
   if (!moveRight(w)) return '\0';
 
   // Depth max/min doesn't change moving right/left
-  return dd[w][y];
+  return &(dd[w][y]);
 }
 
 Patch* Grid::getLeft(int x, int y)
@@ -132,21 +145,21 @@ Patch* Grid::getLeft(int x, int y)
   if (!moveLeft(w)) return '\0';
 
   // Depth max/min doesn't change moving right/left
-  return dd[w][y];
+  return &(dd[w][y]);
 }
 Patch* Grid::getTop(int x, int y)
 {
   short d = y;
   if (!moveUp(d)) return '\0';
 
-  return dd[x][d];
+  return &(dd[x][d]);
 }
 Patch* Grid::getBottom(int x, int y)
 {
   short d = y;
   if (!moveDown(d)) return '\0';
 
-  return dd[x][d];
+  return &(dd[x][d]);
 }
 
 void Grid::clear(Patch* p)
@@ -203,7 +216,7 @@ void Grid::chemicalDecay(float f)
   for (int x=0; x < WIDTH; x++)
     for (int y=0; y < DEPTH; y++)
     {
-      DECAY_FERAMONE( dd[x][y] , f);
+      DECAY_FERAMONE( &(dd[x][y]) , f);
     }
 }
 

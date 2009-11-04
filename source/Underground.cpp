@@ -27,18 +27,18 @@ void Underground::setupUnderground(int location)
   for (x=0; x < WIDTH; x++)
     for (y=0; y < DEPTH; y++)
     {
-      dd[x][y]->location = location;
+      dd[x][y].location = location;
 
       // Unpassable patch at the deepest level.
       if (y == DEPTH-1)
-        dd[x][y]->TYPE = PATCH_BARRIER;
+        dd[x][y].TYPE = PATCH_BARRIER;
       // Sky / trigger to enter surface world at the top.  This patch will
       // have a coordinate to where on the surface the hole emerges.
       else if ( y == 0 )
-        dd[x][y]->TYPE = PATCH_TOP;
+        dd[x][y].TYPE = PATCH_TOP;
       // Everything else is dirt.
       else
-        dd[x][y]->TYPE = PATCH_DIRT;
+        dd[x][y].TYPE = PATCH_DIRT;
     }
 }
 

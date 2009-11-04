@@ -7,6 +7,8 @@
 #include <vector>
 // stdlib for rand / srand
 #include <stdlib.h>
+// for placement new
+#include <new>
 
 #include "global.h"
 #include "Patch.h"
@@ -30,7 +32,7 @@ class Grid
     // clamp the values just in case.
     Patch* getPatch(short width, short depth)
       {  if (width<0) width=0; if (depth<0) depth=0;
-        return dd[width%WIDTH][depth%DEPTH]; }
+        return &(dd[width%WIDTH][depth%DEPTH]); }
 
     // move the x/y coord around.
     bool moveRight(short &x);
@@ -93,7 +95,9 @@ class Grid
 
   protected:
     // This is available to subclasses.
-    Patch* dd[WIDTH][DEPTH];
+//    Patch dd[WIDTH][DEPTH];
+    Patch **dd;
+
     short chemicalTick;
     int location;
 

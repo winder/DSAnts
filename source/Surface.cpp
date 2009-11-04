@@ -21,11 +21,11 @@ void Surface::setupSurface()
   for (int x=0; x < WIDTH; x++)
     for (int y=0; y < DEPTH; y++)
     {
-      dd[x][y]->TYPE = PATCH_EMPTY;
+      dd[x][y].TYPE = PATCH_EMPTY;
       // If for some reason this becomes necessary, cross the bridge.
       // Otherwise a vector of thousands of patches doesn't seem too useful.
       //clear(dd[x][y]);
-      dd[x][y]->location = GAMEWORLD_STATE_SURFACE;
+      dd[x][y].location = GAMEWORLD_STATE_SURFACE;
     }
 }
 
