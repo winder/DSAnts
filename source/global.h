@@ -25,6 +25,9 @@
 // 60 = 1 second
 #define CHEMICAL_DECAY_FREQUENCY 600
 
+// number of ants to step forward per frame
+#define ANT_STEPS_PER_FRAME 200
+
 // Draw scale and animation between grid stuff.
 // ANIMATION_SIZE must be divisible by 2, it determines how many frames it takes
 // for an ant to move 1 tile.

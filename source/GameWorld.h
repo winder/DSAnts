@@ -7,6 +7,7 @@
 #include "Underground.h"
 #include "Surface.h"
 #include <vector>
+#include <new>
 #include "Ant.h"
 #include "Camera.h"
 #include "Input.h"
@@ -106,6 +107,8 @@ class GameWorld: public Observer, public Subject
   private:
     unsigned int numAnts;
     unsigned short eggTimer;
+    // step 200 ants per screen, keep track of last index.
+    unsigned int antIndex;
 
     // Player, Player Input, Input class, picking, touch-movement
     // store the picked patch.
@@ -129,8 +132,12 @@ class GameWorld: public Observer, public Subject
     // Camera
     Camera *cam;
 
-    std::vector<Ant*> black;
-    std::vector<Ant*> red;
+//    std::vector<Ant*> black;
+//    std::vector<Ant*> red;
+    int numBlack;
+    int numRed;
+    Ant *black;
+    Ant *red;
 };
 
 typedef Singleton<GameWorld> GameWorldSingleton; // global declaration

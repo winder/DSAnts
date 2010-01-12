@@ -2,6 +2,11 @@
 
 GameWorld::GameWorld()
 {
+  antIndex = 0;
+  numBlack = numRed = 0;
+  black = (Ant*) malloc ( sizeof(Ant) * 1000 );
+  red = (Ant*) malloc ( sizeof(Ant) * 1000 );
+
   eggTimer = 0;
 
   in = new Input();
@@ -21,6 +26,7 @@ GameWorld::GameWorld()
   surf->setGrid( new Surface() );
 
   surf->getGrid()->setLoopY();
+  surf->getGrid()->setLoopX();
 
   // start underground
   STATE = GAMEWORLD_STATE_UNDERGROUND;
@@ -31,7 +37,7 @@ GameWorld::GameWorld()
   doPick = false;
   
   // Create player.
-  Ant *tmp = new WorkerAnt();
+  Ant *tmp = new QueenAnt();
   tmp->setPatch( ug->getGrid()->getPatch(0,2) );
   tmp->setLocation( STATE );
   tmp->setCarrying(PATCH_FOOD1);  
@@ -48,20 +54,20 @@ GameWorld::GameWorld()
 
 
   // Create queen(s) and put in a random location.
-  tmp = new QueenAnt();
+  tmp = new (&black[numBlack++]) QueenAnt();
   tmp->setPatch( ug->getGrid()->getRandomCleared() );
   tmp->setLocation( STATE );
   tmp->setTakePortals( false );
   // Queen doesn't need an action, she just sits around making eggs
-  black.push_back( tmp );
+//  black.push_back( tmp );
 
   // Enemy queen
-  tmp = new QueenAnt();
+  tmp = new (&black[numBlack++]) QueenAnt();
   tmp->setPatch( eug->getGrid()->getRandomCleared() );
   tmp->setLocation( GAMEWORLD_STATE_UNDERGROUND_ENEMY );
   tmp->setTakePortals( false );
   // Queen doesn't need an action, she just sits around making eggs
-  black.push_back( tmp );
+//  black.push_back( tmp );
 
   // SETUP OBSERVERs:
 
@@ -91,10 +97,14 @@ GameWorld::~GameWorld()
   delete cam;
 
   // loop through "black" and "red" and delete 'em.
-  for (unsigned int i=0; i < black.size(); i++)
-    delete black[i];
-  for (unsigned int i=0; i < red.size(); i++)
-    delete red[i];
+  //for (unsigned int i=0; i < black.size(); i++)
+//  for (unsigned int i=0; i < numBlack; i++)
+//    delete black[i];
+//  for (unsigned int i=0; i < numBlack; i++)
+//    delete red[i];
+
+  free(black);
+  free(red);
 }
 
 int GameWorld::pickup(int loc, Patch *pat)
@@ -298,9 +308,10 @@ void GameWorld::draw()
   curMap->draw();
 
   // draw the ants      
-  for (unsigned int i=0; (numAnts < 80) && (i < black.size()); i++)
-    if ( black[i]->getLocation() == STATE )
-      if (curMap->drawAnt(black[i], true))
+  //for (unsigned int i=0; (numAnts < 80) && (i < black.size()); i++)
+  for (int i=0; (numAnts < 80) && (i < numBlack); i++)
+    if ( black[i].getLocation() == STATE )
+      if (curMap->drawAnt(&black[i], true))
         numAnts++;
 
 //    for (unsigned int i=0; i < red.size(); i++)
@@ -344,12 +355,17 @@ void GameWorld::pickPoint(short x, short y)
 void GameWorld::stepAntsForward(int num)
 {
   // test, move each ant around randomly.
-  for (unsigned int i=0; i < black.size(); i++)
+  //for (unsigned int i=0; i < black.size(); i++)
+  int i;
+  for (i=antIndex; (i < numBlack) && ((i-antIndex) < ANT_STEPS_PER_FRAME); i++)
   {
     // AI for ant "black[i]->AImove()"
-    black[i]->stateStep(num);
-    black[i]->move(num);
+    black[i].stateStep(num *  numBlack / ANT_STEPS_PER_FRAME);
+    black[i].move(num * numBlack / ANT_STEPS_PER_FRAME);
   }
+
+  if (i >= numBlack) antIndex = 0;
+  else antIndex += ANT_STEPS_PER_FRAME;
 }
 
 void GameWorld::stepEggsForward(MapDraw* md)
@@ -423,7 +439,7 @@ void GameWorld::stepForward(int num)
 // TODO: createRedAnt / createBlackAnt ?
 void GameWorld::createAnt( Patch* pat, int location )
 {
-    Ant *t = new WorkerAnt( pat, location);
+    Ant *t = new (&black[numBlack++]) WorkerAnt( pat, location);
     t->setAction( ANT_ACTION_WANDER );
     // set home to the location:
     t->setHome( location );
@@ -431,7 +447,7 @@ void GameWorld::createAnt( Patch* pat, int location )
     t->setSpeed( 20 );
 
     // find which to use based on location
-    black.push_back(t);
+//    black.push_back(t);
 }
 
 void GameWorld::setProjection()
@@ -477,7 +493,7 @@ void GameWorld::update(int value)
   else if(value == PLAYER_HELD_B)
   {
     // add a new ant on press.
-    Ant *t = new WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+    Ant *t = new (&black[numBlack++]) WorkerAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
     t->setHome( GAMEWORLD_STATE_UNDERGROUND );
     t->setTakePortals(true);
 //    t->setAction( ANT_ACTION_WANDER );
@@ -485,7 +501,7 @@ void GameWorld::update(int value)
     t->setTarget( p->getPlayerAnt() );
 //    t->setAction( ANT_ACTION_FOLLOW );
     t->setSpeed( 20 );
-    black.push_back(t);
+//    black.push_back(t);
 
     // Can change following to any creature at any time...
     // following = t;
@@ -493,9 +509,9 @@ void GameWorld::update(int value)
 
   else if (value == PLAYER_HELD_A)
   {
-    Ant *t = new QueenAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
+    Ant *t = new (&black[numBlack++]) QueenAnt(ug->getGrid()->getPatch(0,2), GAMEWORLD_STATE_UNDERGROUND);
     t->setAction( ANT_ACTION_WANDER );
-    black.push_back(t);
+//    black.push_back(t);
   }
   else if (value == PLAYER_PRESSED_X)
   {
@@ -508,6 +524,7 @@ void GameWorld::update(int value)
 //#ifdef __DEBUG
 void GameWorld::printDebugFiveLines()
 {
+  //printf("Ant=%d, WorkerAnt=%d, QueenAnt=%d, int=%d", sizeof(Ant), sizeof(WorkerAnt), sizeof(QueenAnt), sizeof(int));
   // Interesting stats:
   //    Number of ants
   //    Map / Map coordinate
@@ -527,7 +544,10 @@ void GameWorld::printDebugFiveLines()
 //  printf("\n  Cleared: %5d %5d", ug->getGrid()->numCleared(), surf->getGrid()->numCleared());
 //  printf("\n  Objects: %5d %5d", ug->getGrid()->numObjects(), surf->getGrid()->numObjects());
 //  printf("\nMap Center: (%i, %i)", curMap->getCenterX(), curMap->getCenterY());
-  printf("\nAnts: drawn(%i)\n black(%i), red(%i)", numAnts, black.size(), red.size());
+
+//  printf("\nAnts: drawn(%i)\n black(%i), red(%i)", numAnts, black.size(), red.size());
+  printf("\nAnts: drawn(%i)\n black(%i), red(%i)", numAnts, numBlack, numRed);
+
 //  printf("\nCamera distance: %f", cam->getCamLocation().z);
 //  printf("\nTouch coord: (%i, %i)", curX, curY);
   p->printDebug();
