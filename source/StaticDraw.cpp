@@ -2,8 +2,8 @@
 
 void StaticDraw::drawBox(float x, float y, float z, float width, float height, float depth)
 {
-  float w2 = width * 0.5;
-  float h2 = height * 0.5;
+  float w2 = width / 2;
+  float h2 = height / 2;
 
   //z  face
   glNormal3f(0,0,1);

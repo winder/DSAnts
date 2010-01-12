@@ -539,13 +539,28 @@ void MapDraw::drawEggPatch(float x, float y, Patch *p)
   StaticDraw::drawBox(x, y, 0, (2+factor)*(MODEL_SCALE/10), (2+factor)*(MODEL_SCALE/6), (MODEL_SCALE/3), tm);
 }
 
+
+static float sizes[10] = {
+  (3) * (MODEL_SCALE/14),
+  (4) * (MODEL_SCALE/14),
+  (5) * (MODEL_SCALE/14),
+  (6) * (MODEL_SCALE/14),
+  (7) * (MODEL_SCALE/14),
+  (8) * (MODEL_SCALE/14),
+  (9) * (MODEL_SCALE/14),
+  (10) * (MODEL_SCALE/14),
+  (11) * (MODEL_SCALE/14),
+  (12) * (MODEL_SCALE/14) };
 // This draws all the food types, the green cube is bigger depending
 // on the size of the pile.
 void MapDraw::drawFoodPatch(float x, float y, Patch *p)
 {
   // draw empty at bottom.
-  drawGroundPatch(x, y, p);
+  //drawGroundPatch(x, y, p);
 
+  material(1,31,1);
+  StaticDraw::drawRect(x, y, 0, MODEL_SCALE, MODEL_SCALE, tm);
+return;
   material(1,31,1);
   int factor = 1;
   switch(p->TYPE)
@@ -595,7 +610,7 @@ void MapDraw::drawFoodPatch(float x, float y, Patch *p)
       break;
   }
   
-  StaticDraw::drawBox(x, y, 0, (2+factor)*(MODEL_SCALE/14), (2+factor)*(MODEL_SCALE/14), (MODEL_SCALE/15), tm);
+  StaticDraw::drawBox(x, y, 0, sizes[factor-1], sizes[factor-1], (MODEL_SCALE/15), tm);
 }
 
 void MapDraw::drawGroundPatch(float x, float y, Patch *p)
